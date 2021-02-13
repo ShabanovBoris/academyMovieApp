@@ -15,15 +15,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="298dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/gradient"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/photo1"
-        android:background="@drawable/shape_angle"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_marginStart="16dp"
         app:srcCompat="@drawable/rob"
         android:scaleType="fitXY"
-
         app:layout_constraintBottom_toBottomOf="@id/guideline"
         app:layout_constraintEnd_toStartOf="@+id/photo2"
         app:layout_constraintHorizontal_bias="0.5"
@@ -72,6 +79,66 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_end="147dp" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:layout_width="80dp"
+        android:maxWidth="32dp"
+        android:layout_height="wrap_content"
+        android:text="Robert Downey Jr."
+        android:textColor="#D8D8D8"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:tooltipText="Robert Downey Jr."
+        app:layout_constraintStart_toStartOf="@+id/photo1"
+        app:layout_constraintTop_toTopOf="@id/guideline" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:layout_width="80dp"
+        android:maxWidth="32dp"
+        android:layout_height="wrap_content"
+        android:text="Chris Evans"
+        android:textColor="#D8D8D8"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:tooltipText="Chris Evans"
+        app:layout_constraintStart_toStartOf="@+id/photo2"
+        app:layout_constraintTop_toTopOf="@id/guideline" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:layout_width="80dp"
+        android:maxWidth="32dp"
+        android:layout_height="wrap_content"
+        android:text="Mark Ruffalo"
+        android:textColor="#D8D8D8"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:tooltipText="Mark Ruffalo"
+        app:layout_constraintStart_toStartOf="@+id/photo3"
+        app:layout_constraintTop_toTopOf="@id/guideline" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:layout_width="80dp"
+        android:maxWidth="32dp"
+        android:layout_height="wrap_content"
+        android:text="Chris Hemsworth"
+        android:textColor="#D8D8D8"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:tooltipText="Chris Hemsworth"
+        app:layout_constraintStart_toStartOf="@+id/photo4"
+        app:layout_constraintTop_toTopOf="@id/guideline" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:layout_width="80dp"
+        android:maxWidth="32dp"
+        android:layout_height="wrap_content"
+        android:text="Cast"
+        android:textColor="#D8D8D8"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="7dp"
+        app:layout_constraintStart_toStartOf="@+id/photo1"
+        app:layout_constraintBottom_toTopOf="@id/photo1"  />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
