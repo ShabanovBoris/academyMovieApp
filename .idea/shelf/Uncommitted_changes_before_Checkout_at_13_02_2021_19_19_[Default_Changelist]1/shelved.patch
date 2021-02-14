@@ -1,0 +1,197 @@
+Index: app/src/main/res/layout/activity_movie_details.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<androidx.constraintlayout.widget.ConstraintLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\"\r\n    android:layout_width=\"match_parent\"\r\n    android:layout_height=\"match_parent\"\r\n    tools:context=\".MovieDetailsActivity\">\r\n\r\n</androidx.constraintlayout.widget.ConstraintLayout>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/activity_movie_details.xml	(revision 76b1618c608e2865e5c289be6cf45baf929f0c24)
++++ app/src/main/res/layout/activity_movie_details.xml	(date 1613233019049)
+@@ -4,6 +4,74 @@
+     xmlns:tools="http://schemas.android.com/tools"
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"
+-    tools:context=".MovieDetailsActivity">
++    tools:context=".MovieDetailsActivity"
++    android:background="#191926">
++
++    <ImageView
++        android:layout_width="match_parent"
++        android:layout_height="298dp"
++        android:scaleType="centerCrop"
++        android:src="@drawable/main_tint"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintTop_toTopOf="parent" />
++
++    <com.google.android.material.imageview.ShapeableImageView
++        android:id="@+id/photo1"
++        android:background="@drawable/shape_angle"
++        android:layout_width="80dp"
++        android:layout_height="80dp"
++        android:layout_marginStart="16dp"
++        app:srcCompat="@drawable/rob"
++        android:scaleType="fitXY"
++
++        app:layout_constraintBottom_toBottomOf="@id/guideline"
++        app:layout_constraintEnd_toStartOf="@+id/photo2"
++        app:layout_constraintHorizontal_bias="0.5"
++        app:layout_constraintStart_toStartOf="parent" />
++
++    <com.google.android.material.imageview.ShapeableImageView
++        android:id="@+id/photo2"
++        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
++        android:layout_width="80dp"
++        android:layout_height="80dp"
++        android:src="@drawable/cris"
++        android:scaleType="centerCrop"
++        app:layout_constraintBottom_toBottomOf="@id/guideline"
++        app:layout_constraintEnd_toStartOf="@+id/photo3"
++        app:layout_constraintHorizontal_bias="0.5"
++        app:layout_constraintStart_toEndOf="@+id/photo1" />
++
++    <com.google.android.material.imageview.ShapeableImageView
++        android:id="@+id/photo3"
++        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
++        android:layout_width="80dp"
++        android:layout_height="80dp"
++        android:src="@drawable/halk"
++        android:scaleType="centerCrop"
++        app:layout_constraintBottom_toBottomOf="@id/guideline"
++        app:layout_constraintEnd_toStartOf="@+id/photo4"
++        app:layout_constraintHorizontal_bias="0.5"
++        app:layout_constraintStart_toEndOf="@+id/photo2" />
++
++    <com.google.android.material.imageview.ShapeableImageView
++        android:id="@+id/photo4"
++        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
++        android:layout_width="80dp"
++        android:layout_height="80dp"
++        android:layout_marginEnd="16dp"
++        android:src="@drawable/tor"
++        android:scaleType="centerCrop"
++        app:layout_constraintBottom_toBottomOf="@id/guideline"
++        app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintHorizontal_bias="0.5"
++        app:layout_constraintStart_toEndOf="@+id/photo3" />
++
++    <androidx.constraintlayout.widget.Guideline
++        android:id="@+id/guideline"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:orientation="horizontal"
++        app:layout_constraintGuide_end="147dp" />
++
+ 
+ </androidx.constraintlayout.widget.ConstraintLayout>
+\ No newline at end of file
+Index: app/src/main/java/com/example/academyhomework/MainActivity.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.academyhomework\r\n\r\nimport androidx.appcompat.app.AppCompatActivity\r\nimport android.os.Bundle\r\n\r\nclass MainActivity : AppCompatActivity() {\r\n    override fun onCreate(savedInstanceState: Bundle?) {\r\n        super.onCreate(savedInstanceState)\r\n        setContentView(R.layout.activity_main)\r\n\r\n    }\r\n\r\n    override fun onBackPressed() {\r\n        super.onBackPressed()\r\n    }\r\n\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/academyhomework/MainActivity.kt	(revision 76b1618c608e2865e5c289be6cf45baf929f0c24)
++++ app/src/main/java/com/example/academyhomework/MainActivity.kt	(date 1613226845013)
+@@ -1,5 +1,6 @@
+ package com.example.academyhomework
+ 
++import android.content.Intent
+ import androidx.appcompat.app.AppCompatActivity
+ import android.os.Bundle
+ 
+@@ -8,6 +9,8 @@
+         super.onCreate(savedInstanceState)
+         setContentView(R.layout.activity_main)
+ 
++     /** Mockup*/   startActivity(Intent(this, MovieDetailsActivity::class.java))
++
+     }
+ 
+     override fun onBackPressed() {
+Index: app/src/main/res/values/themes.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><resources xmlns:tools=\"http://schemas.android.com/tools\">\r\n    <!-- Base application theme. -->\r\n    <style name=\"Theme.AcademyHomework\" parent=\"Theme.MaterialComponents.DayNight.DarkActionBar\">\r\n        <!-- Primary brand color. -->\r\n        <item name=\"colorPrimary\">@color/purple_500</item>\r\n        <item name=\"colorPrimaryVariant\">@color/purple_700</item>\r\n        <item name=\"colorOnPrimary\">@color/white</item>\r\n        <!-- Secondary brand color. -->\r\n        <item name=\"colorSecondary\">@color/teal_200</item>\r\n        <item name=\"colorSecondaryVariant\">@color/teal_700</item>\r\n        <item name=\"colorOnSecondary\">@color/black</item>\r\n        <!-- Status bar color. -->\r\n        <item name=\"android:statusBarColor\" tools:targetApi=\"l\">?attr/colorPrimaryVariant</item>\r\n        <!-- Customize your theme here. -->\r\n    </style>\r\n</resources>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/values/themes.xml	(revision 76b1618c608e2865e5c289be6cf45baf929f0c24)
++++ app/src/main/res/values/themes.xml	(date 1613226519528)
+@@ -1,6 +1,6 @@
+ <resources xmlns:tools="http://schemas.android.com/tools">
+     <!-- Base application theme. -->
+-    <style name="Theme.AcademyHomework" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
++    <style name="Theme.AcademyHomework" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+         <!-- Primary brand color. -->
+         <item name="colorPrimary">@color/purple_500</item>
+         <item name="colorPrimaryVariant">@color/purple_700</item>
+Index: app/src/main/res/drawable/shape_angle.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/drawable/shape_angle.xml	(date 1613233093053)
++++ app/src/main/res/drawable/shape_angle.xml	(date 1613233093053)
+@@ -0,0 +1,12 @@
++<?xml version="1.0" encoding="utf-8"?>
++<shape xmlns:android="http://schemas.android.com/apk/res/android"
++    android:shape="rectangle"
++
++    >
++    <size android:width="80dp"
++        android:height="80dp"/>
++    <corners android:radius="16dp"/>
++
++    <solid android:color="@color/teal_200"/>
++
++</shape>
+\ No newline at end of file
+Index: app/src/main/res/layout-land/activity_movie_details.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout-land/activity_movie_details.xml	(date 1613226734032)
++++ app/src/main/res/layout-land/activity_movie_details.xml	(date 1613226734032)
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="utf-8"?>
++<androidx.constraintlayout.widget.ConstraintLayout
++    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
++    android:layout_height="match_parent">
++
++</androidx.constraintlayout.widget.ConstraintLayout>
+\ No newline at end of file
+Index: app/src/main/res/values-night/themes.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><resources xmlns:tools=\"http://schemas.android.com/tools\">\r\n    <!-- Base application theme. -->\r\n    <style name=\"Theme.AcademyHomework\" parent=\"Theme.MaterialComponents.DayNight.DarkActionBar\">\r\n        <!-- Primary brand color. -->\r\n        <item name=\"colorPrimary\">@color/purple_200</item>\r\n        <item name=\"colorPrimaryVariant\">@color/purple_700</item>\r\n        <item name=\"colorOnPrimary\">@color/black</item>\r\n        <!-- Secondary brand color. -->\r\n        <item name=\"colorSecondary\">@color/teal_200</item>\r\n        <item name=\"colorSecondaryVariant\">@color/teal_200</item>\r\n        <item name=\"colorOnSecondary\">@color/black</item>\r\n        <!-- Status bar color. -->\r\n        <item name=\"android:statusBarColor\" tools:targetApi=\"l\">?attr/colorPrimaryVariant</item>\r\n        <!-- Customize your theme here. -->\r\n    </style>\r\n</resources>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/values-night/themes.xml	(revision 76b1618c608e2865e5c289be6cf45baf929f0c24)
++++ app/src/main/res/values-night/themes.xml	(date 1613226519536)
+@@ -1,6 +1,6 @@
+ <resources xmlns:tools="http://schemas.android.com/tools">
+     <!-- Base application theme. -->
+-    <style name="Theme.AcademyHomework" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
++    <style name="Theme.AcademyHomework" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+         <!-- Primary brand color. -->
+         <item name="colorPrimary">@color/purple_200</item>
+         <item name="colorPrimaryVariant">@color/purple_700</item>
+Index: app/src/main/res/values/styles.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/values/styles.xml	(date 1613231784594)
++++ app/src/main/res/values/styles.xml	(date 1613231784594)
+@@ -0,0 +1,7 @@
++<?xml version="1.0" encoding="utf-8"?>
++<resources>
++
++    <style name="ShapeAppearanceOverlay.App.CornerSize50Percent" parent="">
++        <item name="cornerSize">50%</item>
++    </style>
++</resources>
+\ No newline at end of file
