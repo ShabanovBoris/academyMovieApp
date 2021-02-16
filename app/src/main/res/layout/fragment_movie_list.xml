@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    tools:context=".FragmentMovieList"
+    android:background="#191926"
+    >
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/movieCard"
+        android:layout_width="170dp"
+        android:layout_height="296dp"
+        app:cardBackgroundColor="#404056"
+        app:cardCornerRadius="8dp"
+        android:layout_margin="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            ><View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:foreground="@drawable/dark_gradient"
+            android:orientation="vertical"/>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imageList"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:srcCompat="@drawable/movie"
+                android:scaleType="centerCrop"
+                android:foreground="@drawable/dark_gradient"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                />
+
+            <RatingBar
+                android:id="@+id/ratingBar"
+                style="@style/Widget.AppCompat.RatingBar.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="28dp"
+                android:max="5"
+                android:progressBackgroundTint="#6D6D80"
+                android:progressTint="#FF3365"
+                android:rating="4"
+                app:layout_constraintBottom_toTopOf="@+id/nameMain"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:layout_marginBottom="28dp"
+                android:layout_marginLeft="9dp"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="125 Reviews"
+                android:textColor="#6D6D80"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toTopOf="@+id/nameMain"
+                app:layout_constraintStart_toEndOf="@+id/ratingBar" />
+
+            <TextView
+                android:id="@+id/tag"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:layout_marginBottom="4dp"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="Action, Adventure, Fantasy"
+                android:textColor="#FF3466"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toTopOf="@+id/ratingBar"
+                app:layout_constraintStart_toStartOf="@+id/ratingBar"
+                />
+
+            <TextView
+                android:id="@+id/nameMain"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:text="Avengers: End Game"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@id/imageList"
+
+                app:layout_constraintStart_toStartOf="@id/time"
+                tools:layout_editor_absoluteX="16dp"
+                tools:layout_editor_absoluteY="246dp" />
+
+            <TextView
+                android:id="@+id/time"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginBottom="16dp"
+                android:gravity="start"
+                android:text="137 min"
+                android:textColor="@color/white"
+                android:textSize="8sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.cardview.widget.CardView>
+   
+
+</androidx.constraintlayout.widget.ConstraintLayout>

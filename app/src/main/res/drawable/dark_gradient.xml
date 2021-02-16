@@ -7,8 +7,14 @@
         android:height="80dp"/>
 
     <gradient android:startColor="#00191926"
+        android:angle="270"
 
-        android:endColor="#191926"/>
+        android:endColor="#191926
+"/>
+
+    <stroke android:color="#636375"
+        android:width="1dp"/>
+    <corners android:radius="8dp"/>
 
 
 
