@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.RecyclerView
 import com.example.academyhomework.interfaces.ScreenChangeable
 
 // TODO: Rename parameter arguments, choose names that match
@@ -49,9 +50,10 @@ class FragmentMovieList : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
        val view = inflater.inflate(R.layout.fragment_movie_list, container, false)
-        view.findViewById<CardView>(R.id.movieCard).setOnClickListener{
-            listener?.moveTo(FragmentMoviesDetails.newInstance("",""))
+        view.findViewById<RecyclerView>(R.id.rv_movie_list).setOnClickListener{
+            //listener?.moveTo(FragmentMoviesDetails())
         }
+        listener?.moveTo(FragmentMoviesDetails())// TODO: 21.02.2021 DELETE THIS
         return view
     }
 

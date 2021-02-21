@@ -23,55 +23,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/photo1"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_marginStart="16dp"
-        android:scaleType="fitXY"
-        app:layout_constraintBottom_toBottomOf="@id/guideline"
-        app:layout_constraintEnd_toStartOf="@+id/photo2"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
-        app:srcCompat="@drawable/rob" />
 
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/photo2"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/cris"
-        app:layout_constraintBottom_toBottomOf="@id/guideline"
-        app:layout_constraintEnd_toStartOf="@+id/photo3"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/photo1"
-        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent" />
-
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/photo3"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/halk"
-        app:layout_constraintBottom_toBottomOf="@id/guideline"
-        app:layout_constraintEnd_toStartOf="@+id/photo4"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/photo2"
-        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent" />
-
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/photo4"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_marginEnd="16dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/tor"
-        app:layout_constraintBottom_toBottomOf="@id/guideline"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/photo3"
-        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
@@ -80,53 +32,18 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.9102736" />
 
-    <com.google.android.material.textview.MaterialTextView
-        android:layout_width="80dp"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/actor_recycler"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:maxWidth="32dp"
-        android:text="Robert Downey Jr."
-        android:textColor="#D8D8D8"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        android:tooltipText="Robert Downey Jr."
-        app:layout_constraintStart_toStartOf="@+id/photo1"
-        app:layout_constraintTop_toTopOf="@id/guideline" />
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="horizontal"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="@id/guideline"
+        tools:listitem="@layout/view_holder_actor"/>
 
-    <com.google.android.material.textview.MaterialTextView
-        android:layout_width="80dp"
-        android:layout_height="wrap_content"
-        android:maxWidth="32dp"
-        android:text="Chris Evans"
-        android:textColor="#D8D8D8"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        android:tooltipText="Chris Evans"
-        app:layout_constraintStart_toStartOf="@+id/photo2"
-        app:layout_constraintTop_toTopOf="@id/guideline" />
 
-    <com.google.android.material.textview.MaterialTextView
-        android:layout_width="80dp"
-        android:layout_height="wrap_content"
-        android:maxWidth="32dp"
-        android:text="Mark Ruffalo"
-        android:textColor="#D8D8D8"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        android:tooltipText="Mark Ruffalo"
-        app:layout_constraintStart_toStartOf="@+id/photo3"
-        app:layout_constraintTop_toTopOf="@id/guideline" />
-
-    <com.google.android.material.textview.MaterialTextView
-        android:layout_width="80dp"
-        android:layout_height="wrap_content"
-        android:maxWidth="32dp"
-        android:text="Chris Hemsworth"
-        android:textColor="#D8D8D8"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        android:tooltipText="Chris Hemsworth"
-        app:layout_constraintStart_toStartOf="@+id/photo4"
-        app:layout_constraintTop_toTopOf="@id/guideline" />
 
     <com.google.android.material.textview.MaterialTextView
         android:layout_width="80dp"
@@ -137,8 +54,8 @@
         android:textColor="#D8D8D8"
         android:textSize="14sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/photo1"
-        app:layout_constraintStart_toStartOf="@+id/photo1" />
+        app:layout_constraintBottom_toTopOf="@id/actor_recycler"
+        app:layout_constraintStart_toStartOf="@+id/actor_recycler" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/after_the_d"
@@ -152,9 +69,9 @@
         android:text="After the devastating events of Avengers: Infinity War, the universe is in ruins. With the help of remaining allies, the Avengers assemble once more in order to reverse Thanos' actions and restore balance to the universe."
         android:textColor="#FFFFFF"
         android:textSize="14sp"
-        app:layout_constraintBottom_toTopOf="@id/photo1"
-        app:layout_constraintEnd_toEndOf="@id/photo4"
-        app:layout_constraintStart_toStartOf="@+id/photo1" />
+        app:layout_constraintBottom_toTopOf="@id/actor_recycler"
+        app:layout_constraintEnd_toEndOf="@id/actor_recycler"
+        app:layout_constraintStart_toStartOf="@id/actor_recycler" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/name"
@@ -168,9 +85,9 @@
         android:text="Storyline"
         android:textColor="#FFFFFF"
         android:textSize="14sp"
-        app:layout_constraintBottom_toTopOf="@id/photo1"
-        app:layout_constraintEnd_toEndOf="@id/photo4"
-        app:layout_constraintStart_toStartOf="@+id/photo1" />
+        app:layout_constraintBottom_toTopOf="@id/actor_recycler"
+        app:layout_constraintEnd_toEndOf="@id/actor_recycler"
+        app:layout_constraintStart_toStartOf="@id/actor_recycler" />
 
     <RatingBar
         android:id="@+id/ratingBar"
@@ -184,7 +101,7 @@
         android:rating="4"
         app:layout_constraintBottom_toTopOf="@+id/name"
 
-        app:layout_constraintStart_toStartOf="@+id/photo1" />
+        app:layout_constraintStart_toStartOf="@+id/actor_recycler" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -223,7 +140,7 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/ratingBar"
         app:layout_constraintStart_toStartOf="@+id/ratingBar"
-        app:layout_constraintEnd_toEndOf="@id/photo4"
+        app:layout_constraintEnd_toEndOf="@id/actor_recycler"
         />
 
     <TextView
