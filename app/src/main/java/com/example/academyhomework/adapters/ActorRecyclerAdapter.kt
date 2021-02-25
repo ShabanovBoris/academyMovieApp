@@ -5,14 +5,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.academyhomework.R
 import com.example.academyhomework.models.Actor
+import com.example.academyhomework.models.Movie
 import com.google.android.material.imageview.ShapeableImageView
 
 class ActorRecyclerAdapter:RecyclerView.Adapter<ActorRecyclerAdapter.ViewHolderDataActor>() {
 
     private var list = listOf<Actor>()
-
+    private var movie: Movie? = null
     fun bindActors(l: List<Actor>){
         list = l
     }
@@ -21,8 +23,10 @@ class ActorRecyclerAdapter:RecyclerView.Adapter<ActorRecyclerAdapter.ViewHolderD
         private var name:TextView = itemView.findViewById(R.id.tv_actor_fullname)
 
         fun bindData(actor: Actor){
-            avatar.setImageResource(actor.avatar)
-            name.text = actor.fullName
+            name.text = actor.name
+            Glide.with(itemView.context)
+                .load(actor.imageUrl)
+                .into(avatar)
 
         }
     }

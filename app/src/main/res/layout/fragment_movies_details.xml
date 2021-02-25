@@ -8,6 +8,7 @@
     tools:context=".FragmentMoviesDetails">
 
     <ImageView
+        android:id="@+id/iv_main_screen"
         android:layout_width="match_parent"
         android:layout_height="298dp"
         android:scaleType="centerCrop"
@@ -58,7 +59,7 @@
         app:layout_constraintStart_toStartOf="@+id/actor_recycler" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/after_the_d"
+        android:id="@+id/tv_story"
         android:layout_width="0dp"
         android:layout_height="100dp"
         android:layout_marginBottom="55dp"
@@ -104,6 +105,7 @@
         app:layout_constraintStart_toStartOf="@+id/actor_recycler" />
 
     <TextView
+        android:id="@+id/tv_rating"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
         android:layout_marginBottom="28dp"
@@ -116,12 +118,12 @@
         app:layout_constraintStart_toEndOf="@+id/ratingBar" />
 
     <TextView
-        android:id="@+id/tag"
+        android:id="@+id/genre"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
         android:layout_marginBottom="4dp"
         android:gravity="center_horizontal|center_vertical"
-        android:text="Action, Adventure, Fantasy"
+        android:text=""
         android:textColor="#FF3466"
         android:textSize="14sp"
         app:layout_constraintBottom_toTopOf="@+id/ratingBar"
@@ -129,7 +131,7 @@
         />
 
     <TextView
-        android:id="@+id/nameMain"
+        android:id="@+id/tv_main_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="28dp"
@@ -151,7 +153,7 @@
         android:textStyle="bold"
         android:text="13+"
         android:layout_marginBottom="2dp"
-        app:layout_constraintBottom_toTopOf="@+id/nameMain"
+        app:layout_constraintBottom_toTopOf="@+id/tv_main_title"
         app:layout_constraintStart_toStartOf="@+id/ratingBar"/>
 
     <TextView

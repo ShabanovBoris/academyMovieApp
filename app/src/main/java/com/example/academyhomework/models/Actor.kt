@@ -1,8 +1,10 @@
 package com.example.academyhomework.models
 
+import java.io.Serializable
 
 
 data class Actor(
-    val fullName:String,
-    val avatar:Int,
-)
+    val id: Int,
+    val name: String,
+    val imageUrl: String,
+): Serializable

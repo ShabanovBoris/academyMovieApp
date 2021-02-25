@@ -1,23 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-
     tools:context=".FragmentMovieList"
     android:background="#191926"
+    android:padding="4dp"
     >
 
 
     <androidx.cardview.widget.CardView
         android:id="@+id/movieCard"
-        android:layout_width="250dp"
+        android:layout_width="180dp"
         android:layout_height="350dp"
         app:cardBackgroundColor="#404056"
         app:cardCornerRadius="8dp"
         android:layout_margin="16dp"
-
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         >
@@ -32,7 +31,7 @@
             android:orientation="vertical"/>
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/imageList"
+                android:id="@+id/iv_image_card"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
                 app:srcCompat="@drawable/movie"
@@ -43,7 +42,7 @@
                 />
 
             <RatingBar
-                android:id="@+id/ratingBar"
+                android:id="@+id/ratingBarCard"
                 style="@style/Widget.AppCompat.RatingBar.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -52,36 +51,25 @@
                 android:progressBackgroundTint="#6D6D80"
                 android:progressTint="#FF3365"
                 android:rating="4"
-                app:layout_constraintBottom_toTopOf="@+id/nameMain"
+                app:layout_constraintStart_toStartOf="@id/tv_title_movie"
+                app:layout_constraintBottom_toTopOf="@+id/tv_title_movie"
                 />
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="20dp"
-                android:layout_marginBottom="28dp"
-                android:layout_marginLeft="9dp"
-                android:gravity="center_horizontal|center_vertical"
-                android:text="125 Reviews"
-                android:textColor="#6D6D80"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toTopOf="@+id/nameMain"
-                app:layout_constraintStart_toEndOf="@+id/ratingBar" />
-
-            <TextView
-                android:id="@+id/tag"
+                android:id="@+id/tv_genre"
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
                 android:layout_marginBottom="4dp"
                 android:gravity="center_horizontal|center_vertical"
-                android:text="Action, Adventure, Fantasy"
+                android:text=""
                 android:textColor="#FF3466"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toTopOf="@+id/ratingBar"
-                app:layout_constraintStart_toStartOf="@+id/ratingBar"
+                android:textSize="10sp"
+                app:layout_constraintBottom_toTopOf="@+id/ratingBarCard"
+                app:layout_constraintStart_toStartOf="@+id/ratingBarCard"
                 />
 
             <TextView
-                android:id="@+id/nameMain"
+                android:id="@+id/tv_title_movie"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:gravity="start"
@@ -89,14 +77,13 @@
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 android:textStyle="bold"
-                app:layout_constraintTop_toBottomOf="@id/imageList"
 
-                app:layout_constraintStart_toStartOf="@id/time"
-                tools:layout_editor_absoluteX="16dp"
-                tools:layout_editor_absoluteY="246dp" />
+
+                app:layout_constraintBottom_toBottomOf="@+id/iv_image_card"
+                app:layout_constraintStart_toStartOf="@id/tv_runtime" />
 
             <TextView
-                android:id="@+id/time"
+                android:id="@+id/tv_runtime"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"

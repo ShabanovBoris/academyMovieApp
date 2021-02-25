@@ -5,8 +5,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.example.academyhomework.interfaces.ScreenChangeable
+import java.io.Serializable
 
 class MainActivity : AppCompatActivity(),ScreenChangeable {
+
+    var fragment:FragmentMoviesDetails? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -25,12 +28,19 @@ class MainActivity : AppCompatActivity(),ScreenChangeable {
         super.onBackPressed()
     }
 
-    override fun moveTo(fragment: Fragment) {
+    override fun moveToDetails(movie:Serializable) {
+        fragment = FragmentMoviesDetails.newInstance(movie)
         supportFragmentManager.beginTransaction().apply {
             addToBackStack(null)
-            replace(R.id.containerMainActivity,fragment)
+            add(R.id.containerMainActivity,fragment!!)
             commit()
         }
+    }
+
+    override fun backFromDetails() {
+        supportFragmentManager.beginTransaction()
+            .remove(fragment!!)
+            .commit()
     }
 
 }
