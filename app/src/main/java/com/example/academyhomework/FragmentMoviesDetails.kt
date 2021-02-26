@@ -1,6 +1,7 @@
 package com.example.academyhomework
 
 import android.content.Context
+import android.graphics.*
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -57,15 +58,22 @@ class FragmentMoviesDetails : Fragment() {
         val rating = view.findViewById<RatingBar>(R.id.ratingBar)
         val tvRating = view.findViewById<TextView>(R.id.tv_rating)
         val story  = view.findViewById<TextView>(R.id.tv_story)
+
         Glide.with(requireContext())
             .load(movie.detailImageUrl)
             .into(image)
+        val matrix = ColorMatrix().apply { set(floatArrayOf(
+                0.33f, 0.33f, 0.33f, 0f, 0f,
+                0.33f, 0.33f, 0.33f, 0f, 0f,
+                0.33f, 0.33f, 0.33f, 0f, 0f,
+                0f, 0f, 0f, 1f, 0f)) }
+        image.colorFilter = ColorMatrixColorFilter(matrix)
         title.text = movie.title
         for(g in movie.genres){
             genre.append(g.name+" ")
         }
         rating.rating = movie.rating.toFloat()
-        tvRating.text = movie.rating.toString() + " ${movie.reviewCount} review"
+        tvRating.text = movie.rating.toString() + " by ${movie.reviewCount} review"
         story.text = movie.storyLine
 
 

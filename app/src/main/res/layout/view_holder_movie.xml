@@ -1,22 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".FragmentMovieList"
-    android:background="#191926"
-    android:padding="4dp"
-    >
 
 
     <androidx.cardview.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/movieCard"
         android:layout_width="180dp"
         android:layout_height="350dp"
         app:cardBackgroundColor="#404056"
         app:cardCornerRadius="8dp"
-        android:layout_margin="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         >
@@ -58,29 +51,32 @@
             <TextView
                 android:id="@+id/tv_genre"
                 android:layout_width="wrap_content"
-                android:layout_height="20dp"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
-                android:gravity="center_horizontal|center_vertical"
+                android:gravity="start"
                 android:text=""
                 android:textColor="#FF3466"
-                android:textSize="10sp"
+                android:textSize="12sp"
                 app:layout_constraintBottom_toTopOf="@+id/ratingBarCard"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/ratingBarCard"
-                />
+                tools:text="asasdasdasd asdasdasd asdasdasdas asdasdasdas " />
 
             <TextView
                 android:id="@+id/tv_title_movie"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:gravity="start"
+                android:maxWidth="150dp"
                 android:text="Avengers: End Game"
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 android:textStyle="bold"
 
 
-                app:layout_constraintBottom_toBottomOf="@+id/iv_image_card"
-                app:layout_constraintStart_toStartOf="@id/tv_runtime" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/tv_runtime"
+                app:layout_constraintTop_toBottomOf="@+id/iv_image_card" />
 
             <TextView
                 android:id="@+id/tv_runtime"
@@ -88,13 +84,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginBottom="16dp"
+                android:layout_marginTop="8dp"
                 android:gravity="start"
                 android:text="137 min"
                 android:textColor="@color/white"
                 android:textSize="8sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_title_movie" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -103,4 +101,3 @@
     </androidx.cardview.widget.CardView>
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>

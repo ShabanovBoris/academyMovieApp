@@ -5,6 +5,7 @@ import android.view.TextureView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.RatingBar
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -20,6 +21,8 @@ class MovieListAdapter(val onClick: (Movie) -> Unit):ListAdapter<Movie,MovieList
         private val title:TextView = view.findViewById(R.id.tv_title_movie)
         private val genre:TextView = view.findViewById(R.id.tv_genre)
         private val image:ImageView = view.findViewById(R.id.iv_image_card)
+        private val rating:RatingBar = view.findViewById(R.id.ratingBarCard)
+        private val runtime:TextView = view.findViewById(R.id.tv_runtime)
 
         fun bindData(movie:Movie){
             Glide.with(itemView.context)
@@ -29,6 +32,8 @@ class MovieListAdapter(val onClick: (Movie) -> Unit):ListAdapter<Movie,MovieList
             for(g in movie.genres){
                 genre.append(g.name+" ")
             }
+            rating.rating = movie.rating.toFloat()
+            runtime.text = "${movie.runningTime}  min"
         }
     }
 
