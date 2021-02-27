@@ -21,21 +21,21 @@ private const val MOVIE_KEY = "movie_param"
 
 class FragmentMoviesDetails : Fragment() {
 
-    private var listener:ScreenChangeable? = null
-    private var movie: Serializable? = null
-    private lateinit var recyclerView:RecyclerView
+    private var mListener:ScreenChangeable? = null
+    private var mMovie: Serializable? = null
+    private lateinit var mRecyclerView:RecyclerView
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if(context is ScreenChangeable){
-            listener = context
+            mListener = context
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            movie = it.getSerializable(MOVIE_KEY)
+            mMovie = it.getSerializable(MOVIE_KEY)
         }
     }
 
@@ -51,7 +51,7 @@ class FragmentMoviesDetails : Fragment() {
     }
 
     private fun setFragmentMovie(view: View) {
-        val movie = movie as Movie
+        val movie = mMovie as Movie
         val image = view.findViewById<ImageView>(R.id.iv_main_screen)
         val title = view.findViewById<TextView>(R.id.tv_main_title)
         val genre = view.findViewById<TextView>(R.id.genre)
@@ -80,14 +80,14 @@ class FragmentMoviesDetails : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        recyclerView = view.findViewById(R.id.actor_recycler)
+        mRecyclerView = view.findViewById(R.id.actor_recycler)
         var adapter = ActorRecyclerAdapter()
-        adapter.bindActors((movie as Movie).actors)
-        recyclerView.adapter = adapter
+        adapter.bindActors((mMovie as Movie).actors)
+        mRecyclerView.adapter = adapter
 
         val back = view.findViewById<TextView>(R.id.backButton)
         back.setOnClickListener{
-            listener?.backFromDetails()
+            mListener?.backFromDetails()
         }
 
     }
