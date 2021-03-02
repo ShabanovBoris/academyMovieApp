@@ -1,5 +1,7 @@
-package com.example.academyhomework.models
+package com.example.academyhomework.model
 
+import com.example.academyhomework.model.Actor
+import com.example.academyhomework.model.Genre
 import java.io.Serializable
 
 data class Movie(

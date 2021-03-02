@@ -1,4 +1,4 @@
-package com.example.academyhomework.models
+package com.example.academyhomework.model
 
 data class MovieCard(
     val imageId:Int,

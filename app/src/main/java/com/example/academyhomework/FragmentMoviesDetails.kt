@@ -12,26 +12,24 @@ import android.widget.RatingBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.academyhomework.adapters.ActorRecyclerAdapter
-import com.example.academyhomework.interfaces.ScreenChangeable
-import com.example.academyhomework.models.Movie
+import com.example.academyhomework.model.moviedetails.ActorRecyclerAdapter
+import com.example.academyhomework.model.Movie
 import java.io.Serializable
 
 private const val MOVIE_KEY = "movie_param"
 
 class FragmentMoviesDetails : Fragment() {
 
-    private var mListener:ScreenChangeable? = null
+    private var mListener: Router? = null
     private var mMovie: Serializable? = null
     private lateinit var mRecyclerView:RecyclerView
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if(context is ScreenChangeable){
+        if(context is Router){
             mListener = context
         }
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -45,12 +43,12 @@ class FragmentMoviesDetails : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
          val view = inflater.inflate(R.layout.fragment_movies_details, container, false)
-        setFragmentMovie(view)
+        setViewFragmentMovie(view)
 
         return view
     }
 
-    private fun setFragmentMovie(view: View) {
+    private fun setViewFragmentMovie(view: View) {
         val movie = mMovie as Movie
         val image = view.findViewById<ImageView>(R.id.iv_main_screen)
         val title = view.findViewById<TextView>(R.id.tv_main_title)

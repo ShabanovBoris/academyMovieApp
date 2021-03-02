@@ -1,7 +1,5 @@
-package com.example.academyhomework.adapters
-
+package com.example.academyhomework.model.movielist
 import android.view.LayoutInflater
-import android.view.TextureView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -12,9 +10,12 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.academyhomework.R
-import com.example.academyhomework.models.Movie
+import com.example.academyhomework.model.Movie
 
-class MovieListAdapter(val onClick: (Movie) -> Unit):ListAdapter<Movie,MovieListAdapter.ViewHolderMovie>(DiffCallback()) {
+
+class MovieListAdapter(val onClick: (Movie) -> Unit):ListAdapter<Movie, MovieListAdapter.ViewHolderMovie>(
+    DiffCallback()
+) {
 
 
     class ViewHolderMovie(view:View):RecyclerView.ViewHolder(view){
@@ -24,7 +25,7 @@ class MovieListAdapter(val onClick: (Movie) -> Unit):ListAdapter<Movie,MovieList
         private val rating:RatingBar = view.findViewById(R.id.ratingBarCard)
         private val runtime:TextView = view.findViewById(R.id.tv_runtime)
 
-        fun bindData(movie:Movie){
+        fun bindData(movie: Movie){
             Glide.with(itemView.context)
                 .load(movie.imageUrl)
                 .into(image)

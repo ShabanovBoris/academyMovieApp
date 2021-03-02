@@ -1,4 +1,4 @@
-package com.example.academyhomework.adapters
+package com.example.academyhomework.model.moviedetails
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,8 +7,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.academyhomework.R
-import com.example.academyhomework.models.Actor
-import com.example.academyhomework.models.Movie
+import com.example.academyhomework.model.Actor
+import com.example.academyhomework.model.Movie
 import com.google.android.material.imageview.ShapeableImageView
 
 class ActorRecyclerAdapter:RecyclerView.Adapter<ActorRecyclerAdapter.ViewHolderDataActor>() {

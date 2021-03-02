@@ -1,9 +1,9 @@
-package com.example.academyhomework.interfaces
+package com.example.academyhomework
 
 import androidx.fragment.app.Fragment
 import java.io.Serializable
 
-interface ScreenChangeable {
+interface Router {
     fun moveToDetails(movie:Serializable)
     fun backFromDetails()
 }

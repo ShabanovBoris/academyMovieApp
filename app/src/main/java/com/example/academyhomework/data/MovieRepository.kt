@@ -1,10 +1,11 @@
 package com.example.academyhomework.data
 
 import android.content.Context
-import com.example.academyhomework.models.Actor
-import com.example.academyhomework.models.Genre
-import com.example.academyhomework.models.Movie
+import com.example.academyhomework.model.Actor
+import com.example.academyhomework.model.Genre
+import com.example.academyhomework.model.Movie
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
