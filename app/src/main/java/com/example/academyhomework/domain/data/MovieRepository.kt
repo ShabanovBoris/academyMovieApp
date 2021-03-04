@@ -35,10 +35,14 @@ internal class JsonMovieRepository() : MovieRepository {
 
        return coroutineScope {
             val module = NetworkModule()
-            return@coroutineScope  NetworkModule().getMovieResponse().results
+            val totalPages = module.getMovieResponse().totalPages
 
+            var listOfJsonMovie = mutableListOf<JsonMovie>()
+            for (iterator in 1..totalPages) {
 
-
+                listOfJsonMovie.addAll(module.getMovieResponse(iterator).results)
+            }
+            return@coroutineScope listOfJsonMovie
         }
     }
 

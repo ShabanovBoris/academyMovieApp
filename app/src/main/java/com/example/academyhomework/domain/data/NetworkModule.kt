@@ -16,6 +16,7 @@ import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.http.GET
+import retrofit2.http.Query
 
 /**
  * 	[TheMovieDb] API
@@ -45,8 +46,8 @@ class NetworkModule() {
     }
 
 
-    suspend fun getMovieResponse() = withContext(Dispatchers.IO) {
-        return@withContext RetrofitModule.movieApi.getOnPlayingMovies()
+    suspend fun getMovieResponse(page:Int = 1) = withContext(Dispatchers.IO) {
+        return@withContext RetrofitModule.movieApi.getOnPlayingMovies(page)
     }
 
     private interface TheMovieApi {
@@ -54,10 +55,16 @@ class NetworkModule() {
         suspend fun getImagesConfigurationInfo(): ConfigurationInfoClass
 
         @GET("movie/now_playing?$apiKey")
-        suspend fun getOnPlayingMovies(): ResponseClass
+        suspend fun getOnPlayingMovies(
+            @Query("page") page:Int
+        ): ResponseClass
+
+
 
         @GET("genre/movie/list?$apiKey&language=en-US")
         suspend fun getGenres(): ResponseGenreClass
+
+
     }
 
     /** [RetrofitModule] with
@@ -76,7 +83,7 @@ class NetworkModule() {
 
         private var okHttpClient = OkHttpClient().newBuilder().apply {
             addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-            addInterceptor(ApiKeyInterceptor(page))
+            //addInterceptor(ApiKeyInterceptor(page))
         }.build()
 
         private val retrofit = Retrofit.Builder().apply {
@@ -144,16 +151,16 @@ data class ListOfConfigs(
 	val still_sizes: List<String?>?,
 )
 
-class ApiKeyInterceptor(var page: Int) : Interceptor {
-    override fun intercept(chain: Interceptor.Chain): Response {
-        val original = chain.request()
-
-        val request = original.newBuilder()
-            .header("api_key", "4638f9d08c5772da23d03dc27501af71")
-            .url(original.url.toString().plus("&page=${page.toString()}"))
-            .build()
-
-        return chain.proceed(request)
-    }
-
-}
+//class ApiKeyInterceptor(var page: Int) : Interceptor {
+//    override fun intercept(chain: Interceptor.Chain): Response {
+//        val original = chain.request()
+//
+//        val request = original.newBuilder()
+//            .header("api_key", "4638f9d08c5772da23d03dc27501af71")
+//            .url(original.url.toString().plus("&page=${page.toString()}"))
+//            .build()
+//
+//        return chain.proceed(request)
+//    }
+//
+//}
