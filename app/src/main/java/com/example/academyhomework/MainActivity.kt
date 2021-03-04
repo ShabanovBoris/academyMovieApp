@@ -3,6 +3,7 @@ package com.example.academyhomework
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
+import com.example.academyhomework.domain.data.NetworkModule
 import com.example.academyhomework.viewmodel.ViewModelFactory
 import com.example.academyhomework.viewmodel.ViewModelMovie
 import java.io.Serializable
@@ -17,6 +18,9 @@ class MainActivity : AppCompatActivity(), Router {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        /** VIEWMODEL
+         *
+         */
         viewModelFactory = ViewModelFactory("arg")
         viewModel = ViewModelProvider(this, viewModelFactory).get(ViewModelMovie::class.java)
         viewModel.loadMovieList(this.applicationContext)
@@ -43,10 +47,16 @@ class MainActivity : AppCompatActivity(), Router {
             .remove(fragment!!)
             .commit()
     }
-
+    // region onDestroy
     override fun onDestroy() {
         super.onDestroy()
         fragment = null
+    }
+//endregion
+
+    override fun onStart() {
+        super.onStart()
+        NetworkModule().MockupStartLog()
     }
 
 }

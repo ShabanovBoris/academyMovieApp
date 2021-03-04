@@ -1,4 +1,4 @@
-package com.example.academyhomework.data
+package com.example.academyhomework.domain.data
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
