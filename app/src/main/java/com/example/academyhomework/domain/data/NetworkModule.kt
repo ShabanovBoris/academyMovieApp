@@ -51,10 +51,10 @@ class NetworkModule() {
     }
 
     private interface TheMovieApi {
-        @GET("configuration?$apiKey")
+        @GET("configuration?")
         suspend fun getImagesConfigurationInfo(): ConfigurationInfoClass
 
-        @GET("movie/now_playing?$apiKey")
+        @GET("movie/now_playing?")
         suspend fun getOnPlayingMovies(
             @Query("page") page:Int
         ): ResponseClass
@@ -83,7 +83,7 @@ class NetworkModule() {
 
         private var okHttpClient = OkHttpClient().newBuilder().apply {
             addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-            //addInterceptor(ApiKeyInterceptor(page))
+            addInterceptor(ApiKeyInterceptor(apiKey))
         }.build()
 
         private val retrofit = Retrofit.Builder().apply {
@@ -102,7 +102,7 @@ class NetworkModule() {
         var baseImagePosterUrl =
             "https://image.tmdb.org/t/p/w500" // todo instead w500 realize GET configuration
         var baseImageBackdropUrl = "https://image.tmdb.org/t/p/w780"
-        private const val apiKey = "api_key=4638f9d08c5772da23d03dc27501af71"
+        private const val apiKey = "&api_key=4638f9d08c5772da23d03dc27501af71"
     }
 
 
@@ -151,16 +151,16 @@ data class ListOfConfigs(
 	val still_sizes: List<String?>?,
 )
 
-//class ApiKeyInterceptor(var page: Int) : Interceptor {
-//    override fun intercept(chain: Interceptor.Chain): Response {
-//        val original = chain.request()
-//
-//        val request = original.newBuilder()
-//            .header("api_key", "4638f9d08c5772da23d03dc27501af71")
-//            .url(original.url.toString().plus("&page=${page.toString()}"))
-//            .build()
-//
-//        return chain.proceed(request)
-//    }
-//
-//}
+class ApiKeyInterceptor(var apiKey: String) : Interceptor {
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val original = chain.request()
+
+        val request = original.newBuilder()
+            //.header("api_key", "4638f9d08c5772da23d03dc27501af71")
+            .url(original.url.toString().plus(apiKey))
+            .build()
+
+        return chain.proceed(request)
+    }
+
+}
