@@ -59,6 +59,7 @@ class FragmentMovieList : Fragment() {
     }
 
     private fun setRecycler(view: View) {
+        /** set [moveToDetails] handler with [movie] */
         adapter = MovieListAdapter { movie -> listener?.moveToDetails(movie) }
         recyclerView = view.findViewById(R.id.rv_movie_list)
         recyclerView.layoutManager = GridLayoutManager(view.context, 2)

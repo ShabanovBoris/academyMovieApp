@@ -67,9 +67,9 @@ class FragmentMoviesDetails : Fragment() {
                 0f, 0f, 0f, 1f, 0f)) }
         image.colorFilter = ColorMatrixColorFilter(matrix)
         title.text = movie.title
-        for(g in movie.genres){
-            genre.append(g.name+" ")
-        }
+//        for(g in movie.genres){
+//            genre.append(g.name+" ") /** todo GENRES here
+//        }
         rating.rating = movie.rating.toFloat()
         tvRating.text = movie.rating.toString() + " by ${movie.reviewCount} review"
         story.text = movie.storyLine
@@ -80,7 +80,7 @@ class FragmentMoviesDetails : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         mRecyclerView = view.findViewById(R.id.actor_recycler)
         var adapter = ActorRecyclerAdapter()
-        adapter.bindActors((mMovie as Movie).actors)
+//        adapter.bindActors((mMovie as Movie).actors)  todo Actors HERE
         mRecyclerView.adapter = adapter
 
         val back = view.findViewById<TextView>(R.id.backButton)

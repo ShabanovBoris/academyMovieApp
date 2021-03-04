@@ -9,7 +9,7 @@ import com.example.academyhomework.model.Movie
 import kotlinx.coroutines.*
 import java.io.Serializable
 
-class ViewModelMovie(arg: String): ViewModel() ,Serializable{
+class ViewModelMovie(arg: String): ViewModel(), Serializable{
 
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         Log.e("ViewModelMovie", "Coroutine exception, scope active:${viewModelScope.isActive}", throwable)
@@ -22,7 +22,7 @@ class ViewModelMovie(arg: String): ViewModel() ,Serializable{
     fun loadMovieList(context: Context) {
 
         viewModelScope.launch(exceptionHandler) {
-             val list = JsonMovieRepository(context).loadMovies()
+             val list = JsonMovieRepository().loadMovies()
             _movieList.postValue(list)
         }
     }

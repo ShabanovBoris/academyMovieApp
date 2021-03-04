@@ -54,9 +54,6 @@ class MainActivity : AppCompatActivity(), Router {
     }
 //endregion
 
-    override fun onStart() {
-        super.onStart()
-        NetworkModule().MockupStartLog()
-    }
+
 
 }

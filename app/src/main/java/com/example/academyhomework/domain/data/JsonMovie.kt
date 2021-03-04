@@ -5,19 +5,19 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-data class JsonMovieNew(
+data class JsonMovie(
 	@SerialName("overview")
-	val overview: String? = null,
+	val overview: String,
 	@SerialName("original_language")
 	val originalLanguage: String? = null,
 	@SerialName("original_title")
-	val originalTitle: String? = null,
+	val originalTitle:String ,
 	@SerialName("video")
 	val video: Boolean? = null,
 	@SerialName("title")
-	val title: String? = null,
+	val title: String,
 	@SerialName("genre_ids")
-	val genreIds: List<Int?>? = null,
+	val genreIds: List<Int>,
 	@SerialName("poster_path")
 	val posterPath: String? = null,
 	@SerialName("backdrop_path")
@@ -27,34 +27,13 @@ data class JsonMovieNew(
 	@SerialName("popularity")
 	val popularity: Double? = null,
 	@SerialName("vote_average")
-	val voteAverage: Double? = null,
+	val voteAverage: Double,
 	@SerialName("id")
-	val id: Int? = null,
+	val id: Int,
 	@SerialName("adult")
 	val adult: Boolean? = null,
 	@SerialName("vote_count")
-	val voteCount: Int? = null
+	val voteCount: Int
 )
 
 
-
-@Deprecated("Old class")
-@Serializable
-internal class JsonMovie(
-	val id: Int,
-	val title: String,
-	@SerialName("poster_path")
-	val posterPicture: String,
-	@SerialName("backdrop_path")
-	val backdropPicture: String,
-	val runtime: Int,
-	@SerialName("genre_ids")
-	val genreIds: List<Int>,
-	val actors: List<Int>,
-	@SerialName("vote_average")
-	val ratings: Float,
-	@SerialName("vote_count")
-	val votesCount: Int,
-	val overview: String,
-	val adult: Boolean
-)

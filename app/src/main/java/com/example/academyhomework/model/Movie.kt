@@ -6,15 +6,14 @@ import java.io.Serializable
 
 data class Movie(
     val id: Int,
-    val pgAge: Int,
+    val pgAge: Int? = null,
     val title: String,
     val genres: List<Genre>,
-    val runningTime: Int,
     val reviewCount: Int,
-    val isLiked: Boolean,
-    val rating: Int,
+    val isLiked: Boolean? = null,
+    val rating: Double,
     val imageUrl: String,
     val detailImageUrl: String,
     val storyLine: String,
-    val actors: List<Actor>,
+
 ) :Serializable

@@ -23,7 +23,7 @@ class MovieListAdapter(val onClick: (Movie) -> Unit):ListAdapter<Movie, MovieLis
         private val genre:TextView = view.findViewById(R.id.tv_genre)
         private val image:ImageView = view.findViewById(R.id.iv_image_card)
         private val rating:RatingBar = view.findViewById(R.id.ratingBarCard)
-        private val runtime:TextView = view.findViewById(R.id.tv_runtime)
+
 
         fun bindData(movie: Movie){
             Glide.with(itemView.context)
@@ -34,7 +34,7 @@ class MovieListAdapter(val onClick: (Movie) -> Unit):ListAdapter<Movie, MovieLis
                 genre.append(g.name+" ")
             }
             rating.rating = movie.rating.toFloat()
-            runtime.text = "${movie.runningTime}  min"
+
         }
     }
 

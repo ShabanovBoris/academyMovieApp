@@ -1,13 +1,18 @@
 package com.example.academyhomework.domain.data
 
-import android.util.Log
+import com.example.academyhomework.domain.data.NetworkModule.RetrofitModule.json
+import com.example.academyhomework.domain.data.NetworkModule.RetrofitModule.movieApi
+import com.example.academyhomework.domain.data.NetworkModule.RetrofitModule.okHttpClient
+import com.example.academyhomework.domain.data.NetworkModule.RetrofitModule.retrofit
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.coroutines.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
+import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.http.GET
@@ -17,78 +22,96 @@ import retrofit2.http.GET
  *
  *
  */
-class NetworkModule {
 
-	var coroutineScope = CoroutineScope(Dispatchers.IO)
 
-	private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
-		Log.e("Http", "Coroutine exception, scope active:${this.coroutineScope.isActive}", throwable)
-		coroutineScope = CoroutineScope(Dispatchers.IO)
-	}
+class NetworkModule() {
+    /**
+     * TODO [apiKey] inserting in the GET request body
+     */
 
-	fun MockupStartLog(){
-		coroutineScope.launch() {
+//	init {
+//	    CoroutineScope(Dispatchers.Default).launch{
+//			val info = RetrofitModule.movieApi.getImagesConfigurationInfo()
+//			baseImagePosterUrl = info.images.base_url.toString()
+//
+//		}
+//	}
 
-			Log.d("MockupStartLog", "${RetrofitModule.movieApi.getOnPlayingMovies().results?.map { it?.title }}: ")
-		}
-	}
 
-    private interface TheMovieApi {
-        @GET("configuration")
-        suspend fun getImagesConfigurationInfo(): ImagesConfigurationInfoClass
 
-        @GET("movie/now_playing$apiKey")
-		suspend fun getOnPlayingMovies():ResponseClass
+
+    suspend fun getGenresList() = withContext(Dispatchers.IO) {
+        return@withContext RetrofitModule.movieApi.getGenres()
     }
 
-	/** [RetrofitModule] with
-	 * [json]
-	 * [okHttpClient] with [HttpLoggingInterceptor]
-	 *[retrofit] and create Api [movieApi]
-	 *
-	 * */
-	private object RetrofitModule{
 
-		private val json = Json {
-			ignoreUnknownKeys = true
-		}
+    suspend fun getMovieResponse() = withContext(Dispatchers.IO) {
+        return@withContext RetrofitModule.movieApi.getOnPlayingMovies()
+    }
 
-		private val okHttpClient = OkHttpClient().newBuilder().apply {
-			addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-		}.build()
+    private interface TheMovieApi {
+        @GET("configuration?$apiKey")
+        suspend fun getImagesConfigurationInfo(): ConfigurationInfoClass
 
-		private val retrofit = Retrofit.Builder().apply {
-			client(okHttpClient)
-			baseUrl( baseUrlString)
-			addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
-		}.build()
+        @GET("movie/now_playing?$apiKey")
+        suspend fun getOnPlayingMovies(): ResponseClass
 
-		val movieApi: TheMovieApi = retrofit.create(TheMovieApi::class.java)
+        @GET("genre/movie/list?$apiKey&language=en-US")
+        suspend fun getGenres(): ResponseGenreClass
+    }
 
-	}
+    /** [RetrofitModule] with
+     *
+     * [json]
+     * [okHttpClient] with [HttpLoggingInterceptor]
+     *[retrofit] and create Api [movieApi]
+     *
+     * */
+    private object RetrofitModule {
+        var page:Int = 1
+
+        private val json = Json {
+            ignoreUnknownKeys = true
+        }
+
+        private var okHttpClient = OkHttpClient().newBuilder().apply {
+            addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+            addInterceptor(ApiKeyInterceptor(page))
+        }.build()
+
+        private val retrofit = Retrofit.Builder().apply {
+            client(okHttpClient)
+            baseUrl(baseUrlString)
+
+            addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+        }.build()
+
+        val movieApi: TheMovieApi = retrofit.create(TheMovieApi::class.java)
+    }
 
 
-companion object{
-
-	private const val baseUrlString = "https://api.themoviedb.org/3/"
-	private const val baseImageUrl = "https://image.tmdb.org/t/p/"
-	private const val apiKey = "?api_key=4638f9d08c5772da23d03dc27501af71"
-}
+    companion object {
+        private const val baseUrlString = "https://api.themoviedb.org/3/"
+        var baseImagePosterUrl =
+            "https://image.tmdb.org/t/p/w500" // todo instead w500 realize GET configuration
+        var baseImageBackdropUrl = "https://image.tmdb.org/t/p/w780"
+        private const val apiKey = "api_key=4638f9d08c5772da23d03dc27501af71"
+    }
 
 
 }
 
 @Serializable
 data class ResponseClass(
-	@SerialName("dates")
+    @SerialName("dates")
 	val dates: Dates? = null,
-	@SerialName("page")
+    @SerialName("page")
 	val page: Int? = null,
-	@SerialName("total_pages")
-	val totalPages: Int? = null,
-	@SerialName("results")
-	val results: List<JsonMovieNew?>? = null,
-	@SerialName("total_results")
+    @SerialName("total_pages")
+	val totalPages: Int,
+    @SerialName("results")
+	val results: List<JsonMovie>,
+    @SerialName("total_results")
 	val totalResults: Int? = null
 )
 
@@ -101,8 +124,13 @@ data class Dates(
 )
 
 @Serializable
-data class ImagesConfigurationInfoClass(
-	val images: List<ListOfConfigs>
+data class ResponseGenreClass(
+	val genres: List<JsonGenre>
+)
+
+@Serializable
+data class ConfigurationInfoClass(
+	val images: ListOfConfigs
 )
 
 @Serializable
@@ -115,3 +143,17 @@ data class ListOfConfigs(
 	val profile_sizes: List<String?>?,
 	val still_sizes: List<String?>?,
 )
+
+class ApiKeyInterceptor(var page: Int) : Interceptor {
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val original = chain.request()
+
+        val request = original.newBuilder()
+            .header("api_key", "4638f9d08c5772da23d03dc27501af71")
+            .url(original.url.toString().plus("&page=${page.toString()}"))
+            .build()
+
+        return chain.proceed(request)
+    }
+
+}
