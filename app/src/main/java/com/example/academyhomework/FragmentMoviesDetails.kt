@@ -18,7 +18,7 @@ import java.io.Serializable
 
 private const val MOVIE_KEY = "movie_param"
 
-class FragmentMoviesDetails : Fragment() {
+class FragmentMoviesDetails : BaseFragment() {
 
     private var mListener: Router? = null
     private var mMovie: Serializable? = null
@@ -67,9 +67,9 @@ class FragmentMoviesDetails : Fragment() {
                 0f, 0f, 0f, 1f, 0f)) }
         image.colorFilter = ColorMatrixColorFilter(matrix)
         title.text = movie.title
-//        for(g in movie.genres){
-//            genre.append(g.name+" ") /** todo GENRES here
-//        }
+        for(g in movie.genres){
+            genre.append(g.name+" ")
+        }
         rating.rating = movie.rating.toFloat()
         tvRating.text = movie.rating.toString() + " by ${movie.reviewCount} review"
         story.text = movie.storyLine

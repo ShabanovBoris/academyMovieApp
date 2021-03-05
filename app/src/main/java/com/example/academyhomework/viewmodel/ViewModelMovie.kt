@@ -11,6 +11,7 @@ import java.io.Serializable
 
 class ViewModelMovie(arg: String): ViewModel(), Serializable{
 
+
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         Log.e("ViewModelMovie", "Coroutine exception, scope active:${viewModelScope.isActive}", throwable)
     }

@@ -2,8 +2,8 @@ package com.example.academyhomework
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import androidx.lifecycle.ViewModelProvider
-import com.example.academyhomework.domain.data.NetworkModule
 import com.example.academyhomework.viewmodel.ViewModelFactory
 import com.example.academyhomework.viewmodel.ViewModelMovie
 import java.io.Serializable
@@ -13,7 +13,7 @@ class MainActivity : AppCompatActivity(), Router {
     private lateinit var viewModelFactory: ViewModelFactory
     private lateinit var viewModel : ViewModelMovie
 
-    var fragment:FragmentMoviesDetails? = null
+    var rootFragment:BaseFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,31 +26,44 @@ class MainActivity : AppCompatActivity(), Router {
         viewModel.loadMovieList()
           if(savedInstanceState == null)
         {
+            /**
+             *
+             * FragmentMovieList
+             *
+             */
+            rootFragment = FragmentMovieList.newInstance(viewModel)
          supportFragmentManager.beginTransaction()
              .addToBackStack(null)
-             .replace(R.id.containerMainActivity,FragmentMovieList.newInstance(viewModel))
+             .replace(R.id.containerMainActivity,rootFragment as FragmentMovieList)
              .commit()
         }
 
 
     }
     override fun moveToDetails(movie:Serializable) {
-        fragment = FragmentMoviesDetails.newInstance(movie)
+       rootFragment = FragmentMoviesDetails.newInstance(movie)
         supportFragmentManager.beginTransaction().apply {
             addToBackStack(null)
-            add(R.id.containerMainActivity,fragment!!)
+            add(R.id.containerMainActivity,rootFragment as FragmentMoviesDetails)
             commit()
         }
     }
+
+
+
+
     override fun backFromDetails() {
-        supportFragmentManager.beginTransaction()
-            .remove(fragment!!)
-            .commit()
+        if(rootFragment is FragmentMoviesDetails) {
+            supportFragmentManager.beginTransaction()
+                .remove(rootFragment as FragmentMoviesDetails)
+                .commit()
+        }
+
     }
     // region onDestroy
     override fun onDestroy() {
         super.onDestroy()
-        fragment = null
+        rootFragment = null
     }
 //endregion
 

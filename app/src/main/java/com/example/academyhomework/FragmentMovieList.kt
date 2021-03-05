@@ -19,7 +19,7 @@ import java.io.Serializable
 private const val ARG_PARAM1 = "param1"
 
 
-class FragmentMovieList : Fragment() {
+class FragmentMovieList : BaseFragment() {
 
 
     private lateinit var progressBar: ProgressBar
@@ -73,7 +73,10 @@ class FragmentMovieList : Fragment() {
 
     private fun setRecycler(view: View) {
         /** set [moveToDetails] handler with [movie] */
-        adapter = MovieListAdapter { movie -> listener?.moveToDetails(movie) }
+        adapter = MovieListAdapter {
+                movie -> listener?.moveToDetails(movie)
+
+        }
         recyclerView = view.findViewById(R.id.rv_movie_list)
         recyclerView.layoutManager = GridLayoutManager(view.context, 2)
         recyclerView.adapter = adapter
