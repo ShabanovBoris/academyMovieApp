@@ -73,7 +73,7 @@ class FragmentMovieList : BaseFragment() {
 
     private fun setRecycler(view: View) {
         /**
-         * set [moveToDetails] handler with [movie]
+         * set click on  [moveToDetails] handler with [movie] ID
          *
          * */
         adapter = MovieListAdapter { movie ->

@@ -34,8 +34,9 @@ class ViewModelMovie(arg: String) : ViewModel(), Serializable {
 
     fun loadDetails(id: Int) {
         viewModelScope.launch(exceptionHandler) {
+            _loadingState.value = true
             _details.value = JsonMovieRepository().loadMovieDetails(id)
-
+            _loadingState.value = false
         }
     }
 

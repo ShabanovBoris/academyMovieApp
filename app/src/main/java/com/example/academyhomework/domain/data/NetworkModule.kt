@@ -26,18 +26,7 @@ import retrofit2.http.Query
  */
 
 
-class NetworkModule() {
-    /**
-     * TODO [apiKey] inserting in the GET request body
-     */
-
-//	init {
-//	    CoroutineScope(Dispatchers.Default).launch{
-//			val info = RetrofitModule.movieApi.getImagesConfigurationInfo()
-//			baseImagePosterUrl = info.images.base_url.toString()
-//
-//		}
-//	}
+class NetworkModule {
 
     suspend fun getMovieDetail(movieId:String) = withContext(Dispatchers.IO){
         return@withContext RetrofitModule.movieApi.getDetails(movieId = movieId)
@@ -90,14 +79,13 @@ class NetworkModule() {
      * */
     private object RetrofitModule {
 
-
         private val json = Json {
             ignoreUnknownKeys = true
         }
 
         private var okHttpClient = OkHttpClient().newBuilder().apply {
             addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-            addInterceptor(ApiKeyInterceptor(apiKey))
+            addInterceptor(ApiKeyInterceptor())
         }.build()
 
         private val retrofit = Retrofit.Builder().apply {
@@ -116,65 +104,10 @@ class NetworkModule() {
         var baseImagePosterUrl =
             "https://image.tmdb.org/t/p/w500" // todo instead w500 realize GET configuration
         var baseImageBackdropUrl = "https://image.tmdb.org/t/p/w780"
-        private const val apiKey = "&api_key=4638f9d08c5772da23d03dc27501af71"
     }
 
 
 }
 
-@Serializable
-data class ResponseClass(
-    @SerialName("dates")
-	val dates: Dates? = null,
-    @SerialName("page")
-	val page: Int? = null,
-    @SerialName("total_pages")
-	val totalPages: Int,
-    @SerialName("results")
-	val results: List<JsonMovie>,
-    @SerialName("total_results")
-	val totalResults: Int? = null
-)
 
-@Serializable
-data class Dates(
-	@SerialName("maximum")
-	val maximum: String? = null,
-	@SerialName("minimum")
-	val minimum: String? = null
-)
 
-@Serializable
-data class ResponseGenreClass(
-	val genres: List<JsonGenre>
-)
-
-@Serializable
-data class ConfigurationInfoClass(
-	val images: ListOfConfigs
-)
-
-@Serializable
-data class ListOfConfigs(
-	val base_url: String?,
-	val secure_base_url: String?,
-	val backdrop_sizes: List<String?>?,
-	val logo_sizes: List<String?>?,
-	val poster_sizes: List<String?>?,
-	val profile_sizes: List<String?>?,
-	val still_sizes: List<String?>?,
-)
-
-class ApiKeyInterceptor(var apiKey: String) : Interceptor {
-    override fun intercept(chain: Interceptor.Chain): Response {
-        val original = chain.request()
-
-        val request = original.newBuilder()
-            //.header("api_key", "4638f9d08c5772da23d03dc27501af71")
-            .url(original.url.toString().plus(apiKey))
-            .build()
-
-        return chain.proceed(request)
-    }
-
-}

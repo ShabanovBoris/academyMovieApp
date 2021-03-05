@@ -17,16 +17,10 @@ class MainActivity : AppCompatActivity(), Router {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        /** VIEWMODEL
-         *
-         */
-        viewModelFactory = ViewModelFactory("arg")
-        viewModel = ViewModelProvider(this, viewModelFactory).get(ViewModelMovie::class.java)
 
-        viewModel.details.observe(this,this::moveToDetails)
+        createViewModel()
 
-
-          if(savedInstanceState == null)
+        if(savedInstanceState == null)
         {
             /**
              *
@@ -35,11 +29,21 @@ class MainActivity : AppCompatActivity(), Router {
              */
             viewModel.loadMovieList()
             rootFragment = FragmentMovieList.newInstance(viewModel)
-         supportFragmentManager.beginTransaction()
-             .addToBackStack(null)
-             .replace(R.id.containerMainActivity,rootFragment as FragmentMovieList)
-             .commit()
+            supportFragmentManager.beginTransaction()
+                .addToBackStack(null)
+                .replace(R.id.containerMainActivity,rootFragment as FragmentMovieList)
+                .commit()
         }
+    }
+
+
+    private fun createViewModel() {
+        viewModelFactory = ViewModelFactory("arg")
+        viewModel = ViewModelProvider(this, viewModelFactory).get(ViewModelMovie::class.java)
+
+        /** Details observer*/
+        viewModel.details.observe(this,this::moveToDetails)
+
     }
 
     override fun moveToDetails(movie: MovieDetails) {
@@ -50,8 +54,6 @@ class MainActivity : AppCompatActivity(), Router {
             commit()
         }
     }
-
-
 
 
     override fun backFromDetails() {
