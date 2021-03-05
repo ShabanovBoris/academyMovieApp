@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
+import androidx.core.widget.ContentLoadingProgressBar
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,6 +21,8 @@ private const val ARG_PARAM1 = "param1"
 
 class FragmentMovieList : Fragment() {
 
+
+    private lateinit var progressBar: ProgressBar
 
     private lateinit var adapter:MovieListAdapter
     private lateinit var recyclerView: RecyclerView
@@ -54,8 +58,17 @@ class FragmentMovieList : Fragment() {
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        progressBar = view.findViewById(R.id.progressBar)
         setRecycler(view)
         viewModel.movieList.observe(this.viewLifecycleOwner,this::setList)
+        viewModel.loadingState.observe(this.viewLifecycleOwner,this::showProgressBar)
+    }
+
+    private fun showProgressBar(loadingProgressBar: Boolean) {
+        when (loadingProgressBar){
+            true -> progressBar.visibility = View.VISIBLE
+            false -> progressBar.visibility = View.GONE
+        }
     }
 
     private fun setRecycler(view: View) {

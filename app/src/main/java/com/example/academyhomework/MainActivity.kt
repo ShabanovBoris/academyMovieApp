@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity(), Router {
          */
         viewModelFactory = ViewModelFactory("arg")
         viewModel = ViewModelProvider(this, viewModelFactory).get(ViewModelMovie::class.java)
-        viewModel.loadMovieList(this.applicationContext)
+        viewModel.loadMovieList()
           if(savedInstanceState == null)
         {
          supportFragmentManager.beginTransaction()

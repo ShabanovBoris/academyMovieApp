@@ -27,7 +27,7 @@
                 android:id="@+id/iv_image_card"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
-                app:srcCompat="@drawable/movie"
+                tools:srcCompat="@drawable/movie"
                 android:scaleType="centerCrop"
                 android:foreground="@drawable/dark_gradient"
                 app:layout_constraintTop_toTopOf="parent"

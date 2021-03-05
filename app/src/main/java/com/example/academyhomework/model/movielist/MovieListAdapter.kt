@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.bumptech.glide.Glide
 import com.example.academyhomework.R
 import com.example.academyhomework.model.Movie
@@ -27,9 +28,12 @@ class MovieListAdapter(val onClick: (Movie) -> Unit):ListAdapter<Movie, MovieLis
 
 
         fun bindData(movie: Movie){
-            Glide.with(itemView.context)
-                .load(movie.imageUrl)
-                .into(image)
+            image.load(movie.imageUrl){
+                crossfade(true)
+                placeholder(R.drawable.ic_loading_image)
+            }
+
+
 
             title.text = movie.title
 

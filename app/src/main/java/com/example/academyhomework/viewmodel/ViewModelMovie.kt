@@ -17,13 +17,19 @@ class ViewModelMovie(arg: String): ViewModel(), Serializable{
     private var _movieList = MutableLiveData<List<Movie>>(emptyList())
     val movieList:LiveData<List<Movie>> get() = _movieList
 
+    private var _loadingState = MutableLiveData<Boolean>(false)
+    val loadingState:LiveData<Boolean> get() = _loadingState
 
 
-    fun loadMovieList(context: Context) {
+
+    fun loadMovieList() {
 
         viewModelScope.launch(exceptionHandler) {
+            _loadingState.value = true
              val list = JsonMovieRepository().loadMovies()
             _movieList.postValue(list)
+            _loadingState.value = false
         }
+
     }
 }
