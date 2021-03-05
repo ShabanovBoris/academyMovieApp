@@ -23,18 +23,23 @@ class MovieListAdapter(val onClick: (Movie) -> Unit):ListAdapter<Movie, MovieLis
         private val genre:TextView = view.findViewById(R.id.tv_genre)
         private val image:ImageView = view.findViewById(R.id.iv_image_card)
         private val rating:RatingBar = view.findViewById(R.id.ratingBarCard)
+        private val release:TextView = view.findViewById(R.id.tv_release)
 
 
         fun bindData(movie: Movie){
             Glide.with(itemView.context)
                 .load(movie.imageUrl)
                 .into(image)
+
             title.text = movie.title
+
+            genre.text=""
             for(g in movie.genres){
                 genre.append(g.name+" ")
             }
             rating.rating = movie.rating.toFloat()
 
+            release.text = movie.releaseDate
         }
     }
 

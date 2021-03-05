@@ -75,7 +75,7 @@ class NetworkModule() {
      *
      * */
     private object RetrofitModule {
-        var page:Int = 1
+
 
         private val json = Json {
             ignoreUnknownKeys = true

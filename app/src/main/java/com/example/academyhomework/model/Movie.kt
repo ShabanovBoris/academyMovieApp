@@ -15,5 +15,6 @@ data class Movie(
     val imageUrl: String,
     val detailImageUrl: String,
     val storyLine: String,
+    val releaseDate:String
 
 ) :Serializable

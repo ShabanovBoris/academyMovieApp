@@ -21,8 +21,8 @@ internal class JsonMovieRepository() : MovieRepository {
     // endregion
 
 
-    suspend fun genresList():List<JsonGenre> = NetworkModule().getGenresList().genres
-    suspend fun loadGenres():MutableMap<Int,String>{
+   private suspend fun genresList():List<JsonGenre> = NetworkModule().getGenresList().genres
+   private suspend fun loadGenres():MutableMap<Int,String>{
        val genres = genresList()
        val mutableMap: MutableMap<Int,String> = mutableMapOf()
        for(item in genres){
@@ -35,8 +35,8 @@ internal class JsonMovieRepository() : MovieRepository {
 
        return coroutineScope {
             val module = NetworkModule()
-            val totalPages = module.getMovieResponse().totalPages
-
+            var totalPages = module.getMovieResponse().totalPages
+            if(totalPages>10)totalPages=10
             var listOfJsonMovie = mutableListOf<JsonMovie>()
             for (iterator in 1..totalPages) {
 
@@ -60,7 +60,8 @@ internal class JsonMovieRepository() : MovieRepository {
                     rating = (it.voteAverage?:0.0)/2,
                     imageUrl = NetworkModule.baseImagePosterUrl + it.posterPath?:"",
                     detailImageUrl = NetworkModule.baseImageBackdropUrl + it.backdropPath?:"",
-                    storyLine = it.overview?:""
+                    storyLine = it.overview?:"",
+                    releaseDate = it.releaseDate
                 )
         }
 
