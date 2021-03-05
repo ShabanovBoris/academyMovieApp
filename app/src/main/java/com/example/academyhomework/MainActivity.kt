@@ -2,11 +2,10 @@ package com.example.academyhomework
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
 import androidx.lifecycle.ViewModelProvider
+import com.example.academyhomework.model.MovieDetails
 import com.example.academyhomework.viewmodel.ViewModelFactory
 import com.example.academyhomework.viewmodel.ViewModelMovie
-import java.io.Serializable
 
 class MainActivity : AppCompatActivity(), Router {
 
@@ -23,7 +22,10 @@ class MainActivity : AppCompatActivity(), Router {
          */
         viewModelFactory = ViewModelFactory("arg")
         viewModel = ViewModelProvider(this, viewModelFactory).get(ViewModelMovie::class.java)
-        viewModel.loadMovieList()
+
+        viewModel.details.observe(this,this::moveToDetails)
+
+
           if(savedInstanceState == null)
         {
             /**
@@ -31,16 +33,16 @@ class MainActivity : AppCompatActivity(), Router {
              * FragmentMovieList
              *
              */
+            viewModel.loadMovieList()
             rootFragment = FragmentMovieList.newInstance(viewModel)
          supportFragmentManager.beginTransaction()
              .addToBackStack(null)
              .replace(R.id.containerMainActivity,rootFragment as FragmentMovieList)
              .commit()
         }
-
-
     }
-    override fun moveToDetails(movie:Serializable) {
+
+    override fun moveToDetails(movie: MovieDetails) {
        rootFragment = FragmentMoviesDetails.newInstance(movie)
         supportFragmentManager.beginTransaction().apply {
             addToBackStack(null)
@@ -58,7 +60,6 @@ class MainActivity : AppCompatActivity(), Router {
                 .remove(rootFragment as FragmentMoviesDetails)
                 .commit()
         }
-
     }
     // region onDestroy
     override fun onDestroy() {

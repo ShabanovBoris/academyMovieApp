@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.bumptech.glide.Glide
 import com.example.academyhomework.R
 import com.example.academyhomework.model.Actor
@@ -24,9 +25,12 @@ class ActorRecyclerAdapter:RecyclerView.Adapter<ActorRecyclerAdapter.ViewHolderD
 
         fun bindData(actor: Actor){
             name.text = actor.name
-            Glide.with(itemView.context)
-                .load(actor.imageUrl)
-                .into(avatar)
+            avatar.load(actor.imageUrl){
+                crossfade(true)
+                placeholder(R.drawable.ic_round_person_24)
+                error(R.drawable.ic_round_person_24)
+            }
+
 
         }
     }

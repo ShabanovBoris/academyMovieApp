@@ -17,4 +17,4 @@ data class Movie(
     val storyLine: String,
     val releaseDate:String
 
-) :Serializable
+)

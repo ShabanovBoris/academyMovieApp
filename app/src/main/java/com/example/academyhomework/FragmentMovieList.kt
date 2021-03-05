@@ -6,8 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
-import androidx.core.widget.ContentLoadingProgressBar
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.academyhomework.model.Movie
@@ -24,13 +22,13 @@ class FragmentMovieList : BaseFragment() {
 
     private lateinit var progressBar: ProgressBar
 
-    private lateinit var adapter:MovieListAdapter
+    private lateinit var adapter: MovieListAdapter
     private lateinit var recyclerView: RecyclerView
     private var listener: Router? = null
 
 
     private var viewModelArg: Serializable? = null
-    private val viewModel:ViewModelMovie get() = viewModelArg as ViewModelMovie
+    private val viewModel: ViewModelMovie get() = viewModelArg as ViewModelMovie
 
 
     override fun onAttach(context: Context) {
@@ -39,11 +37,13 @@ class FragmentMovieList : BaseFragment() {
             listener = context
         }
     }
+
     override fun onDetach() {
         super.onDetach()
         listener = null
         viewModelArg = null
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -60,22 +60,24 @@ class FragmentMovieList : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         progressBar = view.findViewById(R.id.progressBar)
         setRecycler(view)
-        viewModel.movieList.observe(this.viewLifecycleOwner,this::setList)
-        viewModel.loadingState.observe(this.viewLifecycleOwner,this::showProgressBar)
+        viewModel.movieList.observe(this.viewLifecycleOwner, this::setList)
+        viewModel.loadingState.observe(this.viewLifecycleOwner, this::showProgressBar)
     }
 
     private fun showProgressBar(loadingProgressBar: Boolean) {
-        when (loadingProgressBar){
+        when (loadingProgressBar) {
             true -> progressBar.visibility = View.VISIBLE
             false -> progressBar.visibility = View.GONE
         }
     }
 
     private fun setRecycler(view: View) {
-        /** set [moveToDetails] handler with [movie] */
-        adapter = MovieListAdapter {
-                movie -> listener?.moveToDetails(movie)
-
+        /**
+         * set [moveToDetails] handler with [movie]
+         *
+         * */
+        adapter = MovieListAdapter { movie ->
+                viewModel.loadDetails(movie.id)
         }
         recyclerView = view.findViewById(R.id.rv_movie_list)
         recyclerView.layoutManager = GridLayoutManager(view.context, 2)
@@ -83,7 +85,7 @@ class FragmentMovieList : BaseFragment() {
     }
 
     private fun setList(list: List<Movie>) {
-            adapter.submitList(list)
+        adapter.submitList(list)
     }
 
     companion object {

@@ -16,6 +16,7 @@ import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 /**
@@ -38,8 +39,14 @@ class NetworkModule() {
 //		}
 //	}
 
+    suspend fun getMovieDetail(movieId:String) = withContext(Dispatchers.IO){
+        return@withContext RetrofitModule.movieApi.getDetails(movieId = movieId)
+    }
 
 
+    suspend fun getActors(movieId:String) = withContext(Dispatchers.IO){
+        return@withContext RetrofitModule.movieApi.getCredits(movieId = movieId)
+    }
 
     suspend fun getGenresList() = withContext(Dispatchers.IO) {
         return@withContext RetrofitModule.movieApi.getGenres()
@@ -59,11 +66,18 @@ class NetworkModule() {
             @Query("page") page:Int
         ): ResponseClass
 
-
-
-        @GET("genre/movie/list?$apiKey&language=en-US")
+        @GET("genre/movie/list?")
         suspend fun getGenres(): ResponseGenreClass
 
+        @GET("movie/{movie_id}?")
+        suspend fun getDetails(
+            @Path("movie_id") movieId:String
+        ):JsonMovieDetails
+
+        @GET("movie/{movie_id}/credits?")
+        suspend fun getCredits(
+            @Path("movie_id") movieId:String
+        ):CreditResponse
 
     }
 
