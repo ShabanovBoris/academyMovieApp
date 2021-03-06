@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity(), Router {
              *
              */
             viewModel.loadMovieList()
-            rootFragment = FragmentMovieList.newInstance(viewModel)
+            rootFragment = FragmentMovieList.newInstance()
             supportFragmentManager.beginTransaction()
                 .addToBackStack(null)
                 .replace(R.id.containerMainActivity,rootFragment as FragmentMovieList)
@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity(), Router {
 
     private fun createViewModel() {
         viewModelFactory = ViewModelFactory("arg")
-        viewModel = ViewModelProvider(this, viewModelFactory).get(ViewModelMovie::class.java)
+        viewModel = ViewModelProvider(this.viewModelStore, viewModelFactory).get(ViewModelMovie::class.java)
 
         /** Details observer*/
         viewModel.details.observe(this,this::moveToDetails)

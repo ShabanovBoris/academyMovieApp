@@ -6,15 +6,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.academyhomework.model.Movie
 import com.example.academyhomework.model.movielist.MovieListAdapter
+import com.example.academyhomework.viewmodel.ViewModelFactory
 import com.example.academyhomework.viewmodel.ViewModelMovie
 import java.io.Serializable
 
-
-private const val ARG_PARAM1 = "param1"
 
 
 class FragmentMovieList : BaseFragment() {
@@ -27,8 +28,8 @@ class FragmentMovieList : BaseFragment() {
     private var listener: Router? = null
 
 
-    private var viewModelArg: Serializable? = null
-    private val viewModel: ViewModelMovie get() = viewModelArg as ViewModelMovie
+    private lateinit var viewModelFactory: ViewModelFactory
+    private lateinit var viewModel :ViewModelMovie
 
 
     override fun onAttach(context: Context) {
@@ -36,19 +37,20 @@ class FragmentMovieList : BaseFragment() {
         if (context is Router) {
             listener = context
         }
+        /**
+         * initializing [viewModel]
+         */
+        viewModelFactory = ViewModelFactory("arg")
+        viewModel= ViewModelProvider(
+            requireActivity().viewModelStore, viewModelFactory
+        )
+            .get(ViewModelMovie::class.java)
     }
 
     override fun onDetach() {
         super.onDetach()
         listener = null
-        viewModelArg = null
-    }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            viewModelArg = it.getSerializable(ARG_PARAM1)
-        }
     }
 
     override fun onCreateView(
@@ -90,11 +92,6 @@ class FragmentMovieList : BaseFragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(viewMovie: ViewModelMovie) =
-            FragmentMovieList().apply {
-                arguments = Bundle().apply {
-                    putSerializable(ARG_PARAM1, viewMovie)
-                }
-            }
+        fun newInstance() = FragmentMovieList()
     }
 }
