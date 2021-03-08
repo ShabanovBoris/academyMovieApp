@@ -23,7 +23,12 @@ class FragmentMovieList : BaseFragment() {
 
     private lateinit var progressBar: ProgressBar
 
-    private lateinit var adapter: MovieListAdapter
+    /**
+     * set click on  [moveToDetails] handler with [movie] ID
+     *
+     * */
+    private val adapter by lazy { MovieListAdapter(viewModel::loadDetails) }
+
     private lateinit var recyclerView: RecyclerView
     private var listener: Router? = null
 
@@ -74,13 +79,8 @@ class FragmentMovieList : BaseFragment() {
     }
 
     private fun setRecycler(view: View) {
-        /**
-         * set click on  [moveToDetails] handler with [movie] ID
-         *
-         * */
-        adapter = MovieListAdapter { movie ->
-                viewModel.loadDetails(movie.id)
-        }
+
+
         recyclerView = view.findViewById(R.id.rv_movie_list)
         recyclerView.layoutManager = GridLayoutManager(view.context, 2)
         recyclerView.adapter = adapter

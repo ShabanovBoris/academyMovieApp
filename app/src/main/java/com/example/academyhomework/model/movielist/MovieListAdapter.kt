@@ -14,7 +14,7 @@ import com.example.academyhomework.R
 import com.example.academyhomework.model.Movie
 
 
-class MovieListAdapter(val onClick: (Movie) -> Unit):ListAdapter<Movie, MovieListAdapter.ViewHolderMovie>(
+class MovieListAdapter(val onClick: (Int) -> Unit):ListAdapter<Movie, MovieListAdapter.ViewHolderMovie>(
     DiffCallback()
 ) {
 
@@ -55,7 +55,7 @@ class MovieListAdapter(val onClick: (Movie) -> Unit):ListAdapter<Movie, MovieLis
     override fun onBindViewHolder(holder: ViewHolderMovie, position: Int) {
             holder.bindData(getItem(position))
             holder.itemView.setOnClickListener{
-                onClick(getItem(position))
+                onClick(getItem(position).id)
             }
     }
 }
