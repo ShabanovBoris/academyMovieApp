@@ -85,7 +85,8 @@ internal class JsonMovieRepository() : MovieRepository {
             runtime = jsonDetails.runtime?:0,
             imageBackdrop = NetworkModule.baseImageBackdropUrl + jsonDetails.backdrop_path?:"",
             genres = jsonDetails.genres.map { Genre(id = it.id, name = it.name) },
-            actors = loadList(jsonDetails.id)
+            actors = loadList(jsonDetails.id),
+            votes = jsonDetails.vote_average/2
         )
     }
 

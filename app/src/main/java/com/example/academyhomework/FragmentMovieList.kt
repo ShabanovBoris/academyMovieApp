@@ -88,7 +88,8 @@ class FragmentMovieList : BaseFragment() {
     }
 
     private fun setList(list: List<Movie>) {
-        adapter.submitList(list)
+
+        adapter.submitList(list) { recyclerView.scrollToPosition(0) }
 
     }
 

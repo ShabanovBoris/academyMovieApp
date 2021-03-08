@@ -31,7 +31,6 @@ class MainActivity : AppCompatActivity(), Router {
             viewModel.loadMovieList()
             rootFragment = FragmentMovieList.newInstance()
             supportFragmentManager.beginTransaction()
-                .addToBackStack(null)
                 .replace(R.id.containerMainActivity,rootFragment as FragmentMovieList)
                 .commit()
         }

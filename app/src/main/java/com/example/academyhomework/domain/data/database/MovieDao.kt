@@ -8,11 +8,11 @@ import androidx.room.Query
 @Dao
 interface MovieDao {
 
-    @Query("SELECT * FROM movie ORDER BY rating desc")
+    @Query("SELECT * FROM movie ORDER BY release_date desc")
     suspend fun getAll():List<MovieEntity>
 
     @Insert(onConflict = 1)
-    suspend fun insert(movie:MovieEntity)
+    suspend fun insert(movies:List<MovieEntity>)
 
 
 }

@@ -9,7 +9,7 @@ import kotlinx.coroutines.withContext
 
 interface DbRepository{
     suspend fun getMovieList():List<Movie>
-    suspend fun insertMovie(movie: Movie)
+    suspend fun insertMovies(movies: List<Movie>)
 }
 
 class DataBaseRepository(applicationContext:Context): DbRepository {
@@ -23,16 +23,16 @@ class DataBaseRepository(applicationContext:Context): DbRepository {
             toMovieModel(it) }
     }
 
-    override suspend fun insertMovie(movie: Movie) = withContext(Dispatchers.IO){
+    override suspend fun insertMovies(movies: List<Movie>) = withContext(Dispatchers.IO){
 
-        dataBase.movieDao.insert(toEntity(movie))
+        dataBase.movieDao.insert(movies = movies.map { toEntity(it) })
 
     }
 
     private fun toEntity(movie: Movie): MovieEntity = MovieEntity(
         id = movie.id.toLong(),
         title = movie.title,
-        genres = movie.genres.map { it.name }.joinToString { "," },
+        genres = movie.genres.joinToString(",") { it.name },
         rating = movie.rating,
         imageUrl = movie.imageUrl,
         releaseDate = movie.releaseDate

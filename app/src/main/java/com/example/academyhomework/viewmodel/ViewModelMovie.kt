@@ -67,7 +67,7 @@ class ViewModelMovie(
 
     private fun uploadNewCache(list:List<Movie>){
         viewModelScope.launch {
-            list.forEach { dataBaseRepository.insertMovie(it) }
+             dataBaseRepository.insertMovies(list)
         }
     }
 }

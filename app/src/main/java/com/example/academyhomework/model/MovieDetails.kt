@@ -8,5 +8,6 @@ data class MovieDetails(
     val runtime:Int,
     val imageBackdrop:String,
     val genres:List<Genre>,
-    val actors:List<Actor>
+    val actors:List<Actor>,
+    val votes:Double
 ):Serializable

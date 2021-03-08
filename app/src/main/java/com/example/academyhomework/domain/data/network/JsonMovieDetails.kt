@@ -11,4 +11,5 @@ data class JsonMovieDetails (
     val runtime:Int?,
     val backdrop_path:String?,
     val genres:List<JsonGenre>,
+    val vote_average:Double
 )

@@ -88,8 +88,8 @@ class FragmentMoviesDetails : BaseFragment() {
                 genre.append(g.name + " ")
             }
             /** rating info*/
-//        rating.rating = movie.rating.toFloat()
-//        tvRating.text = movie.rating.toString() + " by ${movie.reviewCount} review"
+            rating.rating = movie.votes.toFloat()
+            tvRating.text = movie.votes.toString()
             /**  story line */
             story.text = movie.overview
             /** time run in min*/
