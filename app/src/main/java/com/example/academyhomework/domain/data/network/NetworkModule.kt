@@ -1,18 +1,15 @@
-package com.example.academyhomework.domain.data
+package com.example.academyhomework.domain.data.network
 
-import com.example.academyhomework.domain.data.NetworkModule.RetrofitModule.json
-import com.example.academyhomework.domain.data.NetworkModule.RetrofitModule.movieApi
-import com.example.academyhomework.domain.data.NetworkModule.RetrofitModule.okHttpClient
-import com.example.academyhomework.domain.data.NetworkModule.RetrofitModule.retrofit
+import com.example.academyhomework.domain.data.CreditResponse
+import com.example.academyhomework.domain.data.network.NetworkModule.RetrofitModule.json
+import com.example.academyhomework.domain.data.network.NetworkModule.RetrofitModule.movieApi
+import com.example.academyhomework.domain.data.network.NetworkModule.RetrofitModule.okHttpClient
+import com.example.academyhomework.domain.data.network.NetworkModule.RetrofitModule.retrofit
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.coroutines.*
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
-import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.http.GET
@@ -61,12 +58,12 @@ class NetworkModule {
         @GET("movie/{movie_id}?")
         suspend fun getDetails(
             @Path("movie_id") movieId:String
-        ):JsonMovieDetails
+        ): JsonMovieDetails
 
         @GET("movie/{movie_id}/credits?")
         suspend fun getCredits(
             @Path("movie_id") movieId:String
-        ):CreditResponse
+        ): CreditResponse
 
     }
 

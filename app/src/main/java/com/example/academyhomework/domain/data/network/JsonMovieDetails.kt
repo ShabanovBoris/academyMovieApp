@@ -1,5 +1,6 @@
-package com.example.academyhomework.domain.data
+package com.example.academyhomework.domain.data.network
 
+import com.example.academyhomework.domain.data.network.JsonGenre
 import kotlinx.serialization.Serializable
 
 @Serializable

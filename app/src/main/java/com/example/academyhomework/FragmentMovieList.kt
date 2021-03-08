@@ -40,7 +40,7 @@ class FragmentMovieList : BaseFragment() {
         /**
          * initializing [viewModel]
          */
-        viewModelFactory = ViewModelFactory("arg")
+        viewModelFactory = ViewModelFactory(applicationContext = requireActivity().applicationContext)
         viewModel= ViewModelProvider(
             requireActivity().viewModelStore, viewModelFactory
         )
@@ -84,10 +84,12 @@ class FragmentMovieList : BaseFragment() {
         recyclerView = view.findViewById(R.id.rv_movie_list)
         recyclerView.layoutManager = GridLayoutManager(view.context, 2)
         recyclerView.adapter = adapter
+
     }
 
     private fun setList(list: List<Movie>) {
         adapter.submitList(list)
+
     }
 
     companion object {

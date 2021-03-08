@@ -1,6 +1,5 @@
 package com.example.academyhomework.model
 
-import com.example.academyhomework.domain.data.JsonGenre
 import java.io.Serializable
 
 data class MovieDetails(

@@ -27,6 +27,7 @@ class MainActivity : AppCompatActivity(), Router {
              * FragmentMovieList
              *
              */
+            viewModel.loadCache()
             viewModel.loadMovieList()
             rootFragment = FragmentMovieList.newInstance()
             supportFragmentManager.beginTransaction()
@@ -38,7 +39,7 @@ class MainActivity : AppCompatActivity(), Router {
 
 
     private fun createViewModel() {
-        viewModelFactory = ViewModelFactory("arg")
+        viewModelFactory = ViewModelFactory(applicationContext =  applicationContext)
         viewModel = ViewModelProvider(this.viewModelStore, viewModelFactory).get(ViewModelMovie::class.java)
 
         /** Details observer*/

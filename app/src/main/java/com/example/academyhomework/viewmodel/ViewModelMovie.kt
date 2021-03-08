@@ -5,7 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.academyhomework.domain.data.JsonMovieRepository
+import com.example.academyhomework.domain.data.database.DataBaseRepository
+import com.example.academyhomework.domain.data.network.JsonMovieRepository
 import com.example.academyhomework.model.Movie
 import com.example.academyhomework.model.MovieDetails
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -13,7 +14,9 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.io.Serializable
 
-class ViewModelMovie(arg: String) : ViewModel(), Serializable {
+class ViewModelMovie(
+   private val dataBaseRepository: DataBaseRepository
+) : ViewModel() {
 
 
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
@@ -44,10 +47,27 @@ class ViewModelMovie(arg: String) : ViewModel(), Serializable {
 
         viewModelScope.launch(exceptionHandler) {
             _loadingState.value = true
+
             val list = JsonMovieRepository().loadMovies()
             _movieList.postValue(list)
+
+            uploadNewCache(list)
+
             _loadingState.value = false
         }
 
+    }
+
+    fun loadCache(){
+        if (!(movieList.value?: emptyList()).isNotEmpty())
+        viewModelScope.launch {
+            _movieList.postValue(dataBaseRepository.getMovieList())
+        }
+    }
+
+    private fun uploadNewCache(list:List<Movie>){
+        viewModelScope.launch {
+            list.forEach { dataBaseRepository.insertMovie(it) }
+        }
     }
 }
