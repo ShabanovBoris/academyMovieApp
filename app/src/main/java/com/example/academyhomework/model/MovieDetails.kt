@@ -3,6 +3,7 @@ package com.example.academyhomework.model
 import java.io.Serializable
 
 data class MovieDetails(
+    val id:Int,
     val title:String,
     val overview:String,
     val runtime:Int,

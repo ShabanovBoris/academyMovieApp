@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity(), Router {
              * FragmentMovieList
              *
              */
-            viewModel.loadCache()
+            viewModel.loadMovieCache()
             viewModel.loadMovieList()
             rootFragment = FragmentMovieList.newInstance()
             supportFragmentManager.beginTransaction()

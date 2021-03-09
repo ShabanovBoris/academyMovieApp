@@ -1,9 +1,11 @@
 package com.example.academyhomework.viewmodel
 
 import android.content.Context
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.academyhomework.domain.data.database.DataBaseRepository
+import com.example.academyhomework.domain.data.network.JsonMovieRepository
 
 
 class ViewModelFactory(
@@ -13,7 +15,8 @@ class ViewModelFactory(
     override fun <T : ViewModel?> create(modelClass: Class<T>): T = when (modelClass) {
 
         ViewModelMovie::class.java -> ViewModelMovie(
-            dataBaseRepository = DataBaseRepository(applicationContext)
+            dataBaseRepository = DataBaseRepository(applicationContext),
+            jsonMovieRepository = JsonMovieRepository()
         )
 
         else -> throw IllegalArgumentException("$modelClass is not registered ViewModel")

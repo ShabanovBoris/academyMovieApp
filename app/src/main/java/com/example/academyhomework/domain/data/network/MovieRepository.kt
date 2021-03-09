@@ -2,6 +2,7 @@ package com.example.academyhomework.domain.data.network
 
 
 import android.util.Log
+import android.widget.Toast
 import com.example.academyhomework.model.Actor
 import com.example.academyhomework.model.Genre
 import com.example.academyhomework.model.Movie
@@ -44,8 +45,8 @@ internal class JsonMovieRepository() : MovieRepository {
        return coroutineScope {
             val module = NetworkModule()
             var totalPages = module.getMovieResponse().totalPages
-            if(totalPages>10)totalPages=10
-            var listOfJsonMovie = mutableListOf<JsonMovie>()
+                if (totalPages>10) totalPages = 10
+            val listOfJsonMovie = mutableListOf<JsonMovie>()
             for (iterator in 1..totalPages) {
                 listOfJsonMovie.addAll(module.getMovieResponse(iterator).results)
             }
@@ -80,6 +81,7 @@ internal class JsonMovieRepository() : MovieRepository {
     override suspend fun loadMovieDetails(id:Int): MovieDetails {
         val jsonDetails : JsonMovieDetails = NetworkModule().getMovieDetail("$id")
         return MovieDetails(
+            id = jsonDetails.id,
             title = jsonDetails.original_title,
             overview = jsonDetails.overview?:"Nothing",
             runtime = jsonDetails.runtime?:0,

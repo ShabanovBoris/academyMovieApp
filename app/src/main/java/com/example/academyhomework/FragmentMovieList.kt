@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -14,6 +15,9 @@ import com.example.academyhomework.model.Movie
 import com.example.academyhomework.model.movielist.MovieListAdapter
 import com.example.academyhomework.viewmodel.ViewModelFactory
 import com.example.academyhomework.viewmodel.ViewModelMovie
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.Serializable
 
 
@@ -67,8 +71,12 @@ class FragmentMovieList : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         progressBar = view.findViewById(R.id.progressBar)
         setRecycler(view)
+        /**
+         * set [observers]
+         */
         viewModel.movieList.observe(this.viewLifecycleOwner, this::setList)
         viewModel.loadingState.observe(this.viewLifecycleOwner, this::showProgressBar)
+        viewModel.errorEvent.observe(this.viewLifecycleOwner,this::showErrorToast)
     }
 
     private fun showProgressBar(loadingProgressBar: Boolean) {
@@ -88,9 +96,14 @@ class FragmentMovieList : BaseFragment() {
     }
 
     private fun setList(list: List<Movie>) {
+        CoroutineScope(Dispatchers.Default).launch {
+            adapter.submitList(list) { recyclerView.scrollToPosition(0) }
+        }
 
-        adapter.submitList(list) { recyclerView.scrollToPosition(0) }
 
+    }
+    private fun showErrorToast(error:Throwable){
+        Toast.makeText(requireContext(), error.message?.toUpperCase(), Toast.LENGTH_LONG).show()
     }
 
     companion object {
