@@ -4,6 +4,7 @@ import android.content.Context
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.work.WorkManager
 import com.example.academyhomework.domain.data.database.DataBaseRepository
 import com.example.academyhomework.domain.data.network.JsonMovieRepository
 
@@ -16,7 +17,8 @@ class ViewModelFactory(
 
         ViewModelMovie::class.java -> ViewModelMovie(
             dataBaseRepository = DataBaseRepository(applicationContext),
-            jsonMovieRepository = JsonMovieRepository()
+            jsonMovieRepository = JsonMovieRepository(),
+            workManager = WorkManager.getInstance(applicationContext)
         )
 
         else -> throw IllegalArgumentException("$modelClass is not registered ViewModel")

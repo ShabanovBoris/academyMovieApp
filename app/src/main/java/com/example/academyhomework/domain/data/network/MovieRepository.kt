@@ -14,7 +14,7 @@ interface MovieRepository {
     suspend fun loadMovieDetails(id:Int): MovieDetails
 }
 
-internal class JsonMovieRepository() : MovieRepository {
+class JsonMovieRepository() : MovieRepository {
     /** init coroutine*/
     // region coriutine init
     var coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())

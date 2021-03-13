@@ -1,7 +1,9 @@
 package com.example.academyhomework.domain.data.database
 
 import android.content.Context
+import android.content.pm.PackageManager
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.room.Transaction
 import com.example.academyhomework.model.Actor
 import com.example.academyhomework.model.Genre
@@ -26,7 +28,7 @@ class DataBaseRepository(applicationContext: Context) : DbRepository {
     private val dataBase = DataBaseMovie.create(applicationContext)
 
     override suspend fun getMovieDetails(id: Int): MovieDetails? = withContext(Dispatchers.IO) {
-        Log.d("DbRepository", "GETTING: getMovieDetails $id")
+        Log.d("AcademyHomework", "GETTING: getMovieDetails $id")
         val data = dataBase.movieDao.getDetailsById(id.toLong())
 
         data?.let {
@@ -37,12 +39,12 @@ class DataBaseRepository(applicationContext: Context) : DbRepository {
 
     override suspend fun insertMovieDetails(movieDetails: MovieDetails):Unit =
         withContext(Dispatchers.IO) {
-            Log.d("DbRepository", "GETTING: insertMovieDetails ${movieDetails.id}")
+            Log.d("AcademyHomework", "GETTING: insertMovieDetails ${movieDetails.id}")
             dataBase.movieDao.insertDetails(toEntityMovieDetails(movieDetails))
         }
 
     override suspend fun getActorById(id: Int): Actor? = withContext(Dispatchers.IO) {
-        Log.d("DbRepository", "getActorById($id)")
+        Log.d("AcademyHomework", "getActorById($id)")
         val data = dataBase.movieDao.getActorById(id.toLong())
 
         data?.let {
@@ -53,25 +55,25 @@ class DataBaseRepository(applicationContext: Context) : DbRepository {
 
     @Transaction
     override suspend fun insertActors(actors: List<Actor>) = withContext(Dispatchers.IO) {
-        Log.d("DbRepository", "insertActors $actors")
+        Log.d("AcademyHomework", "insertActors $actors")
         dataBase.movieDao.insertActors(actors.map { toActorEntity(it) })
     }
 
 
     override suspend fun getMovieList(): List<Movie> = withContext(Dispatchers.IO) {
-        Log.d("DbRepository", "GETTING: Movies")
+        Log.d("AcademyHomework", "GETTING: Movies")
         dataBase.movieDao.getAll().map { toMovieModel(it) }
     }
 
     @Transaction
     override suspend fun insertMovies(movies: List<Movie>) = withContext(Dispatchers.IO) {
-        Log.d("DbRepository", "insertMovies: ${movies.size}")
+        Log.d("AcademyHomework", "insertMovies: ${movies.size}")
         dataBase.movieDao.insert(movies = movies.map { toEntityMovie(it) })
     }
 
     override suspend fun clearMovies(): Unit = withContext(Dispatchers.IO) {
         dataBase.movieDao.clear()
-        Log.d("DbRepository", "clearMovies: ----->")
+        Log.d("AcademyHomework", "clearMovies: ----->")
         dataBase.movieDao.getAll().map { Log.d("DbRepository", "DeleteMovie: $it") }
     }
 
