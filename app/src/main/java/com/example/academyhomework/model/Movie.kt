@@ -15,6 +15,7 @@ data class Movie(
     val imageUrl: String,
     val detailImageUrl: String? = null,
     val storyLine: String? = null,
-    val releaseDate:String
+    val releaseDate:String,
+    val popularity:Double
 
 )

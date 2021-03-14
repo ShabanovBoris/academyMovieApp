@@ -70,7 +70,8 @@ class JsonMovieRepository() : MovieRepository {
                     imageUrl = NetworkModule.baseImagePosterUrl + it.posterPath?:"",
                     detailImageUrl = NetworkModule.baseImageBackdropUrl + it.backdropPath?:"",
                     storyLine = it.overview?:"",
-                    releaseDate = it.releaseDate
+                    releaseDate = it.releaseDate,
+                    popularity = it.popularity
                 )
         }
     }

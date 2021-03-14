@@ -1,13 +1,18 @@
 package com.example.academyhomework.domain.data.database
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 
 @Dao
 interface MovieDao {
 
-    @Query("SELECT * FROM movie ORDER BY release_date desc")
+    @Query("SELECT * FROM movie ORDER BY popularity desc")
     suspend fun getAll():List<MovieEntity>
 
+    @Query("SELECT * FROM movie ORDER BY popularity desc")
+    fun getAllLive(): LiveData<List<MovieEntity>>
+
+    @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(movies:List<MovieEntity>)
 

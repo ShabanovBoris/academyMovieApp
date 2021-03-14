@@ -29,5 +29,8 @@ data class MovieEntity(
         val imageUrl:String,
 
     @ColumnInfo(name = DbContract.Movie.RELEASE_DATE)
-        val releaseDate:String
+        val releaseDate:String,
+
+    @ColumnInfo(name = "popularity")
+    val popularity:Double,
 )

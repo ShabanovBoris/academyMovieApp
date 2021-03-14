@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.map
 import androidx.room.Transaction
 import com.example.academyhomework.model.Actor
 import com.example.academyhomework.model.Genre
@@ -26,6 +27,13 @@ class DataBaseRepository(applicationContext: Context) : DbRepository {
 
 
     private val dataBase = DataBaseMovie.create(applicationContext)
+
+
+
+
+
+     fun getObserver():LiveData<List<Movie>> = dataBase.movieDao.getAllLive().map { it.map { item -> toMovieModel(item) } }
+
 
     override suspend fun getMovieDetails(id: Int): MovieDetails? = withContext(Dispatchers.IO) {
         Log.d("AcademyHomework", "GETTING: getMovieDetails $id")
@@ -84,7 +92,8 @@ class DataBaseRepository(applicationContext: Context) : DbRepository {
         genres = movie.genres.joinToString(",") { it.name },
         rating = movie.rating,
         imageUrl = movie.imageUrl,
-        releaseDate = movie.releaseDate
+        releaseDate = movie.releaseDate,
+        popularity = movie.popularity
     )
 
     private fun toMovieModel(entity: MovieEntity): Movie = Movie(
@@ -93,7 +102,8 @@ class DataBaseRepository(applicationContext: Context) : DbRepository {
         genres = entity.genres.split(",").map { Genre(id = 0, name = it) },
         imageUrl = entity.imageUrl,
         releaseDate = entity.releaseDate,
-        rating = entity.rating
+        rating = entity.rating,
+        popularity = entity.popularity
     )
 
     private suspend fun toMovieDetailsModel(entity: MovieDetailsEntity): MovieDetails =

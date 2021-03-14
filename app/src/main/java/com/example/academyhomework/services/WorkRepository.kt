@@ -13,7 +13,7 @@ private val constraints = Constraints.Builder()
     .setRequiresCharging(true)
     .build()
 
-    val periodRequest = PeriodicWorkRequest.Builder(DbUpdateWorker::class.java,5,TimeUnit.SECONDS)
+    val periodRequest = PeriodicWorkRequest.Builder(DbUpdateWorker::class.java,8,TimeUnit.HOURS)
         .setConstraints(constraints)
         .addTag("DpUpdateService")
         .build()

@@ -3,6 +3,8 @@ package com.example.academyhomework.services
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import androidx.work.Data
+import androidx.work.WorkInfo
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.example.academyhomework.domain.data.database.DataBaseRepository
@@ -25,15 +27,17 @@ class DbUpdateWorker(appContext: Context, params: WorkerParameters): Worker(appC
 
 
     override fun doWork(): Result {
+
         var list = listOf<Movie>()
-        Log.d("AcademyHomework", "doWork: is running")
+        Log.d("AcademyHomework", "doWork: is running, $runAttemptCount")
         CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            delay(5000)
             list = jsonMovieRepository.loadMovies()
             dataBaseRepository.clearMovies()
             dataBaseRepository.insertMovies(list)
         }
-        return Result.retry()
+
+
+        return Result.success()
     }
 
 

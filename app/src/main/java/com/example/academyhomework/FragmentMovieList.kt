@@ -2,24 +2,24 @@ package com.example.academyhomework
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.Toast
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.work.WorkInfo
 import com.example.academyhomework.model.Movie
 import com.example.academyhomework.model.movielist.MovieListAdapter
 import com.example.academyhomework.viewmodel.ViewModelFactory
 import com.example.academyhomework.viewmodel.ViewModelMovie
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.io.Serializable
-
 
 
 class FragmentMovieList : BaseFragment() {
@@ -38,7 +38,7 @@ class FragmentMovieList : BaseFragment() {
 
 
     private lateinit var viewModelFactory: ViewModelFactory
-    private lateinit var viewModel :ViewModelMovie
+    private lateinit var viewModel: ViewModelMovie
 
 
     override fun onAttach(context: Context) {
@@ -49,8 +49,9 @@ class FragmentMovieList : BaseFragment() {
         /**
          * initializing [viewModel]
          */
-        viewModelFactory = ViewModelFactory(applicationContext = requireActivity().applicationContext)
-        viewModel= ViewModelProvider(
+        viewModelFactory =
+            ViewModelFactory(applicationContext = requireActivity().applicationContext)
+        viewModel = ViewModelProvider(
             requireActivity().viewModelStore, viewModelFactory
         )
             .get(ViewModelMovie::class.java)
@@ -76,7 +77,12 @@ class FragmentMovieList : BaseFragment() {
          */
         viewModel.movieList.observe(this.viewLifecycleOwner, this::setList)
         viewModel.loadingState.observe(this.viewLifecycleOwner, this::showProgressBar)
-        viewModel.errorEvent.observe(this.viewLifecycleOwner,this::showErrorToast)
+        viewModel.errorEvent.observe(this.viewLifecycleOwner, this::showErrorToast)
+
+//        viewModel.repositoryObservable.observe(viewLifecycleOwner) {
+//            viewModel.loadMovieCacheFromBack(it)
+//        }
+        viewModel.wmObservable.observe(viewLifecycleOwner) { viewModel.workManagerHandler(it) }
     }
 
     private fun showProgressBar(loadingProgressBar: Boolean) {
@@ -102,7 +108,8 @@ class FragmentMovieList : BaseFragment() {
 
 
     }
-    private fun showErrorToast(error:Throwable){
+
+    private fun showErrorToast(error: Throwable) {
         Toast.makeText(requireContext(), error.message?.toUpperCase(), Toast.LENGTH_LONG).show()
     }
 
