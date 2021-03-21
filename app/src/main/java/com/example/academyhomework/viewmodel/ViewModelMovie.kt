@@ -22,11 +22,8 @@ class ViewModelMovie(
     private val workRepository: WorkRepository = WorkRepository()
 
     val repositoryObservable get() = dataBaseRepository.getObserver() // todo in FragmentList uncomment
-    val wmObservable get() = workManager.getWorkInfoByIdLiveData(workRepository.periodRequest.id)
-
-    init {
-        initWorkManager()
-    }
+    /** WorkManager state observer*/
+    val wmObservable: LiveData<WorkInfo> = workRepository.initWorkManagerWithPeriodWork(workManager)
 
 
 
@@ -50,7 +47,7 @@ class ViewModelMovie(
     val loadingState: LiveData<Boolean> get() = _loadingState
 
     /** Movie Details*/
-    private var _details = MutableLiveData<MovieDetails>()
+    private var _details = SingleLiveEvent<MovieDetails>()
     val details: LiveData<MovieDetails> get() = _details
 
     /** Exception event*/
@@ -59,6 +56,7 @@ class ViewModelMovie(
 
     fun loadDetails(id: Int) {
 
+        if (id == -1) return
 
         viewModelScope.launch(exceptionHandler) {
             _loadingState.value = true
@@ -163,34 +161,6 @@ class ViewModelMovie(
 
     }
 
-    private fun initWorkManager() {
-        if (workManager.getWorkInfosByTag("DpUpdateService")
-                .get().isEmpty()
-//                workManager.getWorkInfosByTag("DpUpdateService")
-//                .get()[0].state != WorkInfo.State.ENQUEUED
-        ) {
-            workManager.enqueue(workRepository.periodRequest)
-            Log.d(
-                "AcademyHomework",
-                "new DpUpdateService was launched" + workManager.getWorkInfosByTag("DpUpdateService")
-                    .get().toString() + workManager.getWorkInfosByTag("DpUpdateService").get().size
-            )
-        } else {
-            Log.d(
-                "AcademyHomework",
-                """DpUpdateService info: size ${
-                    workManager.getWorkInfosByTag("DpUpdateService").get().size
-                }
-                    | state : ${
-                    workManager.getWorkInfosByTag("DpUpdateService")
-                        .get()[0].state
-                }
-                    |${workManager.getWorkInfosByTag("DpUpdateService")}
-                    |${wmObservable}
-                """.trimMargin()
-            )
 
-        }
-    }
 
 }

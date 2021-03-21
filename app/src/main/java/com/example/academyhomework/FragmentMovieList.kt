@@ -1,6 +1,7 @@
 package com.example.academyhomework
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -84,6 +85,9 @@ class FragmentMovieList : BaseFragment() {
 //        }
         viewModel.wmObservable.observe(viewLifecycleOwner) { viewModel.workManagerHandler(it) }
     }
+
+
+
 
     private fun showProgressBar(loadingProgressBar: Boolean) {
         when (loadingProgressBar) {
