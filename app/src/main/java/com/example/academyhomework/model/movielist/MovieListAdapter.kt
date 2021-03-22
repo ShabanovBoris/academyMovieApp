@@ -12,20 +12,25 @@ import coil.load
 import com.bumptech.glide.Glide
 import com.example.academyhomework.R
 import com.example.academyhomework.model.Movie
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
 class MovieListAdapter(val onClick: (Int) -> Unit):ListAdapter<Movie, MovieListAdapter.ViewHolderMovie>(
     DiffCallback()
 ) {
+    private var onScheduleNotifierClick: ((Int) -> Unit)? = null
+    fun setScheduleNotifier(action: (Int) -> Unit){
+        onScheduleNotifierClick = action
+    }
 
 
-    class ViewHolderMovie(view:View):RecyclerView.ViewHolder(view){
+    inner class ViewHolderMovie(view:View):RecyclerView.ViewHolder(view){
         private val title:TextView = view.findViewById(R.id.tv_title_movie)
         private val genre:TextView = view.findViewById(R.id.tv_genre)
         private val image:ImageView = view.findViewById(R.id.iv_image_card)
         private val rating:RatingBar = view.findViewById(R.id.ratingBarCard)
         private val release:TextView = view.findViewById(R.id.tv_release)
-
+        private val fab:FloatingActionButton = view.findViewById(R.id.fb_schedule)
 
         fun bindData(movie: Movie){
             image.load(movie.imageUrl){
@@ -34,7 +39,7 @@ class MovieListAdapter(val onClick: (Int) -> Unit):ListAdapter<Movie, MovieListA
             }
 
 
-
+            fab.setOnClickListener { onScheduleNotifierClick?.invoke(movie.id) }
             title.text = movie.title
 
             genre.text=""
@@ -42,7 +47,6 @@ class MovieListAdapter(val onClick: (Int) -> Unit):ListAdapter<Movie, MovieListA
                 genre.append(g.name+" ")
             }
             rating.rating = movie.rating.toFloat()
-
             release.text = movie.releaseDate
         }
     }
@@ -57,6 +61,8 @@ class MovieListAdapter(val onClick: (Int) -> Unit):ListAdapter<Movie, MovieListA
             holder.itemView.setOnClickListener{
                 onClick(getItem(position).id)
             }
+
+
     }
 }
 

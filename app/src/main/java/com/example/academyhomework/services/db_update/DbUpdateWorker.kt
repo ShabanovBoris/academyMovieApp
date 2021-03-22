@@ -1,15 +1,14 @@
-package com.example.academyhomework.services
+package com.example.academyhomework.services.db_update
 
 import android.content.Context
 import android.util.Log
-import androidx.lifecycle.viewModelScope
-import androidx.work.Data
-import androidx.work.WorkInfo
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.example.academyhomework.domain.data.database.DataBaseRepository
 import com.example.academyhomework.domain.data.network.JsonMovieRepository
 import com.example.academyhomework.model.Movie
+import com.example.academyhomework.services.Notification
+import com.example.academyhomework.services.NotificationsNewMovie
 import kotlinx.coroutines.*
 
 class DbUpdateWorker(appContext: Context, params: WorkerParameters): Worker(appContext,params) {
@@ -40,8 +39,8 @@ class DbUpdateWorker(appContext: Context, params: WorkerParameters): Worker(appC
                 Log.d("AcademyHomework", "diff.isNotEmpty() ${diff.isNotEmpty()} diff.size ${diff.size} ")
                 dataBaseRepository.clearMovies()
                 dataBaseRepository.insertMovies(list)
-                val newMovie = jsonMovieRepository.loadMovieDetails(diff.last())!!
-                notification.showNotification(newMovie) /** !!*/
+                val newMovie = jsonMovieRepository.loadMovieDetails(diff.last())
+                notification.showNotification(newMovie)
             }else
             {
                 Log.d("AcademyHomework", "have not changes ${list.size} and ${oldList.size} diff ${diff.toString()}")

@@ -1,9 +1,7 @@
 package com.example.academyhomework
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,14 +10,15 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.work.WorkInfo
 import com.example.academyhomework.model.Movie
 import com.example.academyhomework.model.movielist.MovieListAdapter
+import com.example.academyhomework.services.schedule_watch.WatchMovieSchedule
+import com.example.academyhomework.utils.DatePickerFragment
+import com.example.academyhomework.utils.TimePickerFragment
 import com.example.academyhomework.viewmodel.ViewModelFactory
 import com.example.academyhomework.viewmodel.ViewModelMovie
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
@@ -73,6 +72,7 @@ class FragmentMovieList : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         progressBar = view.findViewById(R.id.progressBar)
         setRecycler(view)
+        adapter.setScheduleNotifier { scheduleMovie(it) }
         /**
          * set [observers]
          */
@@ -85,8 +85,6 @@ class FragmentMovieList : BaseFragment() {
 //        }
         viewModel.wmObservable.observe(viewLifecycleOwner) { viewModel.workManagerHandler(it) }
     }
-
-
 
 
     private fun showProgressBar(loadingProgressBar: Boolean) {
@@ -115,6 +113,34 @@ class FragmentMovieList : BaseFragment() {
 
     private fun showErrorToast(error: Throwable) {
         Toast.makeText(requireContext(), error.message?.toUpperCase(), Toast.LENGTH_LONG).show()
+    }
+
+
+    private fun scheduleMovie(id: Int) {
+        /**     in UI
+         * --->[Date] picking first
+         * ---> [Time] picking second
+         * ---> finally call in [Time] callback[WatchMovieSchedule]*/
+
+        Toast.makeText(requireContext(), "$id", Toast.LENGTH_SHORT).show()
+       var date = DatePickerFragment(requireContext())
+            TimePickerFragment().apply {
+                setAfterDoneAction {
+                    WatchMovieSchedule(
+                        appContext = requireContext(),
+                        movieId = id,
+                        time = this,
+                        date = date
+                    ).start()
+                }
+            }.show(requireActivity().supportFragmentManager, "tag")
+
+            date = date.showWithClass(
+                requireActivity().supportFragmentManager,
+                "tag"
+            ) as DatePickerFragment
+
+
     }
 
     companion object {
