@@ -10,10 +10,15 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.academyhomework.model.MovieDetails
 import com.example.academyhomework.model.moviedetails.ActorRecyclerAdapter
+import com.example.academyhomework.services.schedule_watch.WatchMovieSchedule
+import com.example.academyhomework.utils.DatePickerFragment
+import com.example.academyhomework.utils.TimePickerFragment
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 private const val MOVIE_KEY = "movie_param"
 
@@ -74,7 +79,7 @@ class FragmentMoviesDetails : BaseFragment() {
             val tvRating = view.findViewById<TextView>(R.id.tv_rating)
             val story = view.findViewById<TextView>(R.id.tv_story)
             val timeRun = view.findViewById<TextView>(R.id.tv_running_time)
-
+             val fab: FloatingActionButton = view.findViewById(R.id.fb_schedule)
             /** Bacjdorp image*/
             image.load(movie.imageBackdrop) {
                 crossfade(true)
@@ -94,6 +99,8 @@ class FragmentMoviesDetails : BaseFragment() {
             story.text = movie.overview
             /** time run in min*/
             timeRun.text = "${movie.runtime} min"
+            /** Schedule fab listener*/
+            fab.setOnClickListener { scheduleMovie(movie.id) }
         }
     }
 
@@ -109,6 +116,33 @@ class FragmentMoviesDetails : BaseFragment() {
             )
         }
         image.colorFilter = ColorMatrixColorFilter(matrix)
+    }
+
+    private fun scheduleMovie(id: Int) {
+        /**     in UI
+         * --->[Date] picking first
+         * ---> [Time] picking second
+         * ---> finally call in [Time] callback[WatchMovieSchedule]*/
+
+        Toast.makeText(requireContext(), "$id", Toast.LENGTH_SHORT).show()
+        var date = DatePickerFragment(requireContext())
+        TimePickerFragment().apply {
+            setAfterDoneAction {
+                WatchMovieSchedule(
+                    appContext = requireContext(),
+                    movieId = id,
+                    time = this,
+                    date = date
+                ).start()
+            }
+        }.show(requireActivity().supportFragmentManager, "tag")
+
+        date = date.showWithClass(
+            requireActivity().supportFragmentManager,
+            "tag"
+        ) as DatePickerFragment
+
+
     }
 
 

@@ -72,7 +72,6 @@ class FragmentMovieList : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         progressBar = view.findViewById(R.id.progressBar)
         setRecycler(view)
-        adapter.setScheduleNotifier { scheduleMovie(it) }
         /**
          * set [observers]
          */
@@ -116,32 +115,7 @@ class FragmentMovieList : BaseFragment() {
     }
 
 
-    private fun scheduleMovie(id: Int) {
-        /**     in UI
-         * --->[Date] picking first
-         * ---> [Time] picking second
-         * ---> finally call in [Time] callback[WatchMovieSchedule]*/
 
-        Toast.makeText(requireContext(), "$id", Toast.LENGTH_SHORT).show()
-       var date = DatePickerFragment(requireContext())
-            TimePickerFragment().apply {
-                setAfterDoneAction {
-                    WatchMovieSchedule(
-                        appContext = requireContext(),
-                        movieId = id,
-                        time = this,
-                        date = date
-                    ).start()
-                }
-            }.show(requireActivity().supportFragmentManager, "tag")
-
-            date = date.showWithClass(
-                requireActivity().supportFragmentManager,
-                "tag"
-            ) as DatePickerFragment
-
-
-    }
 
     companion object {
         @JvmStatic

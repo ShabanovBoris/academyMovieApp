@@ -113,7 +113,7 @@ class NotifyWorker(appContext: Context, workerParameters: WorkerParameters) :
 
                     override fun onLoadCleared(placeholder: Drawable?) {}
                 })
-            Log.d(TAG, "sendNotification: after scope end")
+            Log.d(TAG, "sendNotification: notification has appear")
 
 
     }

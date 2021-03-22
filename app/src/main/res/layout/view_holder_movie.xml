@@ -24,17 +24,7 @@
             android:foreground="@drawable/dark_gradient"
             android:orientation="vertical"/>
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fb_schedule"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:backgroundTint="#404056"
-                android:scaleX="0.5"
-                android:scaleY="0.5"
-                android:src="@drawable/ic_baseline_schedule_24"
-                app:backgroundTint="#FFFFFF"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_image_card"
