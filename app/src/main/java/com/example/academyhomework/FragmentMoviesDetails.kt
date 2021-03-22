@@ -123,8 +123,6 @@ class FragmentMoviesDetails : BaseFragment() {
          * --->[Date] picking first
          * ---> [Time] picking second
          * ---> finally call in [Time] callback[WatchMovieSchedule]*/
-
-        Toast.makeText(requireContext(), "$id", Toast.LENGTH_SHORT).show()
         var date = DatePickerFragment(requireContext())
         TimePickerFragment().apply {
             setAfterDoneAction {

@@ -33,7 +33,8 @@ class WatchMovieSchedule(
             .setTimeOfDay(time.hour, time.minutes, 0)
             .build()
 
-
+        val time = "Schedule movie on ${date.days}/${date.months} ${time.hour}:${time.minutes}"
+        Toast.makeText(appContext, time, Toast.LENGTH_LONG).show()
         Log.d(LOG_TAG_SCHEDULER, "minute before schedule ${(customCalendar.timeInMillis - currentCalendar.timeInMillis)} millis")
 
         val customTime = customCalendar.timeInMillis
