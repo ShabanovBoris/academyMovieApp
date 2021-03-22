@@ -1,4 +1,4 @@
-package com.example.academyhomework.services
+package com.example.academyhomework.services.db_update
 
 
 import android.app.PendingIntent
@@ -10,7 +10,6 @@ import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.graphics.drawable.IconCompat
-import androidx.core.graphics.drawable.toBitmap
 import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget

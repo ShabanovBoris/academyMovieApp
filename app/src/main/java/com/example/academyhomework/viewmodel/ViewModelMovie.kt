@@ -16,9 +16,12 @@ import kotlinx.coroutines.*
 class ViewModelMovie(
     private val dataBaseRepository: DataBaseRepository,
     private val jsonMovieRepository: MovieRepository,
-    private val workManager: WorkManager
+     workManager: WorkManager
 ) : ViewModel() {
 
+    companion object{
+        const val TAG = "Academy"
+    }
     private val workRepository: WorkRepository = WorkRepository()
 
     val repositoryObservable get() = dataBaseRepository.getObserver() // todo in FragmentList uncomment
@@ -118,7 +121,7 @@ class ViewModelMovie(
             viewModelScope.launch {
 
                 _movieList.postValue(movies)
-                Log.d("AcademyHomework", "From back callback")
+                Log.d(TAG+"Homework", "From back callback")
             }
     }
 
@@ -138,11 +141,14 @@ class ViewModelMovie(
         workInfo.state?.let {
             when (it) {
                 WorkInfo.State.RUNNING -> {
-                    Log.d("Academy", "WorkInfo.State.RUNNING")
+                    Log.d(TAG, "WorkInfo.State.RUNNING")
                 }
                 WorkInfo.State.ENQUEUED -> {
-                    Log.d("Academy", "WorkInfo.State.ENQUEUED")
+                    Log.d(TAG, "WorkInfo.State.ENQUEUED")
                     CoroutineScope(Dispatchers.Default).launch {
+                        /**
+                         *   10 seconds will be enough to load movie list from background =)
+                         */
                         delay(10000)
 
                         loadMovieCacheFromBack(dataBaseRepository.getMovieList())
@@ -151,10 +157,10 @@ class ViewModelMovie(
 
                 }
                 WorkInfo.State.FAILED -> {
-                    Log.d("Academy", "WorkInfo.State.FAILED")
+                    Log.d(TAG, "WorkInfo.State.FAILED")
                 }
 
-                else -> Log.e("Academy", "WorkInfo.State.ELSE BRANCH")
+                else -> Log.e(TAG, "WorkInfo.State.ELSE BRANCH")
             }
         }
 

@@ -25,9 +25,12 @@ interface DbRepository {
 
 class DataBaseRepository(applicationContext: Context) : DbRepository {
 
+    companion object{
+        const val TAG = "Academy"
+    }
+
 
     private val dataBase = DataBaseMovie.create(applicationContext)
-
 
 
 
@@ -36,7 +39,7 @@ class DataBaseRepository(applicationContext: Context) : DbRepository {
 
 
     override suspend fun getMovieDetails(id: Int): MovieDetails? = withContext(Dispatchers.IO) {
-        Log.d("AcademyHomework", "GETTING: getMovieDetails $id")
+        Log.d(TAG, "GETTING: getMovieDetails $id from DB")
         val data = dataBase.movieDao.getDetailsById(id.toLong())
 
         data?.let {
@@ -47,13 +50,15 @@ class DataBaseRepository(applicationContext: Context) : DbRepository {
 
     override suspend fun insertMovieDetails(movieDetails: MovieDetails):Unit =
         withContext(Dispatchers.IO) {
-            Log.d("AcademyHomework", "GETTING: insertMovieDetails ${movieDetails.id}")
+            Log.d(TAG, "INSERT: insertMovieDetails ${movieDetails.id} to DB")
             dataBase.movieDao.insertDetails(toEntityMovieDetails(movieDetails))
         }
 
     override suspend fun getActorById(id: Int): Actor? = withContext(Dispatchers.IO) {
-        Log.d("AcademyHomework", "getActorById($id)")
+
         val data = dataBase.movieDao.getActorById(id.toLong())
+
+        Log.d(TAG, "getActorById ${data.toString()} from DB")
 
         data?.let {
             toActor(data)
@@ -63,25 +68,25 @@ class DataBaseRepository(applicationContext: Context) : DbRepository {
 
     @Transaction
     override suspend fun insertActors(actors: List<Actor>) = withContext(Dispatchers.IO) {
-        Log.d("AcademyHomework", "insertActors $actors")
+        Log.d(TAG, "insertActors ${actors.map { it.name }} to DB")
         dataBase.movieDao.insertActors(actors.map { toActorEntity(it) })
     }
 
 
     override suspend fun getMovieList(): List<Movie> = withContext(Dispatchers.IO) {
-        Log.d("AcademyHomework", "GETTING: Movies")
+        Log.d(TAG, "GETTING: Movies from DB")
         dataBase.movieDao.getAll().map { toMovieModel(it) }
     }
 
     @Transaction
     override suspend fun insertMovies(movies: List<Movie>) = withContext(Dispatchers.IO) {
-        Log.d("AcademyHomework", "insertMovies: ${movies.size}")
+        Log.d(TAG, "insertMovies: amount of ${movies.size} from DB")
         dataBase.movieDao.insert(movies = movies.map { toEntityMovie(it) })
     }
 
     override suspend fun clearMovies(): Unit = withContext(Dispatchers.IO) {
         dataBase.movieDao.clear()
-        Log.d("AcademyHomework", "clearMovies: ----->")
+        Log.d(TAG, "clearMovies by DB ----->")
         dataBase.movieDao.getAll().map { Log.d("DbRepository", "DeleteMovie: $it") }
     }
 

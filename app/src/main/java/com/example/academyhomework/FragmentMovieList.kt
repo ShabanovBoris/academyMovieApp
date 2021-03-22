@@ -73,7 +73,7 @@ class FragmentMovieList : BaseFragment() {
         progressBar = view.findViewById(R.id.progressBar)
         setRecycler(view)
         /**
-         * set [observers]
+         * set [observers] for recycler list, progressbar, errorCoroutine toast
          */
         viewModel.movieList.observe(this.viewLifecycleOwner, this::setList)
         viewModel.loadingState.observe(this.viewLifecycleOwner, this::showProgressBar)
@@ -82,6 +82,8 @@ class FragmentMovieList : BaseFragment() {
 //        viewModel.repositoryObservable.observe(viewLifecycleOwner) {
 //            viewModel.loadMovieCacheFromBack(it)
 //        }
+
+        /** observe WorkManager state for update after 10 sec UI*/
         viewModel.wmObservable.observe(viewLifecycleOwner) { viewModel.workManagerHandler(it) }
     }
 
@@ -94,8 +96,6 @@ class FragmentMovieList : BaseFragment() {
     }
 
     private fun setRecycler(view: View) {
-
-
         recyclerView = view.findViewById(R.id.rv_movie_list)
         recyclerView.layoutManager = GridLayoutManager(view.context, 2)
         recyclerView.adapter = adapter

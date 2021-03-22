@@ -9,6 +9,8 @@ interface MovieDao {
     @Query("SELECT * FROM movie ORDER BY popularity desc")
     suspend fun getAll():List<MovieEntity>
 
+
+    /** unused still*/
     @Query("SELECT * FROM movie ORDER BY popularity desc")
     fun getAllLive(): LiveData<List<MovieEntity>>
 

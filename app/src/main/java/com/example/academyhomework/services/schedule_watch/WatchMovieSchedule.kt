@@ -42,15 +42,27 @@ class WatchMovieSchedule(
         if (customTime > currentTime) {
             val data = Data.Builder().putInt( NotifyWorker.MOVIE_ID, movieId).build() /** data*/
             val delay = customTime - currentTime
+
+            /** call the schedule notification function
+             * put the value of [Data] class with [movie_id]
+             * and [Date]
+             * */
             scheduleNotification(delay, data)
         }
     }
     private fun scheduleNotification(delay: Long, data: Data) {
+        /** create [OneTimeWorkRequest] with delay
+         * and [movie_id] as [DataClass]
+         * */
         val notificationWork = OneTimeWorkRequest.Builder(NotifyWorker::class.java)
             .setInitialDelay(delay, TimeUnit.MILLISECONDS)
             .setInputData(data)
             .build()
 
+
+        /** create workManager instance and put here [OneTimeWorkRequest]
+         * launch with [enqueue]
+         */
         val instanceWorkManager = WorkManager.getInstance(appContext)
         instanceWorkManager.beginUniqueWork(
             NotifyWorker.NOTIFICATION_WORK,

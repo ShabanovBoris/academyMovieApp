@@ -7,8 +7,6 @@ import androidx.work.WorkerParameters
 import com.example.academyhomework.domain.data.database.DataBaseRepository
 import com.example.academyhomework.domain.data.network.JsonMovieRepository
 import com.example.academyhomework.model.Movie
-import com.example.academyhomework.services.Notification
-import com.example.academyhomework.services.NotificationsNewMovie
 import kotlinx.coroutines.*
 
 class DbUpdateWorker(appContext: Context, params: WorkerParameters): Worker(appContext,params) {

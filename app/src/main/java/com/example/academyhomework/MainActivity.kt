@@ -7,8 +7,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import com.example.academyhomework.model.Movie
 import com.example.academyhomework.model.MovieDetails
-import com.example.academyhomework.services.Notification
-import com.example.academyhomework.services.NotificationsNewMovie
 import com.example.academyhomework.viewmodel.ViewModelFactory
 import com.example.academyhomework.viewmodel.ViewModelMovie
 
