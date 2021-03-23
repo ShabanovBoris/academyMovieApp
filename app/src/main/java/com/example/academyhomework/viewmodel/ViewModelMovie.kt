@@ -10,6 +10,7 @@ import com.example.academyhomework.domain.data.network.MovieRepository
 import com.example.academyhomework.model.Movie
 import com.example.academyhomework.model.MovieDetails
 import com.example.academyhomework.services.WorkRepository
+import com.example.academyhomework.utils.MovieDiff
 import com.example.academyhomework.utils.SingleLiveEvent
 import kotlinx.coroutines.*
 
@@ -24,7 +25,7 @@ class ViewModelMovie(
     }
     private val workRepository: WorkRepository = WorkRepository()
 
-    val repositoryObservable get() = dataBaseRepository.getObserver() // todo in FragmentList uncomment
+    //val repositoryObservable get() = dataBaseRepository.getObserver() // todo in [FragmentMovieList] uncomment 82-84
     /** WorkManager state observer*/
     val wmObservable: LiveData<WorkInfo> = workRepository.initWorkManagerWithPeriodWork(workManager)
 
@@ -76,16 +77,38 @@ class ViewModelMovie(
     fun loadMovieList() {
 
         viewModelScope.launch(exceptionHandler) {
-            _loadingState.value = true
+
 
             val list = jsonMovieRepository.loadMovies()
-            _movieList.postValue(list)
+            val oldList = dataBaseRepository.getMovieList()
 
-            uploadMoviesCache(list)
+            val diff = MovieDiff.getDiff(list,oldList)
+            if (diff.isNotEmpty()) {
+                _loadingState.value = true
+                Log.d(TAG, "VIEWMODEL diff.isNotEmpty() ${diff.isNotEmpty()} diff.size ${diff.size} ")
+                dataBaseRepository.clearMovies()
+                uploadMoviesCache(list)
+                _movieList.postValue(list)
+                _loadingState.value = false
+            }else
+            {
+                Log.d(TAG, " VIEWMODEL have not changes ${list.size} and ${oldList.size} diff ${diff.toString()}")
+            }
 
-            _loadingState.value = false
         }
 
+    }
+
+    fun loadMovieCache() {
+
+        //if ((movieList.value ?: emptyList()).isEmpty()) {
+            viewModelScope.launch(exceptionHandler) {
+                _loadingState.value = true
+                Log.d(TAG, "loadMovieCache() ")
+                _movieList.postValue(dataBaseRepository.getMovieList())
+                _loadingState.value = false
+
+        }
     }
 
 
@@ -100,7 +123,7 @@ class ViewModelMovie(
 
     private fun uploadMoviesDetailsCache(details: MovieDetails) {
         if (_details.value != null) {
-            viewModelScope.launch {
+            viewModelScope.launch(exceptionHandler) {
                 dataBaseRepository.insertMovieDetails(details)
                 dataBaseRepository.insertActors(details.actors)
             }
@@ -108,31 +131,23 @@ class ViewModelMovie(
     }
 
 
-    fun loadMovieCache() {
-        if ((movieList.value ?: emptyList()).isEmpty()) {
-            viewModelScope.launch {
-                _movieList.postValue(dataBaseRepository.getMovieList())
-            }
-        }
-    }
-
     private fun loadMovieCacheFromBack(movies: List<Movie>) {
 
             viewModelScope.launch {
 
                 _movieList.postValue(movies)
-                Log.d(TAG+"Homework", "From back callback")
+                Log.d(TAG+"Homework", "loadMovieCacheFromBack()")
             }
     }
 
 
     private fun uploadMoviesCache(list: List<Movie>) {
 
-        if ((movieList.value ?: emptyList()).isEmpty()) {
+//        if ((movieList.value ?: emptyList()).isEmpty()) {
             viewModelScope.launch {
                 dataBaseRepository.clearMovies()
                 dataBaseRepository.insertMovies(list)
-            }
+
 
         }
     }
@@ -151,7 +166,7 @@ class ViewModelMovie(
                          */
                         delay(10000)
 
-                        loadMovieCacheFromBack(dataBaseRepository.getMovieList())
+                       loadMovieCacheFromBack(dataBaseRepository.getMovieList())
 
                     }
 
