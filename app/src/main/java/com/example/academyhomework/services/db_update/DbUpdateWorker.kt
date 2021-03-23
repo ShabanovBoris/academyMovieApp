@@ -6,53 +6,74 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.example.academyhomework.domain.data.database.DataBaseRepository
 import com.example.academyhomework.domain.data.network.JsonMovieRepository
-import com.example.academyhomework.model.Movie
 import com.example.academyhomework.utils.MovieDiff
 import kotlinx.coroutines.*
 
-class DbUpdateWorker(appContext: Context, params: WorkerParameters): Worker(appContext,params) {
+class DbUpdateWorker(appContext: Context, params: WorkerParameters) : Worker(appContext, params) {
 
-    private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        Log.e(
-            "ViewModelMovie",
-            "Coroutine exception in Work Manager, scope active: $throwable",
-            throwable
-        )
-    }
 
+    private var attempt = 0
+    private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private val dataBaseRepository = DataBaseRepository(appContext)
     private val jsonMovieRepository = JsonMovieRepository()
     private val notification: Notification = NotificationsNewMovie(appContext)
 
     override fun doWork(): Result {
+
         notification.initialize()
+        var isError = false
+
+
+         val exceptionHandler = CoroutineExceptionHandler { context, throwable ->
+            Log.e(
+                "AcademyHomework",
+                "Coroutine exception in WORK MANAGER: $throwable",
+                throwable
+            )
+             isError = true
+             context.cancelChildren()
+         }
+
 //
         Log.d("AcademyHomework", "doWork: is running, $runAttemptCount")
-        CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+        scope.launch(exceptionHandler) {
+
             val list = jsonMovieRepository.loadMovies()
+            if (list.isEmpty()){
+                isError = true
+            }
+
             val oldList = dataBaseRepository.getMovieList()
 //
 //
-            val diff = MovieDiff.getDiff(list,oldList)
+            val diff = MovieDiff.getDiff(list, oldList)
             if (diff.isNotEmpty()) {
-                Log.d("AcademyHomework", "diff.isNotEmpty() ${diff.isNotEmpty()} diff.size ${diff.size} ")
+                Log.d(
+                    "AcademyHomework",
+                    "diff.isNotEmpty() ${diff.isNotEmpty()} diff.size ${diff.size} "
+                )
                 dataBaseRepository.clearMovies()
                 dataBaseRepository.insertMovies(list)
                 val newMovie = jsonMovieRepository.loadMovieDetails(diff.last())
                 notification.showNotification(newMovie)
-            }else
-            {
-                Log.d("AcademyHomework", "have not changes ${list.size} and ${oldList.size} diff ${diff.toString()}")
+            } else {
+                Log.d(
+                    "AcademyHomework",
+                    "have not changes ${list.size} and ${oldList.size} diff ${diff.toString()}"
+                )
             }
-//
-        }
 
+        }.invokeOnCompletion {
+            if (isError) {
+                doWork()
+                Log.d("AcademyHomework", "Result.retry() / Have error attempt $attempt")
+                attempt++
+            }else{
+                Log.d("AcademyHomework", "Result.success()")
+            }
+        }
 
         return Result.success()
     }
-
-
-
-
 
 }

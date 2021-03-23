@@ -34,7 +34,7 @@ class ViewModelMovie(
 
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         Log.e(
-            "ViewModelMovie",
+            TAG,
             "Coroutine exception, scope active:${viewModelScope.isActive}, $throwable",
             throwable
         )
@@ -86,7 +86,7 @@ class ViewModelMovie(
             if (diff.isNotEmpty()) {
                 _loadingState.value = true
                 Log.d(TAG, "VIEWMODEL diff.isNotEmpty() ${diff.isNotEmpty()} diff.size ${diff.size} ")
-                dataBaseRepository.clearMovies()
+
                 uploadMoviesCache(list)
                 _movieList.postValue(list)
                 _loadingState.value = false
