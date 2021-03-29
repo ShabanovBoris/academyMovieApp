@@ -2,7 +2,10 @@ package com.example.academyhomework.viewmodel
 
 
 import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.example.academyhomework.domain.data.database.DataBaseRepository
@@ -17,10 +20,12 @@ import kotlinx.coroutines.*
 class ViewModelMovie(
     private val dataBaseRepository: DataBaseRepository,
     private val jsonMovieRepository: MovieRepository,
-     workManager: WorkManager
+    workManager: WorkManager
 ) : ViewModel() {
 
-    companion object{
+    private var job: Job? = null
+
+    companion object {
         const val TAG = "Academy"
     }
     private val workRepository: WorkRepository = WorkRepository()
@@ -28,8 +33,6 @@ class ViewModelMovie(
     //val repositoryObservable get() = dataBaseRepository.getObserver() // todo in [FragmentMovieList] uncomment 82-84
     /** WorkManager state observer*/
     val wmObservable: LiveData<WorkInfo> = workRepository.initWorkManagerWithPeriodWork(workManager)
-
-
 
 
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
@@ -61,11 +64,15 @@ class ViewModelMovie(
     fun loadDetails(id: Int) {
 
         if (id == -1) return
+        job?.cancel()
 
-        viewModelScope.launch(exceptionHandler) {
+        job = viewModelScope.launch(exceptionHandler) {
             _loadingState.value = true
-            withContext(Dispatchers.Default) {
-                loadMovieDetailCache(id)
+
+
+            if (loadMovieDetailCache(id)){
+                _loadingState.value = false
+                return@launch
             }
             val data = jsonMovieRepository.loadMovieDetails(id)
             _details.value = data
@@ -82,7 +89,7 @@ class ViewModelMovie(
             val list = jsonMovieRepository.loadMovies()
             val oldList = dataBaseRepository.getMovieList()
 
-            val diff = MovieDiff.getDiff(list,oldList)
+            val diff = MovieDiff.getDiff(list, oldList)
             if (diff.isNotEmpty()) {
                 _loadingState.value = true
                 Log.d(TAG, "VIEWMODEL diff.isNotEmpty() ${diff.isNotEmpty()} diff.size ${diff.size} ")
@@ -112,12 +119,14 @@ class ViewModelMovie(
     }
 
 
-    private fun loadMovieDetailCache(id: Int) {
-        viewModelScope.launch(exceptionHandler) {
-            val data = dataBaseRepository.getMovieDetails(id)
-            if (data != null) {
-                _details.postValue(data!!)
-            }
+    private suspend fun loadMovieDetailCache(id: Int): Boolean {
+
+        val data = dataBaseRepository.getMovieDetails(id)
+        return if (data != null) {
+            _details.postValue(data!!)
+            true
+        } else {
+            false
         }
     }
 
@@ -181,7 +190,6 @@ class ViewModelMovie(
 
 
     }
-
 
 
 }

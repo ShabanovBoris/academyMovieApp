@@ -2,6 +2,7 @@ package com.example.academyhomework
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
@@ -12,8 +13,11 @@ import com.example.academyhomework.viewmodel.ViewModelMovie
 
 class MainActivity : AppCompatActivity(), Router {
 
+    override var transitView: View? = null
     private lateinit var viewModelFactory: ViewModelFactory
     private lateinit var viewModel: ViewModelMovie
+
+
 
     private var rootFragment: BaseFragment? = null
 
@@ -41,7 +45,7 @@ class MainActivity : AppCompatActivity(), Router {
     }
 
     private fun handleIntent(intent: Intent) {
-        if(intent.data != null) {
+        if (intent.data != null) {
             viewModel.loadDetails(intent.data!!.lastPathSegment?.toIntOrNull() ?: -1)
         }
     }
@@ -80,8 +84,12 @@ class MainActivity : AppCompatActivity(), Router {
         supportFragmentManager.popBackStack(DETAILS, FragmentManager.POP_BACK_STACK_INCLUSIVE)
 
         supportFragmentManager.beginTransaction().apply {
+            addSharedElement(
+                transitView!!,
+                getString(R.string.DetailsTransitionName)
+            )
             addToBackStack(DETAILS)
-            add(R.id.containerMainActivity, rootFragment as FragmentMoviesDetails)
+            replace(R.id.containerMainActivity, rootFragment as FragmentMoviesDetails)
             commit()
         }
     }

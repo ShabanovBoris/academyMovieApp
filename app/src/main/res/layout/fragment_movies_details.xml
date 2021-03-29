@@ -6,7 +6,13 @@
     android:layout_height="match_parent"
     android:background="#191926"
     tools:context=".FragmentMoviesDetails"
-    android:clickable="true">
+    android:clickable="true"
+    android:id="@+id/constraint_layout_details"
+
+    >
+
+
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fb_schedule"
@@ -19,15 +25,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
+        app:shapeAppearance="@style/circleImageView"
         android:id="@+id/iv_main_screen"
         android:layout_width="match_parent"
         android:layout_height="298dp"
         android:scaleType="centerCrop"
         android:src="@drawable/main_tint"
         android:foreground="@drawable/gradient"
+        android:background="#191926"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:transitionName="@string/DetailsTransitionName"/>
 
     <ImageView
         android:layout_width="match_parent"
@@ -38,6 +47,21 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
+
+    <TextView
+        android:id="@+id/tv_main_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="28dp"
+        android:gravity="start"
+        android:text="Avengers: End Game"
+        android:textColor="@color/white"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/rating_bar"
+        app:layout_constraintStart_toStartOf="@id/rating_bar"
+        app:layout_constraintEnd_toEndOf="@id/actor_recycler"
+        />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
@@ -143,20 +167,7 @@
         app:layout_constraintStart_toStartOf="@id/rating_bar"
         />
 
-    <TextView
-        android:id="@+id/tv_main_title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="28dp"
-        android:gravity="start"
-        android:text="Avengers: End Game"
-        android:textColor="@color/white"
-        android:textSize="40sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/rating_bar"
-        app:layout_constraintStart_toStartOf="@id/rating_bar"
-        app:layout_constraintEnd_toEndOf="@id/actor_recycler"
-        />
+
 
     <TextView
         android:id="@+id/tv_running_time"

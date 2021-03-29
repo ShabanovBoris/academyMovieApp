@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".FragmentMovieList">
+    tools:context=".FragmentMovieList"
+    >
 
 
     <androidx.recyclerview.widget.RecyclerView
@@ -19,7 +20,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:listitem="@layout/view_holder_movie" />
+        tools:listitem="@layout/view_holder_movie"
+        android:transitionGroup="true"
+        />
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -33,7 +36,8 @@
         app:layout_constraintBottom_toBottomOf="@+id/rv_movie_list"
         app:layout_constraintEnd_toEndOf="@+id/rv_movie_list"
         app:layout_constraintStart_toStartOf="@+id/rv_movie_list"
-        app:layout_constraintTop_toTopOf="@+id/rv_movie_list" />
+        app:layout_constraintTop_toTopOf="@+id/rv_movie_list"
+        android:visibility="gone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

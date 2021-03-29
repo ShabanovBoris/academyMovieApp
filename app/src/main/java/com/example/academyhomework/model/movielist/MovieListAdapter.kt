@@ -12,10 +12,10 @@ import coil.load
 import com.bumptech.glide.Glide
 import com.example.academyhomework.R
 import com.example.academyhomework.model.Movie
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.card.MaterialCardView
 
 
-class MovieListAdapter(val onClick: (Int) -> Unit):ListAdapter<Movie, MovieListAdapter.ViewHolderMovie>(
+class MovieListAdapter(val onClick: (Int,View) -> Unit):ListAdapter<Movie, MovieListAdapter.ViewHolderMovie>(
     DiffCallback()
 ) {
 
@@ -27,14 +27,17 @@ class MovieListAdapter(val onClick: (Int) -> Unit):ListAdapter<Movie, MovieListA
         private val image:ImageView = view.findViewById(R.id.iv_image_card)
         private val rating:RatingBar = view.findViewById(R.id.ratingBarCard)
         private val release:TextView = view.findViewById(R.id.tv_release)
+         private val card:MaterialCardView = view.findViewById(R.id.movieCard)
 
 
         fun bindData(movie: Movie){
             image.load(movie.imageUrl){
+                allowHardware(false)
                 crossfade(true)
                 placeholder(R.drawable.ic_loading_image)
             }
 
+            card.transitionName = movie.id.toString()
 
 
             title.text = movie.title
@@ -56,7 +59,7 @@ class MovieListAdapter(val onClick: (Int) -> Unit):ListAdapter<Movie, MovieListA
     override fun onBindViewHolder(holder: ViewHolderMovie, position: Int) {
             holder.bindData(getItem(position))
             holder.itemView.setOnClickListener{
-                onClick(getItem(position).id)
+                onClick(getItem(position).id, holder.itemView.findViewById(R.id.movieCard))
             }
 
 

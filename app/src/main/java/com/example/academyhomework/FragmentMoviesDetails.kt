@@ -1,6 +1,7 @@
 package com.example.academyhomework
 
 import android.content.Context
+import android.graphics.Color
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.os.Bundle
@@ -19,6 +20,7 @@ import com.example.academyhomework.services.schedule_watch.WatchMovieSchedule
 import com.example.academyhomework.utils.DatePickerFragment
 import com.example.academyhomework.utils.TimePickerFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.transition.MaterialContainerTransform
 
 private const val MOVIE_KEY = "movie_param"
 
@@ -41,6 +43,15 @@ class FragmentMoviesDetails : BaseFragment() {
         arguments?.let {
             mMovie = it.getSerializable(MOVIE_KEY) as MovieDetails?
         }
+        sharedElementEnterTransition = MaterialContainerTransform().apply {
+            drawingViewId = R.id.containerMainActivity
+            duration = 1000
+            scrimColor = Color.TRANSPARENT
+           setAllContainerColors(requireContext().getColor(R.color.colorPrimary))
+            startContainerColor = requireContext().getColor(R.color.colorPrimary)
+        }
+
+
     }
 
     override fun onCreateView(

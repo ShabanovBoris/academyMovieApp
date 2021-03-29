@@ -7,16 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.core.view.doOnPreDraw
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.academyhomework.model.Movie
 import com.example.academyhomework.model.movielist.MovieListAdapter
-import com.example.academyhomework.services.schedule_watch.WatchMovieSchedule
-import com.example.academyhomework.utils.DatePickerFragment
-import com.example.academyhomework.utils.TimePickerFragment
 import com.example.academyhomework.viewmodel.ViewModelFactory
 import com.example.academyhomework.viewmodel.ViewModelMovie
+import com.google.android.material.transition.MaterialElevationScale
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -26,15 +25,20 @@ class FragmentMovieList : BaseFragment() {
 
 
     private lateinit var progressBar: ProgressBar
+    private var listener: Router? = null
 
     /**
      * set click on  [moveToDetails] handler with [movie] ID
      *
      * */
-    private val adapter by lazy { MovieListAdapter(viewModel::loadDetails) }
+    private val adapter by lazy {
+        MovieListAdapter { id, view ->
+            listener?.transitView = view
+            viewModel.loadDetails(id)
+        }
+    }
 
     private lateinit var recyclerView: RecyclerView
-    private var listener: Router? = null
 
 
     private lateinit var viewModelFactory: ViewModelFactory
@@ -66,10 +70,24 @@ class FragmentMovieList : BaseFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_movie_list, container, false)
+    ): View? {
+        val view = inflater.inflate(R.layout.fragment_movie_list, container, false)
+        postponeEnterTransition()
+        view.doOnPreDraw {
 
+            startPostponedEnterTransition() }
+        return view
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        exitTransition = MaterialElevationScale(false).apply {
+            duration = 500
+
+        }
+        reenterTransition = MaterialElevationScale(true).apply {
+            duration = 500
+
+        }
         progressBar = view.findViewById(R.id.progressBar)
         setRecycler(view)
         /**
@@ -104,7 +122,7 @@ class FragmentMovieList : BaseFragment() {
 
     private fun setList(list: List<Movie>) {
         CoroutineScope(Dispatchers.Default).launch {
-            adapter.submitList(list) { recyclerView.scrollToPosition(0) }
+            adapter.submitList(list) { }//recyclerView.scrollToPosition(0) }
         }
 
 
