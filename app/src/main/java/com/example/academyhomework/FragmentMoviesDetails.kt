@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.academyhomework.model.MovieDetails
@@ -129,6 +131,7 @@ class FragmentMoviesDetails : BaseFragment() {
         image.colorFilter = ColorMatrixColorFilter(matrix)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun scheduleMovie(id: Int) {
         /**     in UI
          * --->[Date] picking first
