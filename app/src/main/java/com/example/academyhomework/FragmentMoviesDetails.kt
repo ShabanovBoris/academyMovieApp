@@ -1,5 +1,7 @@
 package com.example.academyhomework
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.Color
 import android.graphics.ColorMatrix
@@ -11,7 +13,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
-import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.academyhomework.model.MovieDetails
@@ -28,7 +30,6 @@ class FragmentMoviesDetails : BaseFragment() {
 
     private var mListener: Router? = null
     private lateinit var mRecyclerView: RecyclerView
-
     private var mMovie: MovieDetails? = null
 
     override fun onAttach(context: Context) {
@@ -47,8 +48,9 @@ class FragmentMoviesDetails : BaseFragment() {
             drawingViewId = R.id.containerMainActivity
             duration = 1000
             scrimColor = Color.TRANSPARENT
-           setAllContainerColors(requireContext().getColor(R.color.colorPrimary))
-            startContainerColor = requireContext().getColor(R.color.colorPrimary)
+            setAllContainerColors(Color.TRANSPARENT)
+            startContainerColor = Color.TRANSPARENT
+
         }
 
 
@@ -80,6 +82,34 @@ class FragmentMoviesDetails : BaseFragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        enterFadeAnimate()
+    }
+
+    private fun enterFadeAnimate() {
+        requireActivity().findViewById<TextView>(R.id.tv_main_title)
+            .animate().setDuration(1500L).alpha(1F)
+            .setStartDelay(1200)
+            .start()
+
+        requireActivity().findViewById<FloatingActionButton>(R.id.fb_schedule)
+            .animate().setDuration(1500L).alpha(1F)
+            .setStartDelay(1200)
+            .start()
+
+        requireActivity().findViewById<TextView>(R.id.tv_running_time)
+            .animate().setDuration(1500L).alpha(1F)
+            .setStartDelay(1200)
+            .start()
+
+        requireActivity().findViewById<ImageView>(R.id.iv_tint_gradient)
+            .animate().setDuration(1500L).alpha(1F)
+            .setStartDelay(1000)
+            .start()
+
+    }
+
     private fun setViewFragmentMovie(view: View) {
         mMovie?.let {
             val movie = mMovie as MovieDetails
@@ -90,7 +120,7 @@ class FragmentMoviesDetails : BaseFragment() {
             val tvRating = view.findViewById<TextView>(R.id.tv_rating)
             val story = view.findViewById<TextView>(R.id.tv_story)
             val timeRun = view.findViewById<TextView>(R.id.tv_running_time)
-             val fab: FloatingActionButton = view.findViewById(R.id.fb_schedule)
+            val fab = view.findViewById<FloatingActionButton>(R.id.fb_schedule)
             /** Bacjdorp image*/
             image.load(movie.imageBackdrop) {
                 crossfade(true)

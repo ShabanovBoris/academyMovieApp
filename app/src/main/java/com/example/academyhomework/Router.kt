@@ -6,5 +6,8 @@ import com.example.academyhomework.model.MovieDetails
 interface Router {
     fun moveToDetails(movie: MovieDetails)
     fun backFromDetails()
+    /**
+     * [transitView] for animate transition
+     */
     var transitView: View?
 }

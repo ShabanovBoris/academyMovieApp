@@ -22,10 +22,8 @@ import kotlinx.coroutines.launch
 
 
 class FragmentMovieList : BaseFragment() {
-
-
     private lateinit var progressBar: ProgressBar
-    private var listener: Router? = null
+    private var router: Router? = null
 
     /**
      * set click on  [moveToDetails] handler with [movie] ID
@@ -33,7 +31,7 @@ class FragmentMovieList : BaseFragment() {
      * */
     private val adapter by lazy {
         MovieListAdapter { id, view ->
-            listener?.transitView = view
+            router?.transitView = view
             viewModel.loadDetails(id)
         }
     }
@@ -48,7 +46,7 @@ class FragmentMovieList : BaseFragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is Router) {
-            listener = context
+            router = context
         }
         /**
          * initializing [viewModel]
@@ -63,8 +61,7 @@ class FragmentMovieList : BaseFragment() {
 
     override fun onDetach() {
         super.onDetach()
-        listener = null
-
+        router = null
     }
 
     override fun onCreateView(
@@ -72,20 +69,28 @@ class FragmentMovieList : BaseFragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_movie_list, container, false)
+
+        /**
+         * waiting for a recycler view will draw items
+         * that [can] transition animate by [MaterialMotion]
+         */
         postponeEnterTransition()
         view.doOnPreDraw {
-
-            startPostponedEnterTransition() }
+            startPostponedEnterTransition()
+        }
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        /**
+         *  [exit] and [reenter] transitions animate with elevation effect
+         */
         exitTransition = MaterialElevationScale(false).apply {
-            duration = 500
+            duration = 1000
 
         }
         reenterTransition = MaterialElevationScale(true).apply {
-            duration = 500
+            duration = 1000
 
         }
         progressBar = view.findViewById(R.id.progressBar)
@@ -96,11 +101,9 @@ class FragmentMovieList : BaseFragment() {
         viewModel.movieList.observe(this.viewLifecycleOwner, this::setList)
         viewModel.loadingState.observe(this.viewLifecycleOwner, this::showProgressBar)
         viewModel.errorEvent.observe(this.viewLifecycleOwner, this::showErrorToast)
-
 //        viewModel.repositoryObservable.observe(viewLifecycleOwner) {
 //            viewModel.loadMovieCacheFromBack(it)
 //        }
-
         /** observe WorkManager state for update after 10 sec UI*/
         viewModel.wmObservable.observe(viewLifecycleOwner) { viewModel.workManagerHandler(it) }
     }
@@ -115,6 +118,7 @@ class FragmentMovieList : BaseFragment() {
 
     private fun setRecycler(view: View) {
         recyclerView = view.findViewById(R.id.rv_movie_list)
+        recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = GridLayoutManager(view.context, 2)
         recyclerView.adapter = adapter
 
@@ -129,10 +133,8 @@ class FragmentMovieList : BaseFragment() {
     }
 
     private fun showErrorToast(error: Throwable) {
-        Toast.makeText(requireContext(), error.message?.toUpperCase(), Toast.LENGTH_LONG).show()
+        Toast.makeText(requireContext(), error.message, Toast.LENGTH_LONG).show()
     }
-
-
 
 
     companion object {

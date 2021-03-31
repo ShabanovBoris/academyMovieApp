@@ -10,6 +10,7 @@ import com.example.academyhomework.model.Movie
 import com.example.academyhomework.model.MovieDetails
 import com.example.academyhomework.viewmodel.ViewModelFactory
 import com.example.academyhomework.viewmodel.ViewModelMovie
+import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity(), Router {
 
@@ -75,6 +76,7 @@ class MainActivity : AppCompatActivity(), Router {
         /** Details observer*/
         viewModel.details.observe(this, ::moveToDetails)
 
+
     }
 
     override fun moveToDetails(movie: MovieDetails) {
@@ -84,6 +86,10 @@ class MainActivity : AppCompatActivity(), Router {
         supportFragmentManager.popBackStack(DETAILS, FragmentManager.POP_BACK_STACK_INCLUSIVE)
 
         supportFragmentManager.beginTransaction().apply {
+            /**
+             * SharedElement for animate [trasitView],
+             * usually get from holder.itemView by recycler adapter
+             */
             addSharedElement(
                 transitView!!,
                 getString(R.string.DetailsTransitionName)

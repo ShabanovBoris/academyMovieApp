@@ -61,8 +61,6 @@ class MovieListAdapter(val onClick: (Int,View) -> Unit):ListAdapter<Movie, Movie
             holder.itemView.setOnClickListener{
                 onClick(getItem(position).id, holder.itemView.findViewById(R.id.movieCard))
             }
-
-
     }
 }
 
