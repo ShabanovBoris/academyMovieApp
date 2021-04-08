@@ -1,6 +1,7 @@
 package com.example.academyhomework.viewmodel
 
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -15,7 +16,9 @@ import com.example.academyhomework.model.MovieDetails
 import com.example.academyhomework.services.WorkRepository
 import com.example.academyhomework.utils.MovieDiff
 import com.example.academyhomework.utils.SingleLiveEvent
+import io.reactivex.Observable
 import kotlinx.coroutines.*
+import kotlinx.coroutines.rx2.rxObservable
 
 class ViewModelMovie(
     private val dataBaseRepository: DataBaseRepository,
@@ -30,7 +33,7 @@ class ViewModelMovie(
     }
     private val workRepository: WorkRepository = WorkRepository()
 
-    //val repositoryObservable get() = dataBaseRepository.getObserver() // todo in [FragmentMovieList] uncomment 82-84
+
     /** WorkManager state observer*/
     val wmObservable: LiveData<WorkInfo> = workRepository.initWorkManagerWithPeriodWork(workManager)
 
@@ -61,49 +64,80 @@ class ViewModelMovie(
     private var _errorEvent = SingleLiveEvent<Throwable>()
     val errorEvent: LiveData<Throwable> get() = _errorEvent
 
+    @ExperimentalCoroutinesApi
+    @SuppressLint("CheckResult")
     fun loadDetails(id: Int) {
-
-        if (id == -1) return
-        job?.cancel()
-
-        job = viewModelScope.launch(exceptionHandler) {
-            _loadingState.value = true
-
-
-            if (loadMovieDetailCache(id)){
-                _loadingState.value = false
-                return@launch
+        Observable.just(id)
+            .doOnSubscribe {
+                if (id != -1) {
+                    _loadingState.value = true
+                }
             }
-            val data = jsonMovieRepository.loadMovieDetails(id)
-            _details.value = data
-            uploadMoviesDetailsCache(data)
-            _loadingState.value = false
-        }
+            .flatMap {
+                rxObservable {
+                    if (loadMovieDetailCache(it)) {
+                        _loadingState.postValue(false)
+                    } else {
+                        send(jsonMovieRepository.loadMovieDetails(it))
+                    }
+                }
+            }
+            .doOnComplete {
+                _loadingState.postValue(false)
+            }
+            .subscribe({
+                Log.d(TAG, "loadDetailsOnSubscribe: $it")
+                _details.postValue(it)
+                uploadMoviesDetailsCache(it)
+            }, {
+                _errorEvent.postValue(it)
+            })
     }
 
+    @ExperimentalCoroutinesApi
+    @SuppressLint("CheckResult")
     fun loadMovieList() {
-
-        viewModelScope.launch(exceptionHandler) {
-
-
-            val list = jsonMovieRepository.loadMovies()
-            val oldList = dataBaseRepository.getMovieList()
-
-            val diff = MovieDiff.getDiff(list, oldList)
-            if (diff.isNotEmpty()) {
-                _loadingState.value = true
-                Log.d(TAG, "VIEWMODEL diff.isNotEmpty() ${diff.isNotEmpty()} diff.size ${diff.size} ")
-
-                uploadMoviesCache(list)
-                _movieList.postValue(list)
-                _loadingState.value = false
-            }else
-            {
-                Log.d(TAG, " VIEWMODEL have not changes ${list.size} and ${oldList.size} diff ${diff.toString()}")
-            }
-
+        rxObservable {
+            Log.d(TAG, " VIEWMODEL ")
+            send(dataBaseRepository.getMovieList())
         }
-
+            .switchMap { oldList ->
+                rxObservable { send(jsonMovieRepository.loadMovies()) }
+                    .map { it to oldList }
+            }
+            .map {
+                val list = it.first
+                val oldList = it.second
+                val diff = MovieDiff.getDiff(list, oldList)
+                if (diff.isNotEmpty()) {
+                    Log.d(
+                        TAG,
+                        "VIEWMODEL diff.isNotEmpty() ${diff.isNotEmpty()} diff.size ${diff.size} "
+                    )
+                    uploadMoviesCache(list)
+                    return@map list
+                } else {
+                    Log.d(
+                        TAG,
+                        " VIEWMODEL have not changes ${list.size} and ${oldList.size} diff ${diff.toString()}"
+                    )
+                    return@map emptyList()
+                }
+            }
+            //.observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe { _loadingState.postValue(true) }
+            .doOnComplete {
+                Log.d(TAG, "loadMovieList: ******rx completed")
+                _loadingState.postValue(false)
+            }
+            .subscribe({
+                if (it.isNotEmpty()) {
+                    _movieList.postValue(it)
+                }
+            },
+                {
+                    _errorEvent.postValue(it)
+                })
     }
 
     fun loadMovieCache() {
@@ -142,11 +176,11 @@ class ViewModelMovie(
 
     private fun loadMovieCacheFromBack(movies: List<Movie>) {
 
-            viewModelScope.launch {
+        viewModelScope.launch {
 
-                _movieList.postValue(movies)
-                Log.d(TAG+"Homework", "loadMovieCacheFromBack()")
-            }
+            _movieList.postValue(movies)
+            Log.d(TAG + "Homework", "loadMovieCacheFromBack()")
+        }
     }
 
 
