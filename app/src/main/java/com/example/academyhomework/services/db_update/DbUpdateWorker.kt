@@ -50,7 +50,7 @@ class DbUpdateWorker(appContext: Context, params: WorkerParameters) : Worker(app
             if (diff.isNotEmpty()) {
                 Log.d(
                     "AcademyHomework",
-                    "diff.isNotEmpty() ${diff.isNotEmpty()} diff.size ${diff.size} "
+                    "worker diff.isNotEmpty() ${diff.isNotEmpty()} diff.size ${diff.size} "
                 )
                 dataBaseRepository.clearMovies()
                 dataBaseRepository.insertMovies(list)
@@ -59,17 +59,17 @@ class DbUpdateWorker(appContext: Context, params: WorkerParameters) : Worker(app
             } else {
                 Log.d(
                     "AcademyHomework",
-                    "have not changes ${list.size} and ${oldList.size} diff ${diff.toString()}"
+                    "worker have not changes ${list.size} and ${oldList.size} diff ${diff.toString()}"
                 )
             }
 
         }.invokeOnCompletion {
             if (isError) {
                 doWork()
-                Log.d("AcademyHomework", "Result.retry() / Have error attempt $attempt")
+                Log.d("AcademyHomework", "worker Result.retry() / Have error attempt $attempt")
                 attempt++
             }else{
-                Log.d("AcademyHomework", "Result.success()")
+                Log.d("AcademyHomework", "worker Result.success()")
             }
         }
 

@@ -22,9 +22,7 @@ import java.util.*
 
 interface Notification {
     fun initialize()
-    fun showNotification(movie: MovieDetails)
-    fun dismissNotification(movieId: Int)
-}
+    fun showNotification(movie: MovieDetails)}
 
 
 class NotificationsNewMovie(private val appContext: Context) : Notification {
@@ -33,7 +31,9 @@ class NotificationsNewMovie(private val appContext: Context) : Notification {
         private const val CHANNEL_TAG = "channel_for_notification"
         private const val REQUEST_PENDING_CONTENT = 123
         private const val NOTIFICATION_TAG = "notify_tag"
-
+        fun dismissNotification(appContext: Context,movieId: Int) {
+            NotificationManagerCompat.from(appContext).cancel(NOTIFICATION_TAG, movieId)
+        }
     }
 
     private val notificationManager = NotificationManagerCompat.from(appContext)
@@ -58,9 +58,7 @@ class NotificationsNewMovie(private val appContext: Context) : Notification {
         createNotification(movie)
     }
 
-    override fun dismissNotification(movieId: Int) {
-        notificationManager.cancel(NOTIFICATION_TAG, movieId)
-    }
+
 
     suspend fun showFromDb(id: Int) {
         val movie = DataBaseRepository(appContext).getMovieDetails(id)
