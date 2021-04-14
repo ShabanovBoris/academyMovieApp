@@ -38,7 +38,7 @@ class DbUpdateWorker(appContext: Context, params: WorkerParameters) : Worker(app
         Log.d("AcademyHomework", "doWork: is running, $runAttemptCount")
         scope.launch(exceptionHandler) {
 
-            val list = jsonMovieRepository.loadMovies()
+            val list = jsonMovieRepository.loadMovies(1..5)
             if (list.isEmpty()){
                 isError = true
             }

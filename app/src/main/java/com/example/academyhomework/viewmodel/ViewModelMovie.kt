@@ -84,9 +84,7 @@ class ViewModelMovie(
     fun loadMovieList() {
 
         viewModelScope.launch(exceptionHandler) {
-
-
-            val list = jsonMovieRepository.loadMovies()
+            val list = jsonMovieRepository.loadMovies(1..5)
             val oldList = dataBaseRepository.getMovieList()
 
             val diff = MovieDiff.getDiff(list, oldList)
@@ -161,7 +159,7 @@ class ViewModelMovie(
         }
     }
 
-    fun workManagerHandler(workInfo: WorkInfo) {
+    fun workManagerStatesHandler(workInfo: WorkInfo) {
         workInfo.state?.let {
             when (it) {
                 WorkInfo.State.RUNNING -> {
