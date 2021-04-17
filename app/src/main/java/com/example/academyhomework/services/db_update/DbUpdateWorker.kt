@@ -47,20 +47,23 @@ class DbUpdateWorker(appContext: Context, params: WorkerParameters) : Worker(app
 //
 //
             val diff = MovieDiff.getDiff(list, oldList)
-            if (diff.isNotEmpty()) {
-                Log.d(
-                    "AcademyHomework",
-                    "worker diff.isNotEmpty() ${diff.isNotEmpty()} diff.size ${diff.size} "
-                )
-                dataBaseRepository.clearMovies()
-                dataBaseRepository.insertMovies(list)
-                val newMovie = jsonMovieRepository.loadMovieDetails(diff.last())
-                notification.showNotification(newMovie)
-            } else {
-                Log.d(
-                    "AcademyHomework",
-                    "worker have not changes ${list.size} and ${oldList.size} diff ${diff.toString()}"
-                )
+            when (diff) {
+                is MovieDiff.Relevance.OutOfDate -> {
+                    Log.d(
+                        "AcademyHomework",
+                        "worker diff.isNotEmpty() ${diff.newListIndies.size} diff.size ${diff.newListIndies.size} "
+                    )
+                    dataBaseRepository.clearMovies()
+                    dataBaseRepository.insertMovies(list)
+                    val newMovie = jsonMovieRepository.loadMovieDetails(diff.newListIndies.last())
+                    notification.showNotification(newMovie)
+                }
+                MovieDiff.Relevance.FreshData -> {
+                    Log.d(
+                        "AcademyHomework",
+                        "worker have not changes ${list.size} and ${oldList.size} diff ${diff.toString()}"
+                    )
+                }
             }
 
         }.invokeOnCompletion {
