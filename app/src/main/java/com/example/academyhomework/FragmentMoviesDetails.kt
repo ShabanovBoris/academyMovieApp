@@ -2,6 +2,7 @@ package com.example.academyhomework
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.graphics.ColorMatrix
@@ -13,7 +14,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.academyhomework.model.MovieDetails
@@ -21,6 +24,8 @@ import com.example.academyhomework.model.moviedetails.ActorRecyclerAdapter
 import com.example.academyhomework.services.schedule_watch.WatchMovieSchedule
 import com.example.academyhomework.utils.DatePickerFragment
 import com.example.academyhomework.utils.TimePickerFragment
+import com.example.academyhomework.viewmodel.DetailsViewModel
+import com.example.academyhomework.viewmodel.WebResult
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.transition.MaterialContainerTransform
 
@@ -28,9 +33,12 @@ private const val MOVIE_KEY = "movie_param"
 
 class FragmentMoviesDetails : BaseFragment() {
 
+
     private var mListener: Router? = null
     private lateinit var mRecyclerView: RecyclerView
     private var mMovie: MovieDetails? = null
+
+    private val viewModel: DetailsViewModel by viewModels{DetailsViewModel.Factory(mListener!!)}
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -68,6 +76,14 @@ class FragmentMoviesDetails : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setRecycler(view)
+        viewModel.openSate.observe(viewLifecycleOwner, { onWebOpenHandler(it) })
+    }
+
+    private fun onWebOpenHandler(result: WebResult){
+        when(result){
+            WebResult.Fail -> Toast.makeText(requireContext(),"Open web page failed",Toast.LENGTH_LONG).show()
+            WebResult.Success -> {}
+        }
     }
 
     private fun setRecycler(view: View) {
@@ -121,6 +137,7 @@ class FragmentMoviesDetails : BaseFragment() {
             val story = view.findViewById<TextView>(R.id.tv_story)
             val timeRun = view.findViewById<TextView>(R.id.tv_running_time)
             val fab = view.findViewById<FloatingActionButton>(R.id.fb_schedule)
+            val moreInfoButton = view.findViewById<ImageView>(R.id.ib_web_info)
             /** Bacjdorp image*/
             image.load(movie.imageBackdrop) {
                 crossfade(true)
@@ -142,6 +159,8 @@ class FragmentMoviesDetails : BaseFragment() {
             timeRun.text = "${movie.runtime} min"
             /** Schedule fab listener*/
             fab.setOnClickListener { scheduleMovie(movie.id) }
+            /** Image button to web page*/
+            moreInfoButton.setOnClickListener { viewModel.openWebPage(movie.id) }
         }
     }
 
@@ -159,6 +178,7 @@ class FragmentMoviesDetails : BaseFragment() {
         image.colorFilter = ColorMatrixColorFilter(matrix)
     }
 
+    @SuppressLint("NewApi")
     private fun scheduleMovie(id: Int) {
         /**     in UI
          * --->[Date] picking first

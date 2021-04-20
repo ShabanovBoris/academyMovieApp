@@ -13,13 +13,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:rippleColor="@color/black"
-
         >
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            ><View
+            android:layout_height="match_parent"><View
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:foreground="@drawable/dark_gradient"
@@ -32,7 +30,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
                 tools:srcCompat="@drawable/movie"
-                android:scaleType="centerCrop"
+                android:scaleType="fitStart"
                 android:foreground="@drawable/dark_gradient"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -47,7 +45,7 @@
                 android:max="5"
                 android:progressBackgroundTint="#6D6D80"
                 android:progressTint="#FF3365"
-                android:rating="4"
+                tools:rating="4"
                 app:layout_constraintStart_toStartOf="@id/tv_title_movie"
                 app:layout_constraintBottom_toTopOf="@+id/tv_title_movie"
                 />
@@ -71,33 +69,33 @@
                 android:id="@+id/tv_title_movie"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:gravity="start"
+                android:gravity="center"
                 android:maxWidth="150dp"
-                android:text="Avengers: End Game"
+                tools:text="Avengers: End Game"
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 android:textStyle="bold"
-
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
 
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@id/tv_release"
-                app:layout_constraintTop_toBottomOf="@+id/iv_image_card" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/tv_release"/>
 
             <TextView
                 android:id="@+id/tv_release"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="8dp"
                 android:layout_marginTop="8dp"
                 android:gravity="start"
                 tools:text="2022/09/23"
                 android:textColor="@color/white"
-                android:textSize="8sp"
+                android:textSize="12sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_title_movie" />
+                app:layout_constraintStart_toStartOf="parent" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -12,6 +12,9 @@ import com.example.academyhomework.model.Movie
 import com.example.academyhomework.model.MovieDetails
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.encodeToJsonElement
 
 interface DbRepository {
     suspend fun getMovieList(): List<Movie>
@@ -118,7 +121,8 @@ class DataBaseRepository(applicationContext: Context) : DbRepository {
             overview = entity.overview,
             runtime = entity.runtime,
             imageBackdrop = entity.imageBackdrop,
-            genres = entity.genres.split(",").map { Genre(id = 0, name = it) },
+           // genres = entity.genres.split(",").map { Genre(id = 0, name = it) },
+            genres = Json.decodeFromString(entity.genres),
             actors = entity.actorsId.split(",").map { getActorById(it.toInt())!! },
             votes = entity.votes
         )
@@ -129,7 +133,8 @@ class DataBaseRepository(applicationContext: Context) : DbRepository {
         overview = movie.overview,
         runtime = movie.runtime,
         imageBackdrop = movie.imageBackdrop,
-        genres = movie.genres.joinToString(",") { it.name },
+       // genres = movie.genres.joinToString(",") { it.name },
+        genres = Json.encodeToJsonElement(movie.genres).toString(),
         actorsId = movie.actors.joinToString(",") { it.id.toString() },
         votes = movie.votes
     )

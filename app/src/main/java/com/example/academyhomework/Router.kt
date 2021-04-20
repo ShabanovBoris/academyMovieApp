@@ -10,4 +10,5 @@ interface Router {
      * [transitView] for animate transition
      */
     var transitView: View?
+    fun openWebPage(movieId: Int):Boolean
 }

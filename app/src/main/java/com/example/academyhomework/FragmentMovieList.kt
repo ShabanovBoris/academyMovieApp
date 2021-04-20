@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.academyhomework.model.Movie
 import com.example.academyhomework.model.movielist.MovieListAdapter
+import com.example.academyhomework.utils.EndlessRecyclerViewScrollListener
+import com.example.academyhomework.utils.GridSpacingItemDecoration
 import com.example.academyhomework.viewmodel.ViewModelFactory
 import com.example.academyhomework.viewmodel.ViewModelMovie
 import com.google.android.material.transition.MaterialElevationScale
@@ -105,7 +107,7 @@ class FragmentMovieList : BaseFragment() {
 //            viewModel.loadMovieCacheFromBack(it)
 //        }
         /** observe WorkManager state for update after 10 sec UI*/
-        viewModel.wmObservable.observe(viewLifecycleOwner) { viewModel.workManagerHandler(it) }
+        viewModel.wmObservable.observe(viewLifecycleOwner) { viewModel.workManagerStatesHandler(it) }
     }
 
 
@@ -117,10 +119,20 @@ class FragmentMovieList : BaseFragment() {
     }
 
     private fun setRecycler(view: View) {
+        val gridLayoutManager = GridLayoutManager(view.context, 2)
+        val listener = object : EndlessRecyclerViewScrollListener(gridLayoutManager){
+            override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
+                Toast.makeText(requireContext(), "need page ${viewModel.currentPage} totalItemsCount $totalItemsCount", Toast.LENGTH_SHORT).show()
+                viewModel.loadMore()
+            }
+
+        }
         recyclerView = view.findViewById(R.id.rv_movie_list)
         recyclerView.setHasFixedSize(true)
-        recyclerView.layoutManager = GridLayoutManager(view.context, 2)
+        recyclerView.layoutManager = gridLayoutManager
+        recyclerView.addItemDecoration(GridSpacingItemDecoration(2, 30, true))
         recyclerView.adapter = adapter
+        recyclerView.addOnScrollListener(listener)
 
     }
 

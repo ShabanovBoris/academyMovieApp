@@ -1,13 +1,17 @@
 package com.example.academyhomework
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import com.example.academyhomework.model.Movie
 import com.example.academyhomework.model.MovieDetails
+import com.example.academyhomework.services.db_update.Notification
+import com.example.academyhomework.services.db_update.NotificationsNewMovie
 import com.example.academyhomework.viewmodel.ViewModelFactory
 import com.example.academyhomework.viewmodel.ViewModelMovie
 import java.util.concurrent.TimeUnit
@@ -15,6 +19,8 @@ import java.util.concurrent.TimeUnit
 class MainActivity : AppCompatActivity(), Router {
 
     override var transitView: View? = null
+
+
     private lateinit var viewModelFactory: ViewModelFactory
     private lateinit var viewModel: ViewModelMovie
 
@@ -47,7 +53,9 @@ class MainActivity : AppCompatActivity(), Router {
 
     private fun handleIntent(intent: Intent) {
         if (intent.data != null) {
-            viewModel.loadDetails(intent.data!!.lastPathSegment?.toIntOrNull() ?: -1)
+            val id = intent.data!!.lastPathSegment?.toIntOrNull() ?: -1
+            viewModel.loadDetails(id)
+            NotificationsNewMovie.dismissNotification(this,id)
         }
     }
 
@@ -90,10 +98,13 @@ class MainActivity : AppCompatActivity(), Router {
              * SharedElement for animate [trasitView],
              * usually get from holder.itemView by recycler adapter
              */
-            addSharedElement(
-                transitView!!,
-                getString(R.string.DetailsTransitionName)
-            )
+            transitView?.let {
+                addSharedElement(
+                    transitView!!,
+                    getString(R.string.DetailsTransitionName)
+                )
+            }
+
             addToBackStack(DETAILS)
             replace(R.id.containerMainActivity, rootFragment as FragmentMoviesDetails)
             commit()
@@ -106,6 +117,18 @@ class MainActivity : AppCompatActivity(), Router {
             supportFragmentManager.beginTransaction()
                 .remove(rootFragment as FragmentMoviesDetails)
                 .commit()
+        }
+    }
+
+    override fun openWebPage(movieId: Int):Boolean {
+        val browserIntent = Intent(Intent.ACTION_VIEW, "https://www.themoviedb.org/movie/${movieId}".toUri())
+        browserIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        return try {
+            supportFragmentManager.popBackStack(DETAILS, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            startActivity(browserIntent)
+            true
+        } catch (e: ActivityNotFoundException) {
+            false
         }
     }
 

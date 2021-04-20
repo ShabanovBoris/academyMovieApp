@@ -38,7 +38,7 @@ class DbUpdateWorker(appContext: Context, params: WorkerParameters) : Worker(app
         Log.d("AcademyHomework", "doWork: is running, $runAttemptCount")
         scope.launch(exceptionHandler) {
 
-            val list = jsonMovieRepository.loadMovies()
+            val list = jsonMovieRepository.loadMovies(1..5)
             if (list.isEmpty()){
                 isError = true
             }
@@ -47,29 +47,32 @@ class DbUpdateWorker(appContext: Context, params: WorkerParameters) : Worker(app
 //
 //
             val diff = MovieDiff.getDiff(list, oldList)
-            if (diff.isNotEmpty()) {
-                Log.d(
-                    "AcademyHomework",
-                    "diff.isNotEmpty() ${diff.isNotEmpty()} diff.size ${diff.size} "
-                )
-                dataBaseRepository.clearMovies()
-                dataBaseRepository.insertMovies(list)
-                val newMovie = jsonMovieRepository.loadMovieDetails(diff.last())
-                notification.showNotification(newMovie)
-            } else {
-                Log.d(
-                    "AcademyHomework",
-                    "have not changes ${list.size} and ${oldList.size} diff ${diff.toString()}"
-                )
+            when (diff) {
+                is MovieDiff.Relevance.OutOfDate -> {
+                    Log.d(
+                        "AcademyHomework",
+                        "worker diff.isNotEmpty() ${diff.newListIndies.size} diff.size ${diff.newListIndies.size} "
+                    )
+                    dataBaseRepository.clearMovies()
+                    dataBaseRepository.insertMovies(list)
+                    val newMovie = jsonMovieRepository.loadMovieDetails(diff.newListIndies.last())
+                    notification.showNotification(newMovie)
+                }
+                MovieDiff.Relevance.FreshData -> {
+                    Log.d(
+                        "AcademyHomework",
+                        "worker have not changes ${list.size} and ${oldList.size} diff ${diff.toString()}"
+                    )
+                }
             }
 
         }.invokeOnCompletion {
             if (isError) {
                 doWork()
-                Log.d("AcademyHomework", "Result.retry() / Have error attempt $attempt")
+                Log.d("AcademyHomework", "worker Result.retry() / Have error attempt $attempt")
                 attempt++
             }else{
-                Log.d("AcademyHomework", "Result.success()")
+                Log.d("AcademyHomework", "worker Result.success()")
             }
         }
 
