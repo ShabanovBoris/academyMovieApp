@@ -97,39 +97,29 @@ class ViewModelMovie(
             _loadingState.value = true
             val list = jsonMovieRepository.loadMovies(pagesRangeValue)
 
-            // if called first time
-            if (pagesRangeValue == mPreloadedDefaultRange) {
-                val oldList = dataBaseRepository.getMovieList()
-                val diff = MovieDiff.getDiff(list, oldList)
+            val oldList = dataBaseRepository.getMovieList()
+            val diff = MovieDiff.getDiff(list, oldList)
 
-                when (diff) {
-                    // database out of date
-                    is MovieDiff.Relevance.OutOfDate -> {
-                        Log.d(
-                            TAG,
-                            "VIEWMODEL pages $mPreloadedDefaultRange MovieDiff.Relevance.OutOfDate ${diff.newListIndies.size} diff.size ${diff.newListIndies.size} "
-                        )
+            when (diff) {
+                // database out of date
+                is MovieDiff.Relevance.OutOfDate -> {
+                    Log.d(
+                        TAG,
+                        "VIEWMODEL pages $mPreloadedDefaultRange MovieDiff.Relevance.OutOfDate ${diff.newListIndies.size} diff.size ${diff.newListIndies.size} "
+                    )
 
-                        uploadMoviesCache(list)
-                        _movieList.postValue(list)
-                        _loadingState.value = false
-                    }
-                    // database has not out of date
-                    MovieDiff.Relevance.FreshData ->
-                        Log.d(
-                            TAG,
-                            " VIEWMODEL pages $mPreloadedDefaultRange MovieDiff.Relevance.FreshData ${list.size} and ${oldList.size}"
-                        )
+                    uploadMoviesCache(list)
+                    _movieList.postValue(list)
+                    _loadingState.value = false
                 }
-            } else {
-                Log.d(
-                    TAG,
-                    "VIEWMODEL pages $pagesRangeValue LoadMore() "
-                )
-                val oldList = _movieList.value
-                _movieList.postValue(oldList?.plus(list))
-                _loadingState.value = false
+                // database has not out of date
+                MovieDiff.Relevance.FreshData ->
+                    Log.d(
+                        TAG,
+                        " VIEWMODEL pages $mPreloadedDefaultRange MovieDiff.Relevance.FreshData ${list.size} and ${oldList.size}"
+                    )
             }
+
 
         }
 
@@ -137,8 +127,20 @@ class ViewModelMovie(
 
     fun loadMore() {
         mCurrentPage += mPreloadedDefaultRange.last
-        val newRange = (mPreloadedDefaultRange.first + mCurrentPage) .. (mPreloadedDefaultRange.last + mCurrentPage)
-        loadMovieList(newRange)
+        val newRange =
+            (mPreloadedDefaultRange.first + mCurrentPage)..(mPreloadedDefaultRange.last + mCurrentPage)
+        additionalLoadPaging(newRange)
+    }
+
+    private fun additionalLoadPaging(pagesRangeValue: IntRange) {
+        viewModelScope.launch(exceptionHandler) {
+            val list = jsonMovieRepository.loadMovies(pagesRangeValue)
+            Log.d(
+                TAG,
+                "VIEWMODEL pages $pagesRangeValue LoadMore() "
+            )
+            val oldList = _movieList.value
+            _movieList.postValue(oldList?.plus(list))}
     }
 
 

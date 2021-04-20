@@ -46,7 +46,8 @@ class GridSpacingItemDecoration(
         if (includeEdge) {
             outRect.left = spacing - column * spacing / spanCount
             outRect.right = (column + 1) * spacing / spanCount
-            outRect.bottom = spacing / 2
+            outRect.bottom = spacing/2
+            outRect.top = spacing/2
         } else {
             outRect.left = column * spacing / spanCount
             outRect.right = spacing - (column + 1) * spacing / spanCount

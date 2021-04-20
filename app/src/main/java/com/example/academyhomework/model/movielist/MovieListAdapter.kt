@@ -18,9 +18,28 @@ class MovieListAdapter(val onClick: (Int,View) -> Unit):ListAdapter<Movie, Movie
     DiffCallback()
 ) {
 
+   companion object{
+       const val DEFAULT = 100
+       const val FOOTER = 111
+   }
 
-
-     class ViewHolderMovie(view:View):RecyclerView.ViewHolder(view){
+    override fun getItemCount(): Int {
+        return if (super.getItemCount() != 0){
+            super.getItemCount() + 1
+        }else{
+            return 0
+        }
+    }
+    override fun getItemViewType(position: Int): Int {
+        return if (position+1 == itemCount) {
+            FOOTER
+        } else {
+            DEFAULT
+        }
+    }
+    open class ViewHolderMovie(view:View):RecyclerView.ViewHolder(view)
+    class ViewHolderFooter(view:View):ViewHolderMovie(view)
+    class ViewHolderMovieItem(view:View):ViewHolderMovie(view){
         private val title:TextView = view.findViewById(R.id.tv_title_movie)
         private val genre:TextView = view.findViewById(R.id.tv_genre)
         private val image:ImageView = view.findViewById(R.id.iv_image_card)
@@ -57,12 +76,22 @@ class MovieListAdapter(val onClick: (Int,View) -> Unit):ListAdapter<Movie, Movie
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolderMovie {
-        return ViewHolderMovie(LayoutInflater.from(parent.context).inflate(R.layout.view_holder_movie,
-        parent,false))
+
+        return when(viewType){
+            DEFAULT -> ViewHolderMovieItem(LayoutInflater.from(parent.context).inflate(R.layout.view_holder_movie,
+                parent,false))
+            FOOTER -> ViewHolderFooter(LayoutInflater.from(parent.context).inflate(R.layout.footer_holder_movie,
+                parent,false))
+            else -> throw IllegalStateException("$viewType")
+        }
     }
 
     override fun onBindViewHolder(holder: ViewHolderMovie, position: Int) {
-            holder.bindData(getItem(position),onClick)
+        when (holder)
+        {
+            is ViewHolderMovieItem -> holder.bindData(getItem(position),onClick)
+        }
+
 //            holder.itemView.setOnClickListener{
 //                onClick(getItem(position).id, holder.itemView.findViewById(R.id.movieCard))
 //            }
