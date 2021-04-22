@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity(), Router {
 
-    override var transitView: View? = null
+   override var transitView: View? = null
 
 
     private lateinit var viewModelFactory: ViewModelFactory
@@ -54,9 +54,7 @@ class MainActivity : AppCompatActivity(), Router {
     private fun handleIntent(intent: Intent) {
         if (intent.data != null) {
             val id = intent.data!!.lastPathSegment?.toIntOrNull() ?: -1
-            viewModel.loadDetails(id)
-            NotificationsNewMovie.dismissNotification(this,id)
-        }
+            viewModel.loadDetails(id)}
     }
 
     override fun onNewIntent(intent: Intent?) {

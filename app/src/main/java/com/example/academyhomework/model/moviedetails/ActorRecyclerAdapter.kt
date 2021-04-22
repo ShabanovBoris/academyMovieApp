@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import com.bumptech.glide.Glide
 import com.example.academyhomework.R
 import com.example.academyhomework.model.Actor
 import com.example.academyhomework.model.Movie

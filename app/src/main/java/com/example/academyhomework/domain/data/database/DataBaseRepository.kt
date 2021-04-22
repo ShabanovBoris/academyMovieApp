@@ -13,6 +13,7 @@ import com.example.academyhomework.model.MovieDetails
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.encodeToJsonElement
 
@@ -122,7 +123,12 @@ class DataBaseRepository(applicationContext: Context) : DbRepository {
             runtime = entity.runtime,
             imageBackdrop = entity.imageBackdrop,
            // genres = entity.genres.split(",").map { Genre(id = 0, name = it) },
-            genres = Json.decodeFromString(entity.genres),
+            genres =  try {
+                Json.decodeFromString(entity.genres)
+            } catch (e: Exception) {
+                Log.d(TAG, "AcademyEXEPTION: ${e.localizedMessage}")
+                entity.genres.split(",").map { Genre(id = 0, name = it) }
+            } ,
             actors = entity.actorsId.split(",").map { getActorById(it.toInt())!! },
             votes = entity.votes
         )
@@ -134,7 +140,7 @@ class DataBaseRepository(applicationContext: Context) : DbRepository {
         runtime = movie.runtime,
         imageBackdrop = movie.imageBackdrop,
        // genres = movie.genres.joinToString(",") { it.name },
-        genres = Json.encodeToJsonElement(movie.genres).toString(),
+        genres = Json.encodeToString(movie.genres),
         actorsId = movie.actors.joinToString(",") { it.id.toString() },
         votes = movie.votes
     )

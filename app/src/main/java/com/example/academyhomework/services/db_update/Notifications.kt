@@ -10,14 +10,15 @@ import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.graphics.drawable.IconCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.core.net.toUri
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
+import coil.imageLoader
+import coil.request.ImageRequest
 import com.example.academyhomework.MainActivity
 import com.example.academyhomework.R
 import com.example.academyhomework.domain.data.database.DataBaseRepository
 import com.example.academyhomework.model.MovieDetails
+import com.example.academyhomework.services.schedule_watch.NotifyWorker
 import java.util.*
 
 interface Notification {
@@ -102,12 +103,15 @@ class NotificationsNewMovie(private val appContext: Context) : Notification {
         )
         var bitmapImage: Bitmap
 
-        Glide.with(appContext)
-            .asBitmap()
-            .load(movie.imageBackdrop)
-            .into(object : CustomTarget<Bitmap>() {
-                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    bitmapImage = resource
+        val request = ImageRequest.Builder(appContext)
+            .data(movie?.imageBackdrop)
+            .target(
+                onStart = { placeholder ->
+                    // Handle the placeholder drawable.
+                },
+                onSuccess = { result ->
+                    // Handle the successful result.
+                    bitmapImage = result.toBitmap()
 
 
                     val notificationMovie =
@@ -122,17 +126,13 @@ class NotificationsNewMovie(private val appContext: Context) : Notification {
                         }.build()
 
                     notificationManager.notify(NOTIFICATION_TAG, movie.id, notificationMovie)
+                },
+                onError = { error ->
+                    // Handle the error drawable.
                 }
-
-                override fun onLoadCleared(placeholder: Drawable?) {
-                    // this is called when imageView is cleared on lifecycle call or for
-                    // some other reason.
-                    // if you are referencing the bitmap somewhere else too other than this imageView
-                    // clear it here as you can no longer have the bitmap
-                }
-
-
-            })
+            )
+            .build()
+        appContext.imageLoader.enqueue(request)
     }
 }
 

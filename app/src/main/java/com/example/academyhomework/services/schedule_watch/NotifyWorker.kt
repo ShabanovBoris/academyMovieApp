@@ -18,9 +18,8 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.core.net.toUri
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
+import coil.imageLoader
+import coil.request.ImageRequest
 import com.example.academyhomework.MainActivity
 import com.example.academyhomework.R
 import com.example.academyhomework.domain.data.database.DataBaseRepository
@@ -81,38 +80,75 @@ class NotifyWorker(appContext: Context, workerParameters: WorkerParameters) :
             val subtitleNotification = "Don't forget to watch =)"
             var bitmapImage : Bitmap
 
-            Glide.with(applicationContext)
-                .asBitmap()
-                .load(movie?.imageBackdrop)
-                .into(object : CustomTarget<Bitmap>() {
-                    override fun onResourceReady(
-                        resource: Bitmap,
-                        transition: Transition<in Bitmap>?
-                    ) {
-                        bitmapImage = resource
+//            Glide.with(applicationContext)
+//                .asBitmap()
+//                .load(movie?.imageBackdrop)
+//                .into(object : CustomTarget<Bitmap>() {
+//                    override fun onResourceReady(
+//                        resource: Bitmap,
+//                        transition: Transition<in Bitmap>?
+//                    ) {
+//                        bitmapImage = resource
+//
+//
+//                        val notification =
+//                            NotificationCompat.Builder(applicationContext, NOTIFICATION_CHANNEL_TAG)
+//                                .apply {
+//                                    setLargeIcon(bitmap).setSmallIcon(R.drawable.ic_baseline_schedule_24)
+//                                    setContentTitle(titleNotification).setContentText(
+//                                        subtitleNotification
+//                                    )
+//                                    setWhen(Date().time)
+//                                    setStyle(NotificationCompat.BigPictureStyle().bigPicture(bitmapImage))
+//                                    setDefaults(DEFAULT_ALL)
+//                                    setContentIntent(pendingIntent)
+//                                    setAutoCancel(true)
+//                                    priority = PRIORITY_MAX
+//                                }.build()
+//
+//
+//                        notificationManager.notify(id, notification)
+//                    }
+//
+//                    override fun onLoadCleared(placeholder: Drawable?) {}
+//                })
 
 
-                        val notification =
-                            NotificationCompat.Builder(applicationContext, NOTIFICATION_CHANNEL_TAG)
-                                .apply {
-                                    setLargeIcon(bitmap).setSmallIcon(R.drawable.ic_baseline_schedule_24)
-                                    setContentTitle(titleNotification).setContentText(
-                                        subtitleNotification
-                                    )
-                                    setWhen(Date().time)
-                                    setStyle(NotificationCompat.BigPictureStyle().bigPicture(bitmapImage))
-                                    setDefaults(DEFAULT_ALL)
-                                    setContentIntent(pendingIntent)
-                                    setAutoCancel(true)
-                                    priority = PRIORITY_MAX
-                                }.build()
+        val request = ImageRequest.Builder(applicationContext)
+            .data(movie?.imageBackdrop)
+            .target(
+                onStart = { placeholder ->
+                    // Handle the placeholder drawable.
+                },
+                onSuccess = { result ->
+                    // Handle the successful result.
+                    bitmapImage = result.toBitmap()
 
 
-                        notificationManager.notify(id, notification)
-                    }
+                    val notification =
+                        NotificationCompat.Builder(applicationContext, NOTIFICATION_CHANNEL_TAG)
+                            .apply {
+                                setLargeIcon(bitmap).setSmallIcon(R.drawable.ic_baseline_schedule_24)
+                                setContentTitle(titleNotification).setContentText(
+                                    subtitleNotification
+                                )
+                                setWhen(Date().time)
+                                setStyle(NotificationCompat.BigPictureStyle().bigPicture(bitmapImage))
+                                setDefaults(DEFAULT_ALL)
+                                setContentIntent(pendingIntent)
+                                setAutoCancel(true)
+                                priority = PRIORITY_MAX
+                            }.build()
 
-                    override fun onLoadCleared(placeholder: Drawable?) {}
-                })
+
+                    notificationManager.notify(id, notification)
+                },
+                onError = { error ->
+                    // Handle the error drawable.
+                }
+            )
+            .build()
+        applicationContext.imageLoader.enqueue(request)
             Log.d(TAG, "sendNotification: notification has appear")
 
 

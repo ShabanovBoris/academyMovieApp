@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.academyhomework.model.MovieDetails
 import com.example.academyhomework.model.moviedetails.ActorRecyclerAdapter
+import com.example.academyhomework.services.db_update.NotificationsNewMovie
 import com.example.academyhomework.services.schedule_watch.WatchMovieSchedule
 import com.example.academyhomework.utils.DatePickerFragment
 import com.example.academyhomework.utils.TimePickerFragment
@@ -52,6 +53,8 @@ class FragmentMoviesDetails : BaseFragment() {
         arguments?.let {
             mMovie = it.getSerializable(MOVIE_KEY) as MovieDetails?
         }
+        NotificationsNewMovie.dismissNotification(requireContext(),mMovie?.id ?:0)
+
         sharedElementEnterTransition = MaterialContainerTransform().apply {
             drawingViewId = R.id.containerMainActivity
             duration = 1000
