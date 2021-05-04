@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="380dp"
     android:layout_height="200dp"
-    android:background="#191926">
+    android:background="@color/main_background">
 
     <ProgressBar
         android:layout_width="match_parent"

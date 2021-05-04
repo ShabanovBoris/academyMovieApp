@@ -1,8 +1,6 @@
 package com.example.academyhomework.domain.data.database
 
 import android.provider.BaseColumns
-import com.example.academyhomework.model.Actor
-import com.example.academyhomework.model.Genre
 
 object DbContract {
 

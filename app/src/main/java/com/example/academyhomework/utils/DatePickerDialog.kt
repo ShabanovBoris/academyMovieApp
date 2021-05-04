@@ -9,7 +9,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import java.util.*
 
-class DatePickerFragment(private val appContext: Context) : DialogFragment(), DatePickerDialog.OnDateSetListener {
+class DatePickerFragment(private val viewContext: Context) : DialogFragment(), DatePickerDialog.OnDateSetListener {
     var years: Int = 0
     var months: Int = 0
     var days: Int = 0
@@ -28,7 +28,7 @@ class DatePickerFragment(private val appContext: Context) : DialogFragment(), Da
         val day = c.get(Calendar.DAY_OF_MONTH)
 
         // Create a new instance of DatePickerDialog and return it
-        return DatePickerDialog(appContext, this, year, month, day)
+        return DatePickerDialog(viewContext, this, year, month, day)
     }
 
     override fun onDateSet(view: DatePicker, year: Int, month: Int, day: Int) {

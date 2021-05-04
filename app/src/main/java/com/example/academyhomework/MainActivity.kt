@@ -8,21 +8,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
-import com.example.academyhomework.model.Movie
-import com.example.academyhomework.model.MovieDetails
-import com.example.academyhomework.services.db_update.Notification
-import com.example.academyhomework.services.db_update.NotificationsNewMovie
-import com.example.academyhomework.viewmodel.ViewModelFactory
-import com.example.academyhomework.viewmodel.ViewModelMovie
-import java.util.concurrent.TimeUnit
+import com.example.academyhomework.entities.Movie
+import com.example.academyhomework.entities.MovieDetails
+import com.example.academyhomework.viewmodels.MainViewModelFactory
+import com.example.academyhomework.viewmodels.MainViewModelMovie
 
 class MainActivity : AppCompatActivity(), Router {
 
    override var transitView: View? = null
 
 
-    private lateinit var viewModelFactory: ViewModelFactory
-    private lateinit var viewModel: ViewModelMovie
+    private lateinit var mainViewModelFactory: MainViewModelFactory
+    private lateinit var mainViewModel: MainViewModelMovie
 
 
 
@@ -40,8 +37,8 @@ class MainActivity : AppCompatActivity(), Router {
              * FragmentMovieList
              *
              */
-            viewModel.loadMovieCache()
-            viewModel.loadMovieList()
+            mainViewModel.loadMovieCache()
+            mainViewModel.loadMovieList()
             rootFragment = FragmentMovieList.newInstance()
             supportFragmentManager.beginTransaction()
                 .replace(R.id.containerMainActivity, rootFragment as FragmentMovieList)
@@ -54,19 +51,19 @@ class MainActivity : AppCompatActivity(), Router {
     private fun handleIntent(intent: Intent) {
         if (intent.data != null) {
             val id = intent.data!!.lastPathSegment?.toIntOrNull() ?: -1
-            viewModel.loadDetails(id)}
+            mainViewModel.loadDetails(id)}
     }
 
     override fun onNewIntent(intent: Intent?) {
         if (intent != null) {
-            val list = viewModel.movieList.value
+            val list = mainViewModel.movieList.value
             val movie: Movie?
             list?.let {
                 movie = list.find {
-                    it.id == intent?.data?.lastPathSegment?.toInt()
+                    it.id == intent.data?.lastPathSegment?.toInt()
                 }
                 movie?.let {
-                    viewModel.loadDetails(movie.id)
+                    mainViewModel.loadDetails(movie.id)
                 }
             }
         }
@@ -75,12 +72,11 @@ class MainActivity : AppCompatActivity(), Router {
 
 
     private fun createViewModel() {
-        viewModelFactory = ViewModelFactory(applicationContext = applicationContext)
-        viewModel =
-            ViewModelProvider(this.viewModelStore, viewModelFactory).get(ViewModelMovie::class.java)
+        mainViewModelFactory = MainViewModelFactory(applicationContext = applicationContext)
+        mainViewModel = ViewModelProvider(this.viewModelStore, mainViewModelFactory).get(MainViewModelMovie::class.java)
 
         /** Details observer*/
-        viewModel.details.observe(this, ::moveToDetails)
+        mainViewModel.details.observe(this, ::moveToDetails)
 
 
     }
@@ -94,7 +90,7 @@ class MainActivity : AppCompatActivity(), Router {
         supportFragmentManager.beginTransaction().apply {
             /**
              * SharedElement for animate [trasitView],
-             * usually get from holder.itemView by recycler adapter
+             * usually given from holder.itemView by recycler adapter
              */
             transitView?.let {
                 addSharedElement(
@@ -111,11 +107,12 @@ class MainActivity : AppCompatActivity(), Router {
 
 
     override fun backFromDetails() {
-        if (rootFragment is FragmentMoviesDetails) {
-            supportFragmentManager.beginTransaction()
-                .remove(rootFragment as FragmentMoviesDetails)
-                .commit()
-        }
+        onBackPressed()
+//        if (rootFragment is FragmentMoviesDetails) {
+//            supportFragmentManager.beginTransaction()
+//                .remove(rootFragment as FragmentMoviesDetails)
+//                .commit()
+//        }
     }
 
     override fun openWebPage(movieId: Int):Boolean {

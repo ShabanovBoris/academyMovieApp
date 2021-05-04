@@ -1,13 +1,13 @@
 package com.example.academyhomework.domain.data.network
 
-import com.example.academyhomework.domain.data.CreditResponse
-import com.example.academyhomework.domain.data.network.NetworkModule.RetrofitModule.json
-import com.example.academyhomework.domain.data.network.NetworkModule.RetrofitModule.movieApi
-import com.example.academyhomework.domain.data.network.NetworkModule.RetrofitModule.okHttpClient
-import com.example.academyhomework.domain.data.network.NetworkModule.RetrofitModule.retrofit
+import com.example.academyhomework.domain.data.network.NetworkModule.RetrofitModule.getApi
+import com.example.academyhomework.domain.data.network.NetworkModule.RetrofitModule.getOkHttpClient
+import com.example.academyhomework.domain.data.network.NetworkModule.RetrofitModule.getRetrofit
+import com.example.academyhomework.domain.data.network.models.*
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.coroutines.*
 import kotlinx.serialization.json.Json
+import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -23,24 +23,27 @@ import retrofit2.http.Query
  */
 
 
-class NetworkModule {
+class NetworkModule() {
+    private var okHttpClient = getOkHttpClient(ApiKeyInterceptor())
+    private val retrofit = getRetrofit(baseUrlString, okHttpClient)
+    private val movieApi = getApi(retrofit)
 
     suspend fun getMovieDetail(movieId:String) = withContext(Dispatchers.IO){
-        return@withContext RetrofitModule.movieApi.getDetails(movieId = movieId)
+        return@withContext movieApi.getDetails(movieId = movieId)
     }
 
 
     suspend fun getActors(movieId:String) = withContext(Dispatchers.IO){
-        return@withContext RetrofitModule.movieApi.getCredits(movieId = movieId)
+        return@withContext movieApi.getCredits(movieId = movieId)
     }
 
     suspend fun getGenresList() = withContext(Dispatchers.IO) {
-        return@withContext RetrofitModule.movieApi.getGenres()
+        return@withContext movieApi.getGenres()
     }
 
 
     suspend fun getMovieResponse(page:Int = 1) = withContext(Dispatchers.IO) {
-        return@withContext RetrofitModule.movieApi.getOnPlayingMovies(page)
+        return@withContext movieApi.getOnPlayingMovies(page)
     }
 
     private interface TheMovieApi {
@@ -67,39 +70,35 @@ class NetworkModule {
 
     }
 
-    /** [RetrofitModule] with
-     *
-     * [json]
-     * [okHttpClient] with [HttpLoggingInterceptor]
-     *[retrofit] and create Api [movieApi]
-     *
-     * */
+
     private object RetrofitModule {
 
         private val json = Json {
             ignoreUnknownKeys = true
         }
 
-        private var okHttpClient = OkHttpClient().newBuilder().apply {
+        fun getOkHttpClient(interceptor: Interceptor) =
+         OkHttpClient().newBuilder().apply {
             addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-            addInterceptor(ApiKeyInterceptor())
+            addInterceptor(interceptor)
         }.build()
 
-        private val retrofit = Retrofit.Builder().apply {
-            client(okHttpClient)
-            baseUrl(baseUrlString)
 
-            addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
-        }.build()
+        fun getRetrofit(baseUrl: String, okHttpClient: OkHttpClient): Retrofit =
+            Retrofit.Builder().apply {
+                client(okHttpClient)
+                baseUrl(baseUrl)
+                addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+            }.build()
 
-        val movieApi: TheMovieApi = retrofit.create(TheMovieApi::class.java)
+        fun getApi(retrofit: Retrofit): TheMovieApi = retrofit.create(TheMovieApi::class.java)
+
     }
 
 
     companion object {
         private const val baseUrlString = "https://api.themoviedb.org/3/"
-        var baseImagePosterUrl =
-            "https://image.tmdb.org/t/p/w500" // todo instead w500 realize GET configuration
+        var baseImagePosterUrl = "https://image.tmdb.org/t/p/w500" // todo instead w500 realize GET configuration
         var baseImageBackdropUrl = "https://image.tmdb.org/t/p/w780"
     }
 
