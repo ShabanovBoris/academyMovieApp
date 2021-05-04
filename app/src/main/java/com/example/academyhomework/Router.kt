@@ -1,7 +1,7 @@
 package com.example.academyhomework
 
 import android.view.View
-import com.example.academyhomework.model.MovieDetails
+import com.example.academyhomework.entities.MovieDetails
 
 interface Router {
     fun moveToDetails(movie: MovieDetails)

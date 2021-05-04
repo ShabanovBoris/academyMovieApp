@@ -2,6 +2,9 @@ package com.example.academyhomework.domain.data.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.example.academyhomework.domain.data.database.entities.ActorEntity
+import com.example.academyhomework.domain.data.database.entities.MovieDetailsEntity
+import com.example.academyhomework.domain.data.database.entities.MovieEntity
 
 @Dao
 interface MovieDao {
@@ -22,13 +25,13 @@ interface MovieDao {
     suspend fun clear()
 
     @Query("SELECT * FROM movie_details WHERE _id = :id")
-    suspend fun getDetailsById(id:Long):MovieDetailsEntity?
+    suspend fun getDetailsById(id:Long): MovieDetailsEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertDetails(details:MovieDetailsEntity)
+    suspend fun insertDetails(details: MovieDetailsEntity)
 
     @Query("SELECT * FROM actors WHERE id = :id")
-    suspend fun getActorById(id:Long):ActorEntity?
+    suspend fun getActorById(id:Long): ActorEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertActors(actors:List<ActorEntity>)

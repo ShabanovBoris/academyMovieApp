@@ -9,18 +9,20 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.core.view.doOnPreDraw
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.academyhomework.model.Movie
-import com.example.academyhomework.model.movielist.MovieListAdapter
+import com.example.academyhomework.adapters.MovieListAdapter
+import com.example.academyhomework.entities.Movie
 import com.example.academyhomework.utils.EndlessRecyclerViewScrollListener
 import com.example.academyhomework.utils.GridSpacingItemDecoration
-import com.example.academyhomework.viewmodel.ViewModelFactory
-import com.example.academyhomework.viewmodel.ViewModelMovie
+import com.example.academyhomework.viewmodels.MainViewModelFactory
+import com.example.academyhomework.viewmodels.MainViewModelMovie
 import com.google.android.material.transition.MaterialElevationScale
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.*
 
 
 class FragmentMovieList : BaseFragment() {
@@ -31,18 +33,18 @@ class FragmentMovieList : BaseFragment() {
      * set click on  [moveToDetails] handler with [movie] ID
      *
      * */
-    private val adapter by lazy {
+    private val mAdapter by lazy {
         MovieListAdapter { id, view ->
             router?.transitView = view
-            viewModel.loadDetails(id)
+            mainViewModel.loadDetails(id)
         }
     }
 
     private lateinit var recyclerView: RecyclerView
 
 
-    private lateinit var viewModelFactory: ViewModelFactory
-    private lateinit var viewModel: ViewModelMovie
+    private lateinit var mainViewModelFactory: MainViewModelFactory
+    private lateinit var mainViewModel: MainViewModelMovie
 
 
     override fun onAttach(context: Context) {
@@ -51,14 +53,14 @@ class FragmentMovieList : BaseFragment() {
             router = context
         }
         /**
-         * initializing [viewModel]
+         * initializing [mainViewModel]
          */
-        viewModelFactory =
-            ViewModelFactory(applicationContext = requireActivity().applicationContext)
-        viewModel = ViewModelProvider(
-            requireActivity().viewModelStore, viewModelFactory
+        mainViewModelFactory =
+            MainViewModelFactory(applicationContext = requireActivity().applicationContext)
+        mainViewModel = ViewModelProvider(
+            requireActivity().viewModelStore, mainViewModelFactory
         )
-            .get(ViewModelMovie::class.java)
+            .get(MainViewModelMovie::class.java)
     }
 
     override fun onDetach() {
@@ -100,14 +102,20 @@ class FragmentMovieList : BaseFragment() {
         /**
          * set [observers] for recycler list, progressbar, errorCoroutine toast
          */
-        viewModel.movieList.observe(this.viewLifecycleOwner, this::setList)
-        viewModel.loadingState.observe(this.viewLifecycleOwner, this::showProgressBar)
-        viewModel.errorEvent.observe(this.viewLifecycleOwner, this::showErrorToast)
+        mainViewModel.movieList.observe(this.viewLifecycleOwner, this::setList)
+        mainViewModel.loadingState.observe(this.viewLifecycleOwner, this::showProgressBar)
+        mainViewModel.errorEvent.observe(this.viewLifecycleOwner, this::showErrorToast)
 //        viewModel.repositoryObservable.observe(viewLifecycleOwner) {
 //            viewModel.loadMovieCacheFromBack(it)
 //        }
-        /** observe WorkManager state for update after 10 sec UI*/
-        viewModel.wmObservable.observe(viewLifecycleOwner) { viewModel.workManagerStatesHandler(it) }
+        /**     with given lifecycle
+         *   observe WorkManager state for update after 10 sec delay to UI
+         * */
+        mainViewModel.wmObservable.observe(viewLifecycleOwner) {
+            mainViewModel.workManagerStatesHandler(
+                it
+            )
+        }
     }
 
 
@@ -118,30 +126,47 @@ class FragmentMovieList : BaseFragment() {
         }
     }
 
+    @ExperimentalCoroutinesApi
     private fun setRecycler(view: View) {
         val gridLayoutManager = GridLayoutManager(view.context, 2)
-        val listener = object : EndlessRecyclerViewScrollListener(gridLayoutManager){
-            override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
-                Toast.makeText(requireContext(), "need page ${viewModel.currentPage} totalItemsCount $totalItemsCount", Toast.LENGTH_SHORT).show()
-                viewModel.loadMore()
-            }
 
-        }
         recyclerView = view.findViewById(R.id.rv_movie_list)
-        recyclerView.setHasFixedSize(true)
-        recyclerView.layoutManager = gridLayoutManager
-        recyclerView.addItemDecoration(GridSpacingItemDecoration(2, 30, true))
-        recyclerView.adapter = adapter
-        recyclerView.addOnScrollListener(listener)
+        recyclerView.apply {
+            setHasFixedSize(true)
+            layoutManager = gridLayoutManager
+            addItemDecoration(GridSpacingItemDecoration(2, 30, true))
+            adapter = mAdapter
+        }
+        /** set ScrollListener fro pagination with multi shot callbackFlow */
+        callbackFlow<Int> {
+            val paginationScrollListener =
+                object : EndlessRecyclerViewScrollListener(gridLayoutManager) {
+                    override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
+                        //trigger flow
+                        offer(totalItemsCount)
+                    }
+                }
+            recyclerView.addOnScrollListener(paginationScrollListener)
 
+            awaitClose{ recyclerView.clearOnScrollListeners() }
+        }
+            .buffer(Channel.RENDEZVOUS)
+            .onEach { totalItemsCount ->
+                //load from VM
+                mainViewModel.loadMore()
+                Toast.makeText(
+                    requireContext(),
+                    "need page ${mainViewModel.currentPage} totalItemsCount $totalItemsCount",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            .launchIn(lifecycleScope)
     }
 
     private fun setList(list: List<Movie>) {
-        CoroutineScope(Dispatchers.Default).launch {
-            adapter.submitList(list) { }//recyclerView.scrollToPosition(0) }
+        lifecycleScope.launchWhenStarted {
+            mAdapter.submitList(list)
         }
-
-
     }
 
     private fun showErrorToast(error: Throwable) {
