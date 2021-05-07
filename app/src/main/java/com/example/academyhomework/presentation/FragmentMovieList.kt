@@ -1,4 +1,4 @@
-package com.example.academyhomework
+package com.example.academyhomework.presentation
 
 import android.content.Context
 import android.os.Bundle
@@ -12,7 +12,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.academyhomework.R
+import com.example.academyhomework.Router
 import com.example.academyhomework.adapters.MovieListAdapter
+import com.example.academyhomework.di.ContextModule
+import com.example.academyhomework.di.DaggerApplicationComponent
 import com.example.academyhomework.entities.Movie
 import com.example.academyhomework.utils.EndlessRecyclerViewScrollListener
 import com.example.academyhomework.utils.GridSpacingItemDecoration
@@ -23,6 +27,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
+import javax.inject.Inject
 
 
 class FragmentMovieList : BaseFragment() {
@@ -42,8 +47,9 @@ class FragmentMovieList : BaseFragment() {
 
     private lateinit var recyclerView: RecyclerView
 
+    @Inject
+    lateinit var mainViewModelFactory: MainViewModelFactory
 
-    private lateinit var mainViewModelFactory: MainViewModelFactory
     private lateinit var mainViewModel: MainViewModelMovie
 
 
@@ -52,11 +58,14 @@ class FragmentMovieList : BaseFragment() {
         if (context is Router) {
             router = context
         }
+
+        val comp = DaggerApplicationComponent.builder()
+            .contextModule(ContextModule(requireActivity().applicationContext))
+            .build().inject(this)
+
         /**
          * initializing [mainViewModel]
          */
-        mainViewModelFactory =
-            MainViewModelFactory(applicationContext = requireActivity().applicationContext)
         mainViewModel = ViewModelProvider(
             requireActivity().viewModelStore, mainViewModelFactory
         )

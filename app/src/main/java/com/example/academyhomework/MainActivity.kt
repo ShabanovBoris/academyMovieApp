@@ -8,17 +8,24 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
+import com.example.academyhomework.di.ContextModule
+import com.example.academyhomework.di.DaggerApplicationComponent
 import com.example.academyhomework.entities.Movie
 import com.example.academyhomework.entities.MovieDetails
+import com.example.academyhomework.presentation.BaseFragment
+import com.example.academyhomework.presentation.FragmentMovieList
+import com.example.academyhomework.presentation.FragmentMoviesDetails
 import com.example.academyhomework.viewmodels.MainViewModelFactory
 import com.example.academyhomework.viewmodels.MainViewModelMovie
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), Router {
 
    override var transitView: View? = null
 
 
-    private lateinit var mainViewModelFactory: MainViewModelFactory
+    @Inject
+    lateinit var mainViewModelFactory: MainViewModelFactory
     private lateinit var mainViewModel: MainViewModelMovie
 
 
@@ -28,6 +35,13 @@ class MainActivity : AppCompatActivity(), Router {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val component = DaggerApplicationComponent
+            .builder()
+            .contextModule(ContextModule(applicationContext))
+            .build()
+
+        component.inject(this)
 
         createViewModel()
 
@@ -72,8 +86,9 @@ class MainActivity : AppCompatActivity(), Router {
 
 
     private fun createViewModel() {
-        mainViewModelFactory = MainViewModelFactory(applicationContext = applicationContext)
-        mainViewModel = ViewModelProvider(this.viewModelStore, mainViewModelFactory).get(MainViewModelMovie::class.java)
+
+        mainViewModel = ViewModelProvider(viewModelStore, mainViewModelFactory).get(MainViewModelMovie::class.java)
+
 
         /** Details observer*/
         mainViewModel.details.observe(this, ::moveToDetails)

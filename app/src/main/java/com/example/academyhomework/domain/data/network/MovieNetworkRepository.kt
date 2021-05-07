@@ -10,10 +10,18 @@ import com.example.academyhomework.entities.Genre
 import com.example.academyhomework.entities.Movie
 import com.example.academyhomework.entities.MovieDetails
 import kotlinx.coroutines.*
+import javax.inject.Inject
 
-class JsonMovieRepository() : MovieNetwork {
+class NetworkMovieRepository @Inject constructor(
+    private val mNetworkModule: NetworkModule
+    ): MovieNetwork {
 
-    private val mNetworkModule = NetworkModule()
+    companion object{
+        // todo instead w500 realize GET configuration
+        val baseImagePosterUrl = "https://image.tmdb.org/t/p/w500"
+        val baseImageBackdropUrl = "https://image.tmdb.org/t/p/w780"
+    }
+
     /** load list of [Genres]
      *
      * */
@@ -62,8 +70,8 @@ class JsonMovieRepository() : MovieNetwork {
                 genres = it.genreIds.map { id -> Genre(id = id, mutableMap[id] ?: "") },
                 reviewCount = it.voteCount ?: 0,
                 rating = (it.voteAverage ?: 0.0) / 2,
-                imageUrl = NetworkModule.baseImagePosterUrl + it.posterPath ?: "",
-                detailImageUrl = NetworkModule.baseImageBackdropUrl + it.backdropPath ?: "",
+                imageUrl = baseImagePosterUrl + it.posterPath ?: "",
+                detailImageUrl = baseImageBackdropUrl + it.backdropPath ?: "",
                 storyLine = it.overview ?: "",
                 releaseDate = it.releaseDate,
                 popularity = it.popularity
@@ -81,7 +89,7 @@ class JsonMovieRepository() : MovieNetwork {
             title = jsonDetails.original_title,
             overview = jsonDetails.overview ?: "Nothing",
             runtime = jsonDetails.runtime ?: 0,
-            imageBackdrop = NetworkModule.baseImageBackdropUrl + jsonDetails.backdrop_path ?: "",
+            imageBackdrop = baseImageBackdropUrl + jsonDetails.backdrop_path ?: "",
             genres = jsonDetails.genres.map { Genre(id = it.id, name = it.name) },
             actors = loadActorList(jsonDetails.id),
             votes = jsonDetails.vote_average / 2
@@ -97,7 +105,7 @@ class JsonMovieRepository() : MovieNetwork {
             Actor(
                 id = it.id,
                 name = it.name,
-                imageUrl = NetworkModule.baseImagePosterUrl + it.profilePicture
+                imageUrl = baseImagePosterUrl + it.profilePicture
             )
         }
     }

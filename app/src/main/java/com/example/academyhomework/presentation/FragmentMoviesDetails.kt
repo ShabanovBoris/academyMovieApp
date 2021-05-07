@@ -1,4 +1,4 @@
-package com.example.academyhomework
+package com.example.academyhomework.presentation
 
 import android.content.Context
 import android.graphics.Color
@@ -15,6 +15,8 @@ import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.example.academyhomework.R
+import com.example.academyhomework.Router
 import com.example.academyhomework.entities.MovieDetails
 import com.example.academyhomework.adapters.ActorRecyclerAdapter
 import com.example.academyhomework.services.db_update_work_manager.NotificationsNewMovie

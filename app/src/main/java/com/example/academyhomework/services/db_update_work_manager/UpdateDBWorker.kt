@@ -4,18 +4,28 @@ import android.content.Context
 import android.util.Log
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import com.example.academyhomework.di.DaggerApplicationComponent
 import com.example.academyhomework.domain.data.database.MovieDatabaseRepositry
-import com.example.academyhomework.domain.data.network.JsonMovieRepository
+import com.example.academyhomework.domain.data.network.NetworkMovieRepository
+import com.example.academyhomework.domain.data.network.NetworkModule
 import com.example.academyhomework.utils.MovieDiffHelper
 import kotlinx.coroutines.*
+import javax.inject.Inject
 
 class UpdateDBWorker(appContext: Context, params: WorkerParameters) : Worker(appContext, params) {
 
+    init {
+        val component = DaggerApplicationComponent.builder().build()
+        component.inject(this)
+    }
+
+    @Inject
+    lateinit var networkModule: NetworkModule
 
     private var attempt = 0
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private val dataBaseRepository = MovieDatabaseRepositry(appContext)
-    private val jsonMovieRepository = JsonMovieRepository()
+    private val jsonMovieRepository = NetworkMovieRepository(networkModule)
     private val notification: Notification = NotificationsNewMovie(appContext)
 
     override fun doWork(): Result {

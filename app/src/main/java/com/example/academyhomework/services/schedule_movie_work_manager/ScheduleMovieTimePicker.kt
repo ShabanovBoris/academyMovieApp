@@ -1,18 +1,13 @@
 package com.example.academyhomework.services.schedule_movie_work_manager
 
 import android.annotation.SuppressLint
-import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
-import com.example.academyhomework.BaseFragment
-import com.example.academyhomework.Router
+import com.example.academyhomework.presentation.BaseFragment
 import com.example.academyhomework.utils.DatePickerFragment
 import com.example.academyhomework.utils.TimePickerFragment
 
 class ScheduleMovieTimePicker() {
     companion object {
-        @SuppressLint("NewApi")
+
         fun schedule(fragment: BaseFragment, movieId: Int) {
             /**     in UI
              * --->[Date] picking first
