@@ -149,15 +149,13 @@ class MainViewModelMovie(
     }
 
 
-    fun loadMovieCache() {
-
+    fun  loadMovieCache(){
         //if ((movieList.value ?: emptyList()).isEmpty()) {
         viewModelScope.launch(exceptionHandler) {
             _loadingState.value = true
-            Log.d(TAG, "loadMovieCache() ")
+            Log.d(TAG, "loadMovieCache() load Movies from Cache")
             _movieList.postValue(movieDatabase.getMovieList())
-            _loadingState.value = false
-
+           if(_movieList.value != null) _loadingState.value = false
         }
     }
 
@@ -200,7 +198,7 @@ class MainViewModelMovie(
                     Log.d(TAG, "WorkInfo.State.ENQUEUED")
                     viewModelScope.launch {
                         /**
-                         *   10 seconds will be enough to load movie list from background =)
+                         *   10 seconds would be enough to load movie list from background =)
                          */
                         delay(10000)
                         loadMovieCacheFromWorkManager(movieDatabase.getMovieList())

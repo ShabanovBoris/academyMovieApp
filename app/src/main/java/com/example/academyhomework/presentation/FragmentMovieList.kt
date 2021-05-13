@@ -12,11 +12,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.academyhomework.MovieApp
 import com.example.academyhomework.R
 import com.example.academyhomework.Router
 import com.example.academyhomework.adapters.MovieListAdapter
-import com.example.academyhomework.di.ContextModule
-import com.example.academyhomework.di.DaggerApplicationComponent
 import com.example.academyhomework.entities.Movie
 import com.example.academyhomework.utils.EndlessRecyclerViewScrollListener
 import com.example.academyhomework.utils.GridSpacingItemDecoration
@@ -59,9 +58,8 @@ class FragmentMovieList : BaseFragment() {
             router = context
         }
 
-        val comp = DaggerApplicationComponent.builder()
-            .contextModule(ContextModule(requireActivity().applicationContext))
-            .build().inject(this)
+        /** ApplicationComponent */
+        (requireActivity().application as MovieApp).appComponent.inject(this)
 
         /**
          * initializing [mainViewModel]

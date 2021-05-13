@@ -21,10 +21,14 @@ import coil.imageLoader
 import coil.request.ImageRequest
 import com.example.academyhomework.MainActivity
 import com.example.academyhomework.R
-import com.example.academyhomework.domain.data.database.MovieDatabaseRepositry
+import com.example.academyhomework.di.DaggerApplicationComponent
+import com.example.academyhomework.domain.data.MovieDatabase
+import com.example.academyhomework.domain.data.MovieNetwork
+import com.example.academyhomework.domain.data.database.MovieDatabaseRepository
 import com.example.academyhomework.entities.MovieDetails
 import kotlinx.coroutines.*
 import java.util.*
+import javax.inject.Inject
 
 class ScheduleNotificationWorker(appContext: Context, workerParameters: WorkerParameters) :
     Worker(appContext, workerParameters) {
@@ -35,6 +39,13 @@ class ScheduleNotificationWorker(appContext: Context, workerParameters: WorkerPa
         const val REQUEST_PENDING_CONTENT = 123
         const val TAG = "AcademyScheduler"
     }
+
+    init {
+        val component = DaggerApplicationComponent.factory().create(appContext)
+        component.inject(this)
+    }
+    @Inject
+    lateinit var dataBaseRepository: MovieDatabase
 
     private val scope = CoroutineScope(Dispatchers.IO)
 
@@ -139,8 +150,7 @@ class ScheduleNotificationWorker(appContext: Context, workerParameters: WorkerPa
     }
 
     private suspend fun getMovie(id: Int): MovieDetails? {
-        val repository = MovieDatabaseRepositry(applicationContext)
-        return repository.getMovieDetails(id)
+        return dataBaseRepository.getMovieDetails(id)
     }
 
 }

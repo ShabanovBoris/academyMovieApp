@@ -4,22 +4,22 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.work.WorkManager
+import com.example.academyhomework.domain.data.MovieDatabase
 import com.example.academyhomework.domain.data.MovieNetwork
-import com.example.academyhomework.domain.data.database.MovieDatabaseRepositry
-import com.example.academyhomework.domain.data.network.NetworkMovieRepository
-import com.example.academyhomework.domain.data.network.NetworkModule
+import com.example.academyhomework.domain.data.database.MovieDatabaseRepository
 import javax.inject.Inject
 
 
 class MainViewModelFactory @Inject constructor(
     private var applicationContext: Context,
-    private val movieNetwork: MovieNetwork
+    private val movieNetwork: MovieNetwork,
+    private val movieDatabase: MovieDatabase
 ): ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T = when (modelClass) {
 
         MainViewModelMovie::class.java -> MainViewModelMovie(
-            movieDatabase = MovieDatabaseRepositry(applicationContext),
+            movieDatabase = movieDatabase,
             movieNetwork = movieNetwork,
             workManager = WorkManager.getInstance(applicationContext)
         )

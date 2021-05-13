@@ -14,15 +14,33 @@
         android:id="@+id/rv_movie_list"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/main_background"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_searching"
         tools:listitem="@layout/view_holder_movie"
         android:transitionGroup="true"
         />
 
+    <!-- cloud elevate effect -->
+    <View
+        android:id="@+id/searching_background"
+        android:layout_width="wrap_content"
+        android:layout_height="90dp"
+        android:scaleX="17"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/main_theme_gradient"
+        />
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/et_searching"
+        style="@style/SearchStyle"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyle"

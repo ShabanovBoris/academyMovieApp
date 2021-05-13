@@ -1,24 +1,34 @@
 package com.example.academyhomework.di
 
 
+import android.content.Context
 import androidx.work.Worker
 import com.example.academyhomework.MainActivity
-import com.example.academyhomework.domain.data.MovieNetwork
-import com.example.academyhomework.domain.data.network.NetworkMovieRepository
+import com.example.academyhomework.di.scopes.AppScope
 import com.example.academyhomework.presentation.FragmentMovieList
-import dagger.Binds
+import com.example.academyhomework.presentation.details.MovieDetailsComponent
+import com.example.academyhomework.services.db_update_work_manager.UpdateDBWorker
+import com.example.academyhomework.services.schedule_movie_work_manager.ScheduleNotificationWorker
+import dagger.BindsInstance
 import dagger.Component
-import dagger.Provides
-import javax.inject.Singleton
 
-@Singleton
-@Component(modules = [RetrofitModule::class, ContextModule::class])
+@AppScope
+@Component(modules = [RetrofitModule::class, AppModule::class, AppSubcomponents::class, RoomModule::class])
 interface ApplicationComponent {
 
 
-    fun inject(fragmentMovieList: FragmentMovieList)
+    @Component.Factory
+    interface Factory {
+        fun create(@BindsInstance context: Context): ApplicationComponent
+    }
+
+    //inject views
+    fun inject(fragment: FragmentMovieList)
     fun inject(act: MainActivity)
-    fun inject(work: Worker)
+    //inject background
+    fun inject(work: UpdateDBWorker)
+    fun inject(work: ScheduleNotificationWorker)
 
-
+    //subcomponents
+    fun plusDetailsComponent(): MovieDetailsComponent.Factory
 }

@@ -1,6 +1,7 @@
 package com.example.academyhomework.domain.data.network
 
 
+import com.example.academyhomework.di.scopes.AppScope
 import com.example.academyhomework.domain.data.network.models.*
 import kotlinx.coroutines.*
 import retrofit2.http.GET
@@ -15,8 +16,8 @@ import javax.inject.Singleton
  *
  */
 
-@Singleton
-class NetworkModule @Inject constructor( private val movieApi: TheMovieApi ) {
+
+class NetworkMovieApi @Inject constructor(private val movieApi: TheMovieApi ) {
 
     suspend fun getMovieDetail(movieId: String) = withContext(Dispatchers.IO) {
         return@withContext movieApi.getDetails(movieId = movieId)

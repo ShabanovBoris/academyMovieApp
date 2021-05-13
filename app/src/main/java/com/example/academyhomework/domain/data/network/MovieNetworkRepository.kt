@@ -1,6 +1,8 @@
 package com.example.academyhomework.domain.data.network
 
 
+import android.util.Log
+import com.example.academyhomework.di.scopes.AppScope
 import com.example.academyhomework.domain.data.MovieNetwork
 import com.example.academyhomework.domain.data.network.models.JsonGenre
 import com.example.academyhomework.domain.data.network.models.JsonMovie
@@ -12,20 +14,20 @@ import com.example.academyhomework.entities.MovieDetails
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
+@AppScope
 class NetworkMovieRepository @Inject constructor(
-    private val mNetworkModule: NetworkModule
-    ): MovieNetwork {
-
-    companion object{
+    private val mNetworkMovieApi: NetworkMovieApi
+) : MovieNetwork {
+    companion object {
         // todo instead w500 realize GET configuration
-        val baseImagePosterUrl = "https://image.tmdb.org/t/p/w500"
-        val baseImageBackdropUrl = "https://image.tmdb.org/t/p/w780"
+        val baseImagePosterUrl get() = "https://image.tmdb.org/t/p/w500"
+        val baseImageBackdropUrl get() = "https://image.tmdb.org/t/p/w780"
     }
 
     /** load list of [Genres]
      *
      * */
-    private suspend fun genresList(): List<JsonGenre> = mNetworkModule.getGenresList().genres
+    private suspend fun genresList(): List<JsonGenre> = mNetworkMovieApi.getGenresList().genres
     private suspend fun loadGenres(): MutableMap<Int, String> {
         val genres = genresList()
         val mutableMap: MutableMap<Int, String> = mutableMapOf()
@@ -36,25 +38,25 @@ class NetworkMovieRepository @Inject constructor(
     }
 
     /**  get [JsonMovieList]  from Network
-     *          max 10 pages
+     *
      * */
     private suspend fun getJsonMovieList(pages: IntRange): List<JsonMovie> {
 
-            var range = pages
-            val listOfJsonMovie = mutableListOf<JsonMovie>()
-            val totalPages = mNetworkModule.getMovieResponse().totalPages
+        var range = pages
+        val listOfJsonMovie = mutableListOf<JsonMovie>()
+        val totalPages = mNetworkMovieApi.getMovieResponse().totalPages
 
-            if (range.first > totalPages) {
-                return emptyList<JsonMovie>()
-            }
-            if (range.last > totalPages) {
-                range = range.first..totalPages
-            }
+        if (range.first > totalPages) {
+            return emptyList<JsonMovie>()
+        }
+        if (range.last > totalPages) {
+            range = range.first..totalPages
+        }
 
-            for (iterator in range) {
-                listOfJsonMovie.addAll(mNetworkModule.getMovieResponse(iterator).results)
-            }
-            return listOfJsonMovie
+        for (iterator in range) {
+            listOfJsonMovie.addAll(mNetworkMovieApi.getMovieResponse(iterator).results)
+        }
+        return listOfJsonMovie
     }
 
     /** function [loadMovies] return list of [Movie] class to [ViewModel]
@@ -83,7 +85,7 @@ class NetworkMovieRepository @Inject constructor(
      *
      * */
     override suspend fun loadMovieDetails(id: Int): MovieDetails {
-        val jsonDetails: JsonMovieDetails = mNetworkModule.getMovieDetail("$id")
+        val jsonDetails: JsonMovieDetails = mNetworkMovieApi.getMovieDetail("$id")
         return MovieDetails(
             id = jsonDetails.id,
             title = jsonDetails.original_title,
@@ -100,7 +102,7 @@ class NetworkMovieRepository @Inject constructor(
      *
      * */
     private suspend fun loadActorList(id: Int): List<Actor> {
-        val jsonCast = mNetworkModule.getActors("$id").cast
+        val jsonCast = mNetworkMovieApi.getActors("$id").cast
         return jsonCast.map {
             Actor(
                 id = it.id,

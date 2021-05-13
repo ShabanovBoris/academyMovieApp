@@ -4,30 +4,29 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
-import com.example.academyhomework.di.ContextModule
-import com.example.academyhomework.di.DaggerApplicationComponent
 import com.example.academyhomework.entities.Movie
 import com.example.academyhomework.entities.MovieDetails
 import com.example.academyhomework.presentation.BaseFragment
 import com.example.academyhomework.presentation.FragmentMovieList
-import com.example.academyhomework.presentation.FragmentMoviesDetails
+import com.example.academyhomework.presentation.details.FragmentMoviesDetails
 import com.example.academyhomework.viewmodels.MainViewModelFactory
 import com.example.academyhomework.viewmodels.MainViewModelMovie
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), Router {
 
-   override var transitView: View? = null
+    override var transitView: View? = null
 
 
     @Inject
     lateinit var mainViewModelFactory: MainViewModelFactory
-    private lateinit var mainViewModel: MainViewModelMovie
 
+    private lateinit var mainViewModel: MainViewModelMovie
 
 
     private var rootFragment: BaseFragment? = null
@@ -36,11 +35,7 @@ class MainActivity : AppCompatActivity(), Router {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val component = DaggerApplicationComponent
-            .builder()
-            .contextModule(ContextModule(applicationContext))
-            .build()
-
+        val component = (application as MovieApp).appComponent
         component.inject(this)
 
         createViewModel()
@@ -57,7 +52,7 @@ class MainActivity : AppCompatActivity(), Router {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.containerMainActivity, rootFragment as FragmentMovieList)
                 .commit()
-
+            //deeplink handler
             intent?.let(::handleIntent)
         }
     }
@@ -65,7 +60,8 @@ class MainActivity : AppCompatActivity(), Router {
     private fun handleIntent(intent: Intent) {
         if (intent.data != null) {
             val id = intent.data!!.lastPathSegment?.toIntOrNull() ?: -1
-            mainViewModel.loadDetails(id)}
+            mainViewModel.loadDetails(id)
+        }
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -87,7 +83,10 @@ class MainActivity : AppCompatActivity(), Router {
 
     private fun createViewModel() {
 
-        mainViewModel = ViewModelProvider(viewModelStore, mainViewModelFactory).get(MainViewModelMovie::class.java)
+        mainViewModel = ViewModelProvider(
+            viewModelStore,
+            mainViewModelFactory
+        ).get(MainViewModelMovie::class.java)
 
 
         /** Details observer*/
@@ -99,7 +98,6 @@ class MainActivity : AppCompatActivity(), Router {
     override fun moveToDetails(movie: MovieDetails) {
 
         rootFragment = FragmentMoviesDetails.newInstance(movie)
-
         supportFragmentManager.popBackStack(DETAILS, FragmentManager.POP_BACK_STACK_INCLUSIVE)
 
         supportFragmentManager.beginTransaction().apply {
@@ -120,6 +118,9 @@ class MainActivity : AppCompatActivity(), Router {
         }
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+    }
 
     override fun backFromDetails() {
         onBackPressed()
@@ -130,8 +131,9 @@ class MainActivity : AppCompatActivity(), Router {
 //        }
     }
 
-    override fun openWebPage(movieId: Int):Boolean {
-        val browserIntent = Intent(Intent.ACTION_VIEW, "https://www.themoviedb.org/movie/${movieId}".toUri())
+    override fun openWebPage(movieId: Int): Boolean {
+        val browserIntent =
+            Intent(Intent.ACTION_VIEW, "https://www.themoviedb.org/movie/${movieId}".toUri())
         browserIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         return try {
             supportFragmentManager.popBackStack(DETAILS, FragmentManager.POP_BACK_STACK_INCLUSIVE)
@@ -149,7 +151,7 @@ class MainActivity : AppCompatActivity(), Router {
     }
 //endregion
 
-companion object{
-    const val DETAILS = "details"
-}
+    companion object {
+        const val DETAILS = "details"
+    }
 }

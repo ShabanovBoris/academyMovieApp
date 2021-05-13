@@ -1,11 +1,11 @@
 package com.example.academyhomework.di
 
+import com.example.academyhomework.di.scopes.AppScope
 import com.example.academyhomework.domain.data.MovieNetwork
 import com.example.academyhomework.domain.data.network.ApiKeyInterceptor
-import com.example.academyhomework.domain.data.network.NetworkModule
+import com.example.academyhomework.domain.data.network.NetworkMovieApi
 import com.example.academyhomework.domain.data.network.NetworkMovieRepository
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import kotlinx.serialization.json.Json
@@ -19,25 +19,22 @@ import retrofit2.Retrofit
 @Module
 class RetrofitModule {
 
-
-
-    @Provides
-    fun provideMovieNetworkInterface(impl: NetworkMovieRepository): MovieNetwork = impl
-//    ==
-//    @Binds
-//    fun provideMovieNetworkInterface(impl: NetworkMovieRepository): MovieNetwork
-//
-//    module must be interface or abstract
-
-    @Provides
-    fun baseUrlString(): String = "https://api.themoviedb.org/3/"
-
     /**
-     * Api usage only in [NetworkModule]
+     * Provide network repository for ViewModel
      */
     @Provides
-    fun provideTheMovieApi(retrofit: Retrofit): NetworkModule.TheMovieApi =
-        retrofit.create(NetworkModule.TheMovieApi::class.java)
+    fun provideMovieNetworkImpl(impl: NetworkMovieRepository): MovieNetwork = impl
+//    == alternative
+//    @Binds
+//    fun provideMovieNetworkInterface(impl: NetworkMovieRepository): MovieNetwork
+//    *module must be interface or abstract
+
+    /**
+     * Api usage only in [NetworkMovieApi]
+     */
+    @Provides
+    fun provideTheMovieApi(retrofit: Retrofit): NetworkMovieApi.TheMovieApi =
+        retrofit.create(NetworkMovieApi.TheMovieApi::class.java)
 
     @Provides
     fun provideRetrofit(baseUrl: String, okHttpClient: OkHttpClient, json: Json): Retrofit =
@@ -68,17 +65,8 @@ class RetrofitModule {
         ignoreUnknownKeys = true
     }
 
-
-
-
-
-
-
-
-
-
-
-
+    @Provides
+    fun baseUrlString(): String = "https://api.themoviedb.org/3/"
 }
 
 

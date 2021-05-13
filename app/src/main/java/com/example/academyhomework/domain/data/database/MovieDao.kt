@@ -13,7 +13,12 @@ interface MovieDao {
     suspend fun getAll():List<MovieEntity>
 
 
-    /** unused still*/
+    /**
+     * Observes list of films.
+     *
+     * @return all movies.
+     * unused still
+     */
     @Query("SELECT * FROM movie ORDER BY popularity desc")
     fun getAllLive(): LiveData<List<MovieEntity>>
 

@@ -5,6 +5,5 @@ import com.example.academyhomework.Router
 
 abstract class BaseFragment: Fragment()
 {
-      val parentRouter: Router? get() = (activity as? Router)
-
+     // val parentRouter: Router? get() = (activity as? Router)
 }

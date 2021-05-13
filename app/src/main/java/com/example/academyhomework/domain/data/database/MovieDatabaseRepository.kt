@@ -18,15 +18,13 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import javax.inject.Inject
 
-class MovieDatabaseRepositry(applicationContext: Context) : MovieDatabase {
+class MovieDatabaseRepository @Inject constructor(private val dataBase: MovieDatabaseImpl ) : MovieDatabase {
 
     companion object {
         const val TAG = "Academy"
     }
-
-
-    private val dataBase = DataBaseMovie.create(applicationContext)
 
 
     fun getObserver(): LiveData<List<Movie>> =

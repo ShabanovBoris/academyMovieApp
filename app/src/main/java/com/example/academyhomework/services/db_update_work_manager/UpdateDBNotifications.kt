@@ -15,7 +15,7 @@ import coil.imageLoader
 import coil.request.ImageRequest
 import com.example.academyhomework.MainActivity
 import com.example.academyhomework.R
-import com.example.academyhomework.domain.data.database.MovieDatabaseRepositry
+import com.example.academyhomework.domain.data.database.MovieDatabaseRepository
 import com.example.academyhomework.entities.MovieDetails
 import java.util.*
 
@@ -58,9 +58,9 @@ class NotificationsNewMovie(private val appContext: Context) : Notification {
     }
 
 
-
+/**
     suspend fun showFromDb(id: Int) {
-        val movie = MovieDatabaseRepositry(appContext).getMovieDetails(id)
+        val movie = MovieDatabaseRepository(appContext).getMovieDetails(id)
         movie?.let {
             val contentUri = "https://www.google.com/${movie.id}".toUri()
             val movieIntent = Intent(appContext, MainActivity::class.java).apply {
@@ -86,7 +86,7 @@ class NotificationsNewMovie(private val appContext: Context) : Notification {
             notificationManager.notify(NOTIFICATION_TAG, movie.id, notificationMovie)
         }
     }
-
+*/
     private fun createNotification(movie: MovieDetails) {
         val contentUri = "https://www.google.com/${movie.id}".toUri()
         val movieIntent = Intent(appContext, MainActivity::class.java).apply {
