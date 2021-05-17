@@ -1,11 +1,8 @@
-package com.example.academyhomework.viewmodels
+package com.example.academyhomework.presentation.playing_list
 
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.example.academyhomework.domain.data.MovieDatabase
@@ -15,10 +12,10 @@ import com.example.academyhomework.entities.MovieDetails
 import com.example.academyhomework.services.db_update_work_manager.UpdateDBWorkRepository
 import com.example.academyhomework.utils.MovieDiffHelper
 import com.example.academyhomework.utils.SingleLiveEvent
+import com.example.academyhomework.utils.WorkManagerHelper
 import kotlinx.coroutines.*
-import kotlin.coroutines.coroutineContext
 
-class MainViewModelMovie(
+class PlayingListViewModelMovie(
     private val movieDatabase: MovieDatabase,
     private val movieNetwork: MovieNetwork,
     workManager: WorkManager
@@ -75,11 +72,21 @@ class MainViewModelMovie(
     private var _errorEvent = SingleLiveEvent<Throwable>()
     val errorEvent: LiveData<Throwable> get() = _errorEvent
 
+    //Experimental api !!!!!!!
+    fun searchMovie(query: String) {
+        viewModelScope.launch {
+            if (query.isNotEmpty())
+                _movieList.postValue(movieNetwork.search(query))
+        }
+    }
+
+
     fun loadDetails(id: Int) {
 
         if (id == -1) return
         job?.cancel()
 
+        //view model scope have *supervisor job*
         job = viewModelScope.launch(exceptionHandler) {
             _loadingState.value = true
 
@@ -106,7 +113,7 @@ class MainViewModelMovie(
 
             when (diff) {
                 // database out of date
-                is MovieDiffHelper.Relevance.OutOfDate -> {
+                is MovieDiffHelper.Relevance.StaleData -> {
                     Log.d(
                         TAG,
                         "VIEWMODEL pages $mPreloadedDefaultRange MovieDiff.Relevance.OutOfDate ${diff.newListIndies.size} diff.size ${diff.newListIndies.size} "
@@ -123,10 +130,7 @@ class MainViewModelMovie(
                         " VIEWMODEL pages $mPreloadedDefaultRange MovieDiff.Relevance.FreshData ${list.size} and ${oldList.size}"
                     )
             }
-
-
         }
-
     }
 
     fun loadMore() {
@@ -149,13 +153,13 @@ class MainViewModelMovie(
     }
 
 
-    fun  loadMovieCache(){
+    fun loadMovieCache() {
         //if ((movieList.value ?: emptyList()).isEmpty()) {
         viewModelScope.launch(exceptionHandler) {
             _loadingState.value = true
             Log.d(TAG, "loadMovieCache() load Movies from Cache")
             _movieList.postValue(movieDatabase.getMovieList())
-           if(_movieList.value != null) _loadingState.value = false
+            if (_movieList.value != null) _loadingState.value = false
         }
     }
 
@@ -189,32 +193,16 @@ class MainViewModelMovie(
     }
 
     fun workManagerStatesHandler(workInfo: WorkInfo) {
-        workInfo.state?.let {
-            when (it) {
-                WorkInfo.State.RUNNING -> {
-                    Log.d(TAG, "WorkInfo.State.RUNNING")
-                }
-                WorkInfo.State.ENQUEUED -> {
-                    Log.d(TAG, "WorkInfo.State.ENQUEUED")
-                    viewModelScope.launch {
-                        /**
-                         *   10 seconds would be enough to load movie list from background =)
-                         */
-                        delay(10000)
-                        loadMovieCacheFromWorkManager(movieDatabase.getMovieList())
-                    }
-                }
-                WorkInfo.State.FAILED -> {
-                    Log.d(TAG, "WorkInfo.State.FAILED")
-                }
-
-                else -> Log.e(TAG, "WorkInfo.State.ELSE BRANCH")
+        if (WorkManagerHelper.statesHandler(workInfo)) {
+            viewModelScope.launch {
+                /**
+                 *   10 seconds would be enough to load movie list from background =)
+                 */
+                delay(10000)
+                loadMovieCacheFromWorkManager(movieDatabase.getMovieList())
             }
         }
-
-
     }
-
     private fun loadMovieCacheFromWorkManager(movies: List<Movie>) {
         viewModelScope.launch {
             _movieList.postValue(movies)

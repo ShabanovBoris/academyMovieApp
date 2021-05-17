@@ -1,11 +1,7 @@
-package com.example.academyhomework.utils
+package com.example.academyhomework.utils.recycler
 
-import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.*
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 
 /**

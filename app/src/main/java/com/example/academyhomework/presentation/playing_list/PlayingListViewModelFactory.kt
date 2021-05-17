@@ -1,4 +1,4 @@
-package com.example.academyhomework.viewmodels
+package com.example.academyhomework.presentation.playing_list
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
@@ -6,11 +6,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.work.WorkManager
 import com.example.academyhomework.domain.data.MovieDatabase
 import com.example.academyhomework.domain.data.MovieNetwork
-import com.example.academyhomework.domain.data.database.MovieDatabaseRepository
 import javax.inject.Inject
 
 
-class MainViewModelFactory @Inject constructor(
+class PlayingListViewModelFactory @Inject constructor(
     private var applicationContext: Context,
     private val movieNetwork: MovieNetwork,
     private val movieDatabase: MovieDatabase
@@ -18,7 +17,7 @@ class MainViewModelFactory @Inject constructor(
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T = when (modelClass) {
 
-        MainViewModelMovie::class.java -> MainViewModelMovie(
+        PlayingListViewModelMovie::class.java -> PlayingListViewModelMovie(
             movieDatabase = movieDatabase,
             movieNetwork = movieNetwork,
             workManager = WorkManager.getInstance(applicationContext)

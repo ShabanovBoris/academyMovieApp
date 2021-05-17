@@ -4,7 +4,6 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.fragment.app.FragmentManager
@@ -12,10 +11,10 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.academyhomework.entities.Movie
 import com.example.academyhomework.entities.MovieDetails
 import com.example.academyhomework.presentation.BaseFragment
-import com.example.academyhomework.presentation.FragmentMovieList
+import com.example.academyhomework.presentation.playing_list.FragmentMovieList
 import com.example.academyhomework.presentation.details.FragmentMoviesDetails
-import com.example.academyhomework.viewmodels.MainViewModelFactory
-import com.example.academyhomework.viewmodels.MainViewModelMovie
+import com.example.academyhomework.presentation.playing_list.PlayingListViewModelFactory
+import com.example.academyhomework.presentation.playing_list.PlayingListViewModelMovie
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), Router {
@@ -24,9 +23,9 @@ class MainActivity : AppCompatActivity(), Router {
 
 
     @Inject
-    lateinit var mainViewModelFactory: MainViewModelFactory
+    lateinit var playingListViewModelFactory: PlayingListViewModelFactory
 
-    private lateinit var mainViewModel: MainViewModelMovie
+    private lateinit var playingListViewModel: PlayingListViewModelMovie
 
 
     private var rootFragment: BaseFragment? = null
@@ -46,8 +45,8 @@ class MainActivity : AppCompatActivity(), Router {
              * FragmentMovieList
              *
              */
-            mainViewModel.loadMovieCache()
-            mainViewModel.loadMovieList()
+            playingListViewModel.loadMovieCache()
+            playingListViewModel.loadMovieList()
             rootFragment = FragmentMovieList.newInstance()
             supportFragmentManager.beginTransaction()
                 .replace(R.id.containerMainActivity, rootFragment as FragmentMovieList)
@@ -60,20 +59,20 @@ class MainActivity : AppCompatActivity(), Router {
     private fun handleIntent(intent: Intent) {
         if (intent.data != null) {
             val id = intent.data!!.lastPathSegment?.toIntOrNull() ?: -1
-            mainViewModel.loadDetails(id)
+            playingListViewModel.loadDetails(id)
         }
     }
 
     override fun onNewIntent(intent: Intent?) {
         if (intent != null) {
-            val list = mainViewModel.movieList.value
+            val list = playingListViewModel.movieList.value
             val movie: Movie?
             list?.let {
                 movie = list.find {
                     it.id == intent.data?.lastPathSegment?.toInt()
                 }
                 movie?.let {
-                    mainViewModel.loadDetails(movie.id)
+                    playingListViewModel.loadDetails(movie.id)
                 }
             }
         }
@@ -83,14 +82,14 @@ class MainActivity : AppCompatActivity(), Router {
 
     private fun createViewModel() {
 
-        mainViewModel = ViewModelProvider(
+        playingListViewModel = ViewModelProvider(
             viewModelStore,
-            mainViewModelFactory
-        ).get(MainViewModelMovie::class.java)
+            playingListViewModelFactory
+        ).get(PlayingListViewModelMovie::class.java)
 
 
         /** Details observer*/
-        mainViewModel.details.observe(this, ::moveToDetails)
+        playingListViewModel.details.observe(this, ::moveToDetails)
 
 
     }

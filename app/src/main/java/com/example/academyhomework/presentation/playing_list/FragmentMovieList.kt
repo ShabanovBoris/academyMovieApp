@@ -1,13 +1,15 @@
-package com.example.academyhomework.presentation
+package com.example.academyhomework.presentation.playing_list
 
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.core.view.doOnPreDraw
+import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -17,10 +19,9 @@ import com.example.academyhomework.R
 import com.example.academyhomework.Router
 import com.example.academyhomework.adapters.MovieListAdapter
 import com.example.academyhomework.entities.Movie
-import com.example.academyhomework.utils.EndlessRecyclerViewScrollListener
+import com.example.academyhomework.presentation.BaseFragment
+import com.example.academyhomework.utils.recycler.EndlessRecyclerViewScrollListener
 import com.example.academyhomework.utils.GridSpacingItemDecoration
-import com.example.academyhomework.viewmodels.MainViewModelFactory
-import com.example.academyhomework.viewmodels.MainViewModelMovie
 import com.google.android.material.transition.MaterialElevationScale
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -40,16 +41,16 @@ class FragmentMovieList : BaseFragment() {
     private val mAdapter by lazy {
         MovieListAdapter { id, view ->
             router?.transitView = view
-            mainViewModel.loadDetails(id)
+            playingListViewModel.loadDetails(id)
         }
     }
 
     private lateinit var recyclerView: RecyclerView
 
     @Inject
-    lateinit var mainViewModelFactory: MainViewModelFactory
+    lateinit var playingListViewModelFactory: PlayingListViewModelFactory
 
-    private lateinit var mainViewModel: MainViewModelMovie
+    private lateinit var playingListViewModel: PlayingListViewModelMovie
 
 
     override fun onAttach(context: Context) {
@@ -62,12 +63,12 @@ class FragmentMovieList : BaseFragment() {
         (requireActivity().application as MovieApp).appComponent.inject(this)
 
         /**
-         * initializing [mainViewModel]
+         * initializing [playingListViewModel]
          */
-        mainViewModel = ViewModelProvider(
-            requireActivity().viewModelStore, mainViewModelFactory
+        playingListViewModel = ViewModelProvider(
+            requireActivity().viewModelStore, playingListViewModelFactory
         )
-            .get(MainViewModelMovie::class.java)
+            .get(PlayingListViewModelMovie::class.java)
     }
 
     override fun onDetach() {
@@ -109,20 +110,23 @@ class FragmentMovieList : BaseFragment() {
         /**
          * set [observers] for recycler list, progressbar, errorCoroutine toast
          */
-        mainViewModel.movieList.observe(this.viewLifecycleOwner, this::setList)
-        mainViewModel.loadingState.observe(this.viewLifecycleOwner, this::showProgressBar)
-        mainViewModel.errorEvent.observe(this.viewLifecycleOwner, this::showErrorToast)
+        playingListViewModel.movieList.observe(this.viewLifecycleOwner, this::setList)
+        playingListViewModel.loadingState.observe(this.viewLifecycleOwner, this::showProgressBar)
+        playingListViewModel.errorEvent.observe(this.viewLifecycleOwner, this::showErrorToast)
 //        viewModel.repositoryObservable.observe(viewLifecycleOwner) {
 //            viewModel.loadMovieCacheFromBack(it)
 //        }
         /**     with given lifecycle
          *   observe WorkManager state for update after 10 sec delay to UI
          * */
-        mainViewModel.wmObservable.observe(viewLifecycleOwner) {
-            mainViewModel.workManagerStatesHandler(
-                it
-            )
+        playingListViewModel.wmObservable.observe(viewLifecycleOwner) {
+            playingListViewModel.workManagerStatesHandler(it)
         }
+        //setSearchListener
+        view.findViewById<EditText>(R.id.et_searching)
+            .doAfterTextChanged {  editable ->
+                playingListViewModel.searchMovie(editable.toString())
+            }
     }
 
 
@@ -160,10 +164,10 @@ class FragmentMovieList : BaseFragment() {
             .buffer(Channel.RENDEZVOUS)
             .onEach { totalItemsCount ->
                 //load from VM
-                mainViewModel.loadMore()
+                playingListViewModel.loadMore()
                 Toast.makeText(
                     requireContext(),
-                    "need page ${mainViewModel.currentPage} totalItemsCount $totalItemsCount",
+                    "need page ${playingListViewModel.currentPage} totalItemsCount $totalItemsCount",
                     Toast.LENGTH_SHORT
                 ).show()
             }

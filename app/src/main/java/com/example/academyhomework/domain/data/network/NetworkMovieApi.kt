@@ -37,6 +37,11 @@ class NetworkMovieApi @Inject constructor(private val movieApi: TheMovieApi ) {
         return@withContext movieApi.getOnPlayingMovies(page)
     }
 
+    //search method
+    suspend fun getMovieBySearch(query: String) = withContext(Dispatchers.IO) {
+        return@withContext movieApi.getMovieBySearch(query)
+    }
+
      interface TheMovieApi {
         @GET("configuration?")
         suspend fun getImagesConfigurationInfo(): ConfigurationInfoClass
@@ -58,6 +63,12 @@ class NetworkMovieApi @Inject constructor(private val movieApi: TheMovieApi ) {
         suspend fun getCredits(
             @Path("movie_id") movieId: String
         ): CreditResponse
+
+        //search
+         @GET("search/movie?")
+         suspend fun getMovieBySearch(
+             @Query("query") searchQuery: String
+         ): ResponseClass
 
     }
 

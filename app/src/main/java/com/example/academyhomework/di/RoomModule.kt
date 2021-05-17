@@ -2,6 +2,7 @@ package com.example.academyhomework.di
 
 import android.content.Context
 import androidx.room.Room
+import com.example.academyhomework.di.scopes.AppScope
 import com.example.academyhomework.domain.data.MovieDatabase
 import com.example.academyhomework.domain.data.database.MovieDatabaseImpl
 import com.example.academyhomework.domain.data.database.DbContract
@@ -13,6 +14,7 @@ import dagger.Provides
 @Module
 interface RoomModule {
 
+    @AppScope
     @Binds
     fun provideRepository(rep: MovieDatabaseRepository): MovieDatabase
 

@@ -23,9 +23,29 @@ class NetworkMovieRepository @Inject constructor(
         val baseImagePosterUrl get() = "https://image.tmdb.org/t/p/w500"
         val baseImageBackdropUrl get() = "https://image.tmdb.org/t/p/w780"
     }
+    /**
+     * searching movies by name
+     */
+    override suspend fun search(query: String): List<Movie> {
+        return mNetworkMovieApi.getMovieBySearch(query).results.map {
+            //boilerplate btw
+            Movie(
+                id = it!!.id,
+                title = it.title ?: "",
+                genres = it.genreIds.map { id -> Genre(id = id, loadGenres()[id] ?: "") },
+                reviewCount = it.voteCount ?: 0,
+                rating = (it.voteAverage ?: 0.0) / 2,
+                imageUrl = baseImagePosterUrl + it.posterPath ?: "",
+                detailImageUrl = baseImageBackdropUrl + it.backdropPath ?: "",
+                storyLine = it.overview ?: "",
+                releaseDate = it.releaseDate,
+                popularity = it.popularity
+            )
+        }
+    }
 
-    /** load list of [Genres]
-     *
+    /**
+     *  load list of [Genres]
      * */
     private suspend fun genresList(): List<JsonGenre> = mNetworkMovieApi.getGenresList().genres
     private suspend fun loadGenres(): MutableMap<Int, String> {
@@ -37,8 +57,8 @@ class NetworkMovieRepository @Inject constructor(
         return mutableMap
     }
 
-    /**  get [JsonMovieList]  from Network
-     *
+    /**
+     *      get [JsonMovieList]  from Network
      * */
     private suspend fun getJsonMovieList(pages: IntRange): List<JsonMovie> {
 
@@ -59,8 +79,8 @@ class NetworkMovieRepository @Inject constructor(
         return listOfJsonMovie
     }
 
-    /** function [loadMovies] return list of [Movie] class to [ViewModel]
-     *
+    /**
+     *      function [loadMovies] return list of [Movie] class to [ViewModel]
      * */
     override suspend fun loadMovies(pages: IntRange): List<Movie> {
         val jsonMovie: List<JsonMovie?> = getJsonMovieList(pages).orEmpty()
@@ -97,6 +117,8 @@ class NetworkMovieRepository @Inject constructor(
             votes = jsonDetails.vote_average / 2
         )
     }
+
+
 
     /** get [ActorsCast]  from Network
      *

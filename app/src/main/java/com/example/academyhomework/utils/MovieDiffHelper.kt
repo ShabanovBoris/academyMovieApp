@@ -15,14 +15,14 @@ object MovieDiffHelper {
             diff = m2.filterNot { m1.contains(it) }
         }
         return if (diff.isNotEmpty()) {
-            Relevance.OutOfDate(diff)
+            Relevance.StaleData(diff)
         } else {
             Relevance.FreshData
         }
     }
 
     sealed class Relevance {
-        data class OutOfDate(val newListIndies: List<Int>) : Relevance()
+        data class StaleData(val newListIndies: List<Int>) : Relevance()
         object FreshData : Relevance()
     }
 
