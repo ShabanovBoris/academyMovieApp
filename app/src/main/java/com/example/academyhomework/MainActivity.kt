@@ -11,10 +11,10 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.academyhomework.entities.Movie
 import com.example.academyhomework.entities.MovieDetails
 import com.example.academyhomework.presentation.BaseFragment
-import com.example.academyhomework.presentation.playing_list.FragmentMovieList
 import com.example.academyhomework.presentation.details.FragmentMoviesDetails
-import com.example.academyhomework.presentation.playing_list.PlayingListViewModelFactory
+import com.example.academyhomework.presentation.ViewModelFactory
 import com.example.academyhomework.presentation.playing_list.PlayingListViewModelMovie
+import com.example.academyhomework.presentation.search.SearchFragment
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), Router {
@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity(), Router {
 
 
     @Inject
-    lateinit var playingListViewModelFactory: PlayingListViewModelFactory
+    lateinit var viewModelFactory: ViewModelFactory
 
     private lateinit var playingListViewModel: PlayingListViewModelMovie
 
@@ -47,9 +47,10 @@ class MainActivity : AppCompatActivity(), Router {
              */
             playingListViewModel.loadMovieCache()
             playingListViewModel.loadMovieList()
-            rootFragment = FragmentMovieList.newInstance()
+//            rootFragment = FragmentMovieList.newInstance()
+            rootFragment = SearchFragment.newInstance()
             supportFragmentManager.beginTransaction()
-                .replace(R.id.containerMainActivity, rootFragment as FragmentMovieList)
+                .replace(R.id.containerMainActivity, rootFragment as SearchFragment)
                 .commit()
             //deeplink handler
             intent?.let(::handleIntent)
@@ -84,7 +85,7 @@ class MainActivity : AppCompatActivity(), Router {
 
         playingListViewModel = ViewModelProvider(
             viewModelStore,
-            playingListViewModelFactory
+            viewModelFactory
         ).get(PlayingListViewModelMovie::class.java)
 
 

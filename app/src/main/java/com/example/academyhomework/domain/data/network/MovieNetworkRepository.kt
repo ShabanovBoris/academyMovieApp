@@ -38,7 +38,7 @@ class NetworkMovieRepository @Inject constructor(
                 imageUrl = baseImagePosterUrl + it.posterPath ?: "",
                 detailImageUrl = baseImageBackdropUrl + it.backdropPath ?: "",
                 storyLine = it.overview ?: "",
-                releaseDate = it.releaseDate,
+                releaseDate = it.releaseDate ?: "None",
                 popularity = it.popularity
             )
         }
@@ -95,7 +95,7 @@ class NetworkMovieRepository @Inject constructor(
                 imageUrl = baseImagePosterUrl + it.posterPath ?: "",
                 detailImageUrl = baseImageBackdropUrl + it.backdropPath ?: "",
                 storyLine = it.overview ?: "",
-                releaseDate = it.releaseDate,
+                releaseDate = it.releaseDate ?: "Noe",
                 popularity = it.popularity
             )
         }

@@ -17,9 +17,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.academyhomework.MovieApp
 import com.example.academyhomework.R
 import com.example.academyhomework.Router
-import com.example.academyhomework.adapters.MovieListAdapter
+import com.example.academyhomework.presentation.adapters.MovieListAdapter
 import com.example.academyhomework.entities.Movie
 import com.example.academyhomework.presentation.BaseFragment
+import com.example.academyhomework.presentation.ViewModelFactory
 import com.example.academyhomework.utils.recycler.EndlessRecyclerViewScrollListener
 import com.example.academyhomework.utils.GridSpacingItemDecoration
 import com.google.android.material.transition.MaterialElevationScale
@@ -48,7 +49,7 @@ class FragmentMovieList : BaseFragment() {
     private lateinit var recyclerView: RecyclerView
 
     @Inject
-    lateinit var playingListViewModelFactory: PlayingListViewModelFactory
+    lateinit var viewModelFactory: ViewModelFactory
 
     private lateinit var playingListViewModel: PlayingListViewModelMovie
 
@@ -66,7 +67,7 @@ class FragmentMovieList : BaseFragment() {
          * initializing [playingListViewModel]
          */
         playingListViewModel = ViewModelProvider(
-            requireActivity().viewModelStore, playingListViewModelFactory
+            requireActivity().viewModelStore, viewModelFactory
         )
             .get(PlayingListViewModelMovie::class.java)
     }
@@ -80,7 +81,7 @@ class FragmentMovieList : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_movie_list, container, false)
+        val view = inflater.inflate(R.layout.fragment_movie_list_onplaying, container, false)
 
         /**
          * waiting for a recycler view will draw items
@@ -139,13 +140,13 @@ class FragmentMovieList : BaseFragment() {
 
     @ExperimentalCoroutinesApi
     private fun setRecycler(view: View) {
-        val gridLayoutManager = GridLayoutManager(view.context, 2)
+        val gridLayoutManager = GridLayoutManager(view.context, 3)
 
         recyclerView = view.findViewById(R.id.rv_movie_list)
         recyclerView.apply {
             setHasFixedSize(true)
             layoutManager = gridLayoutManager
-            addItemDecoration(GridSpacingItemDecoration(2, 30, true))
+            addItemDecoration(GridSpacingItemDecoration(3, 30, true))
             adapter = mAdapter
         }
         /** set ScrollListener fro pagination with multi shot callbackFlow */

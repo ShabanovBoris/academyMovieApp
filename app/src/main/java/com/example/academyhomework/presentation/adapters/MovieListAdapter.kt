@@ -1,4 +1,4 @@
-package com.example.academyhomework.adapters
+package com.example.academyhomework.presentation.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +15,7 @@ import com.example.academyhomework.entities.Movie
 import com.google.android.material.card.MaterialCardView
 
 
-class MovieListAdapter(private val onClick: (Int, View) -> Unit) :
+open class MovieListAdapter(private val onClick: (Int, View) -> Unit) :
     ListAdapter<Movie, MovieListAdapter.ViewHolderMovie>(
         DiffCallback()
     ) {

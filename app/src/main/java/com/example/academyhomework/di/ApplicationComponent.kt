@@ -6,6 +6,7 @@ import com.example.academyhomework.MainActivity
 import com.example.academyhomework.di.scopes.AppScope
 import com.example.academyhomework.presentation.playing_list.FragmentMovieList
 import com.example.academyhomework.presentation.details.MovieDetailsComponent
+import com.example.academyhomework.presentation.search.SearchFragment
 import com.example.academyhomework.services.db_update_work_manager.UpdateDBWorker
 import com.example.academyhomework.services.schedule_movie_work_manager.ScheduleNotificationWorker
 import dagger.BindsInstance
@@ -23,6 +24,7 @@ interface ApplicationComponent {
 
     //inject views
     fun inject(fragment: FragmentMovieList)
+    fun inject(fragment: SearchFragment)
     fun inject(act: MainActivity)
     //inject background
     fun inject(work: UpdateDBWorker)

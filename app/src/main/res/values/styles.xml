@@ -12,7 +12,7 @@
 
 
 
-    <style name="SearchStyle">
+    <style name="SearchStyle" >
         <item name="android:background">@drawable/ic_edittext</item>
         <item name="android:maxLines">1</item>
         <item name="android:paddingStart">8dp</item>
@@ -26,8 +26,13 @@
         <item name="android:layout_marginStart">16dp</item>
         <item name="android:layout_marginEnd">16dp</item>
         <item name="drawableTint">@color/white</item>
-
         <item name="drawableEndCompat">@drawable/ic_search</item>
+    </style>
 
+    <style name="MainProgressBar" parent="android:Widget.Material.ProgressBar">
+        <item name="android:indeterminateTint">@color/white</item>
+        <item name="android:alpha">0.5</item>
+        <item name="android:scaleX">2</item>
+        <item name="android:scaleY">2</item>
     </style>
 </resources>

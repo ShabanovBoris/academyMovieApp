@@ -13,11 +13,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.academyhomework.MovieApp
 import com.example.academyhomework.R
 import com.example.academyhomework.Router
-import com.example.academyhomework.adapters.ActorRecyclerAdapter
+import com.example.academyhomework.presentation.adapters.ActorRecyclerAdapter
 import com.example.academyhomework.entities.MovieDetails
 import com.example.academyhomework.presentation.BaseFragment
 import com.example.academyhomework.services.db_update_work_manager.NotificationsNewMovie
-import com.example.academyhomework.services.schedule_movie_work_manager.ScheduleMovieTimePicker
 import com.example.academyhomework.utils.setUpViewFragment
 import com.example.academyhomework.utils.startFadeAnimation
 import com.google.android.material.transition.MaterialContainerTransform
