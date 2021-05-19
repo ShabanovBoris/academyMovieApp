@@ -17,9 +17,8 @@ import com.example.academyhomework.databinding.FragmentSearchBinding
 import com.example.academyhomework.entities.Movie
 import com.example.academyhomework.presentation.BaseFragment
 import com.example.academyhomework.presentation.ViewModelFactory
-import com.example.academyhomework.presentation.adapters.MovieListAdapter
 import com.example.academyhomework.presentation.adapters.SearchListAdapter
-import com.example.academyhomework.utils.GridSpacingItemDecoration
+import com.example.academyhomework.utils.recycler.GridSpacingItemDecoration
 import com.example.academyhomework.utils.extensions.hideKeyboard
 import com.google.android.material.transition.MaterialElevationScale
 import kotlinx.coroutines.ExperimentalCoroutinesApi

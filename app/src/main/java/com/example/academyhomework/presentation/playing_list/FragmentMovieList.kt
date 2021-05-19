@@ -22,7 +22,7 @@ import com.example.academyhomework.entities.Movie
 import com.example.academyhomework.presentation.BaseFragment
 import com.example.academyhomework.presentation.ViewModelFactory
 import com.example.academyhomework.utils.recycler.EndlessRecyclerViewScrollListener
-import com.example.academyhomework.utils.GridSpacingItemDecoration
+import com.example.academyhomework.utils.recycler.GridSpacingItemDecoration
 import com.google.android.material.transition.MaterialElevationScale
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -123,11 +123,6 @@ class FragmentMovieList : BaseFragment() {
         playingListViewModel.wmObservable.observe(viewLifecycleOwner) {
             playingListViewModel.workManagerStatesHandler(it)
         }
-        //setSearchListener
-        view.findViewById<EditText>(R.id.et_searching)
-            .doAfterTextChanged {  editable ->
-                playingListViewModel.searchMovie(editable.toString())
-            }
     }
 
 

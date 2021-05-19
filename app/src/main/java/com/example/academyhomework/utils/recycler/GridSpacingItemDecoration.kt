@@ -1,4 +1,4 @@
-package com.example.academyhomework.utils
+package com.example.academyhomework.utils.recycler
 
 import android.graphics.Rect
 import android.view.View

@@ -4,6 +4,7 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.fragment.app.FragmentManager
@@ -31,26 +32,20 @@ class MainActivity : AppCompatActivity(), Router {
     private var rootFragment: BaseFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
         val component = (application as MovieApp).appComponent
         component.inject(this)
 
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
         createViewModel()
-
         if (savedInstanceState == null) {
-            /**
-             *
-             * FragmentMovieList
-             *
-             */
             playingListViewModel.loadMovieCache()
             playingListViewModel.loadMovieList()
 //            rootFragment = FragmentMovieList.newInstance()
-            rootFragment = SearchFragment.newInstance()
+//            rootFragment = SearchFragment.newInstance()
+            rootFragment = LaunchFragment.newInstance("","")
             supportFragmentManager.beginTransaction()
-                .replace(R.id.containerMainActivity, rootFragment as SearchFragment)
+                .replace(R.id.containerMainActivity, rootFragment as LaunchFragment)
                 .commit()
             //deeplink handler
             intent?.let(::handleIntent)
@@ -91,8 +86,6 @@ class MainActivity : AppCompatActivity(), Router {
 
         /** Details observer*/
         playingListViewModel.details.observe(this, ::moveToDetails)
-
-
     }
 
     override fun moveToDetails(movie: MovieDetails) {
@@ -118,10 +111,6 @@ class MainActivity : AppCompatActivity(), Router {
         }
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-    }
-
     override fun backFromDetails() {
         onBackPressed()
 //        if (rootFragment is FragmentMoviesDetails) {
@@ -140,6 +129,7 @@ class MainActivity : AppCompatActivity(), Router {
             startActivity(browserIntent)
             true
         } catch (e: ActivityNotFoundException) {
+            Toast.makeText(this, e.localizedMessage, Toast.LENGTH_SHORT).show()
             false
         }
     }

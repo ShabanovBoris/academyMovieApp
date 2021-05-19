@@ -72,13 +72,7 @@ class PlayingListViewModelMovie(
     private var _errorEvent = SingleLiveEvent<Throwable>()
     val errorEvent: LiveData<Throwable> get() = _errorEvent
 
-    //Experimental api !!!!!!!
-    fun searchMovie(query: String) {
-        viewModelScope.launch {
-            if (query.isNotEmpty())
-                _movieList.postValue(movieNetwork.search(query))
-        }
-    }
+
 
 
     fun loadDetails(id: Int) {
