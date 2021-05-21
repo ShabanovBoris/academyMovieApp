@@ -7,10 +7,11 @@
         android:height="80dp"/>
 
     <gradient
-android:centerColor="@color/main_background"
-       android:startColor="@color/main_background"
-        android:type="radial"
-        android:gradientRadius="100"/>
+        android:startColor="@color/main_background"
+        android:centerColor="@color/main_background"
+        android:centerY="0.89"
+        android:angle="270"
+        android:type="linear"/>
 
 
 

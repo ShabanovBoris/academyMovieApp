@@ -18,8 +18,8 @@ import com.example.academyhomework.entities.Movie
 import com.example.academyhomework.presentation.BaseFragment
 import com.example.academyhomework.presentation.ViewModelFactory
 import com.example.academyhomework.presentation.adapters.SearchListAdapter
+import com.example.academyhomework.utils.extensions.*
 import com.example.academyhomework.utils.recycler.GridSpacingItemDecoration
-import com.example.academyhomework.utils.extensions.hideKeyboard
 import com.google.android.material.transition.MaterialElevationScale
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -85,6 +85,8 @@ class SearchFragment : BaseFragment() {
     @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.etSearching.requestFocus()
+        binding.etSearching.showKeyboard()
 
         setRecycler(view)
         setReenterExitAnim()
@@ -125,6 +127,7 @@ class SearchFragment : BaseFragment() {
         val gridLayoutManager = GridLayoutManager(view.context, 2)
 
         binding.rvMovieList.apply {
+            setPadding(0, (45).toPx, 0, 0)
             setHasFixedSize(true)
             layoutManager = gridLayoutManager
             addItemDecoration(GridSpacingItemDecoration(2, 30, true))
@@ -132,8 +135,14 @@ class SearchFragment : BaseFragment() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     super.onScrollStateChanged(recyclerView, newState)
                     if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                        setPadding(0, 0, 0, 0)
                         recyclerView.hideKeyboard()
+                        hideEditText(binding)
                     }
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        showEditText(binding)
+                    }
+
                 }
             })
             adapter = mAdapter
@@ -144,7 +153,7 @@ class SearchFragment : BaseFragment() {
     private fun setList(list: List<Movie>) {
         lifecycleScope.launchWhenStarted {
 
-            mAdapter.submitList(list) {  }
+            mAdapter.submitList(list) { }
         }
     }
 

@@ -41,8 +41,7 @@ class MainActivity : AppCompatActivity(), Router {
         if (savedInstanceState == null) {
             playingListViewModel.loadMovieCache()
             playingListViewModel.loadMovieList()
-//            rootFragment = FragmentMovieList.newInstance()
-//            rootFragment = SearchFragment.newInstance()
+
             rootFragment = LaunchFragment.newInstance("","")
             supportFragmentManager.beginTransaction()
                 .replace(R.id.containerMainActivity, rootFragment as LaunchFragment)
