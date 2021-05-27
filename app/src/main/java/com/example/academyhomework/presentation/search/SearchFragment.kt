@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.doOnPreDraw
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -35,7 +36,7 @@ class SearchFragment : BaseFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
-    private lateinit var searchViewModel: SearchViewModel
+    private val searchViewModel: SearchViewModel by viewModels { viewModelFactory }
 
     /**
      * set click on  [moveToDetails] handler with [movie] ID
@@ -61,13 +62,6 @@ class SearchFragment : BaseFragment() {
 
         /** ApplicationComponent */
         (requireActivity().application as MovieApp).appComponent.inject(this)
-
-        /**
-         * initializing [playingListViewModel]
-         */
-        searchViewModel = ViewModelProvider(
-            requireActivity().viewModelStore, viewModelFactory
-        ).get(SearchViewModel::class.java)
 
         /**
          * waiting for a recycler view will draw items

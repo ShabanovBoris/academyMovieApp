@@ -1,4 +1,4 @@
-package com.example.academyhomework.presentation.playing_list
+package com.example.academyhomework.presentation
 
 
 import android.util.Log
@@ -15,7 +15,7 @@ import com.example.academyhomework.utils.SingleLiveEvent
 import com.example.academyhomework.utils.WorkManagerHelper
 import kotlinx.coroutines.*
 
-class PlayingListViewModelMovie(
+class MainViewModel(
     private val movieDatabase: MovieDatabase,
     private val movieNetwork: MovieNetwork,
     workManager: WorkManager
@@ -204,5 +204,8 @@ class PlayingListViewModelMovie(
         }
     }
 
-
+    init {
+        loadMovieCache()
+        loadMovieList()
+    }
 }

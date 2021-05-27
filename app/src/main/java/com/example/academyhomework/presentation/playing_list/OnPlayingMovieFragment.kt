@@ -5,11 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.core.view.doOnPreDraw
-import androidx.core.widget.doAfterTextChanged
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -20,6 +19,7 @@ import com.example.academyhomework.Router
 import com.example.academyhomework.presentation.adapters.MovieListAdapter
 import com.example.academyhomework.entities.Movie
 import com.example.academyhomework.presentation.BaseFragment
+import com.example.academyhomework.presentation.MainViewModel
 import com.example.academyhomework.presentation.ViewModelFactory
 import com.example.academyhomework.utils.recycler.EndlessRecyclerViewScrollListener
 import com.example.academyhomework.utils.recycler.GridSpacingItemDecoration
@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 
-class FragmentMovieList : BaseFragment() {
+class OnPlayingMovieFragment : BaseFragment() {
     private lateinit var progressBar: ProgressBar
     private var router: Router? = null
 
@@ -42,7 +42,7 @@ class FragmentMovieList : BaseFragment() {
     private val mAdapter by lazy {
         MovieListAdapter { id, view ->
             router?.transitView = view
-            playingListViewModel.loadDetails(id)
+            mainViewModel.loadDetails(id)
         }
     }
 
@@ -51,7 +51,7 @@ class FragmentMovieList : BaseFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private lateinit var playingListViewModel: PlayingListViewModelMovie
+    private val mainViewModel: MainViewModel by activityViewModels{ viewModelFactory  }
 
 
     override fun onAttach(context: Context) {
@@ -63,13 +63,6 @@ class FragmentMovieList : BaseFragment() {
         /** ApplicationComponent */
         (requireActivity().application as MovieApp).appComponent.inject(this)
 
-        /**
-         * initializing [playingListViewModel]
-         */
-        playingListViewModel = ViewModelProvider(
-            requireActivity().viewModelStore, viewModelFactory
-        )
-            .get(PlayingListViewModelMovie::class.java)
     }
 
     override fun onDetach() {
@@ -111,17 +104,17 @@ class FragmentMovieList : BaseFragment() {
         /**
          * set [observers] for recycler list, progressbar, errorCoroutine toast
          */
-        playingListViewModel.movieList.observe(this.viewLifecycleOwner, this::setList)
-        playingListViewModel.loadingState.observe(this.viewLifecycleOwner, this::showProgressBar)
-        playingListViewModel.errorEvent.observe(this.viewLifecycleOwner, this::showErrorToast)
+        mainViewModel.movieList.observe(this.viewLifecycleOwner, this::setList)
+        mainViewModel.loadingState.observe(this.viewLifecycleOwner, this::showProgressBar)
+        mainViewModel.errorEvent.observe(this.viewLifecycleOwner, this::showErrorToast)
 //        viewModel.repositoryObservable.observe(viewLifecycleOwner) {
 //            viewModel.loadMovieCacheFromBack(it)
 //        }
         /**     with given lifecycle
          *   observe WorkManager state for update after 10 sec delay to UI
          * */
-        playingListViewModel.wmObservable.observe(viewLifecycleOwner) {
-            playingListViewModel.workManagerStatesHandler(it)
+        mainViewModel.wmObservable.observe(viewLifecycleOwner) {
+            mainViewModel.workManagerStatesHandler(it)
         }
     }
 
@@ -135,13 +128,13 @@ class FragmentMovieList : BaseFragment() {
 
     @ExperimentalCoroutinesApi
     private fun setRecycler(view: View) {
-        val gridLayoutManager = GridLayoutManager(view.context, 3)
+        val gridLayoutManager = GridLayoutManager(view.context, 2)
 
         recyclerView = view.findViewById(R.id.rv_movie_list)
         recyclerView.apply {
             setHasFixedSize(true)
             layoutManager = gridLayoutManager
-            addItemDecoration(GridSpacingItemDecoration(3, 30, true))
+            addItemDecoration(GridSpacingItemDecoration(2, 30, true))
             adapter = mAdapter
         }
         /** set ScrollListener fro pagination with multi shot callbackFlow */
@@ -160,10 +153,10 @@ class FragmentMovieList : BaseFragment() {
             .buffer(Channel.RENDEZVOUS)
             .onEach { totalItemsCount ->
                 //load from VM
-                playingListViewModel.loadMore()
+                mainViewModel.loadMore()
                 Toast.makeText(
                     requireContext(),
-                    "need page ${playingListViewModel.currentPage} totalItemsCount $totalItemsCount",
+                    "need page ${mainViewModel.currentPage} totalItemsCount $totalItemsCount",
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -183,6 +176,6 @@ class FragmentMovieList : BaseFragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance() = FragmentMovieList()
+        fun newInstance() = OnPlayingMovieFragment()
     }
 }

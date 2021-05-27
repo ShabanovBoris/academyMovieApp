@@ -3,13 +3,11 @@ package com.example.academyhomework
 import android.os.Bundle
 import android.view.*
 import android.widget.Button
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import com.example.academyhomework.presentation.BaseFragment
-import com.example.academyhomework.presentation.playing_list.FragmentMovieList
+import com.example.academyhomework.presentation.playing_list.OnPlayingMovieFragment
 import com.example.academyhomework.presentation.search.SearchFragment
 
 // TODO: Rename parameter arguments, choose names that match
@@ -60,7 +58,7 @@ class LaunchFragment : BaseFragment() {
 
         view.findViewById<Button>(R.id.test_button).setOnClickListener {
             requireActivity().supportFragmentManager.commit {
-                replace(R.id.containerMainActivity, FragmentMovieList.newInstance())
+                replace(R.id.containerMainActivity, OnPlayingMovieFragment.newInstance())
                 addToBackStack("123")
             }
         }
