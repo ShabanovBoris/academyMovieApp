@@ -1,4 +1,4 @@
-package com.example.academyhomework.presentation.playing_list
+package com.example.academyhomework.presentation
 
 
 import android.util.Log
@@ -15,7 +15,7 @@ import com.example.academyhomework.utils.SingleLiveEvent
 import com.example.academyhomework.utils.WorkManagerHelper
 import kotlinx.coroutines.*
 
-class PlayingListViewModelMovie(
+class MainViewModelMovie(
     private val movieDatabase: MovieDatabase,
     private val movieNetwork: MovieNetwork,
     workManager: WorkManager
@@ -72,7 +72,14 @@ class PlayingListViewModelMovie(
     private var _errorEvent = SingleLiveEvent<Throwable>()
     val errorEvent: LiveData<Throwable> get() = _errorEvent
 
-
+    /**
+     * Initial query
+     */
+    init {
+        Log.d(TAG, "NewVMInstance: $this")
+        loadMovieCache()
+        loadMovieList()
+    }
 
 
     fun loadDetails(id: Int) {

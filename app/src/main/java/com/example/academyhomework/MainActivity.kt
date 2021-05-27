@@ -2,9 +2,12 @@ package com.example.academyhomework
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.fragment.app.FragmentManager
@@ -14,8 +17,8 @@ import com.example.academyhomework.entities.MovieDetails
 import com.example.academyhomework.presentation.BaseFragment
 import com.example.academyhomework.presentation.details.FragmentMoviesDetails
 import com.example.academyhomework.presentation.ViewModelFactory
-import com.example.academyhomework.presentation.playing_list.PlayingListViewModelMovie
-import com.example.academyhomework.presentation.search.SearchFragment
+import com.example.academyhomework.presentation.MainViewModelMovie
+import com.example.academyhomework.presentation.playing_list.OnPlayingMoviesFragment
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), Router {
@@ -26,7 +29,7 @@ class MainActivity : AppCompatActivity(), Router {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private lateinit var playingListViewModel: PlayingListViewModelMovie
+    private val mainViewModel: MainViewModelMovie by viewModels{ viewModelFactory }
 
 
     private var rootFragment: BaseFragment? = null
@@ -37,14 +40,13 @@ class MainActivity : AppCompatActivity(), Router {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        createViewModel()
+        /** Details observer*/
+        mainViewModel.details.observe(this, ::moveToDetails)
+//        createViewModel()
         if (savedInstanceState == null) {
-            playingListViewModel.loadMovieCache()
-            playingListViewModel.loadMovieList()
-
-            rootFragment = LaunchFragment.newInstance("","")
+            rootFragment = OnPlayingMoviesFragment.newInstance()
             supportFragmentManager.beginTransaction()
-                .replace(R.id.containerMainActivity, rootFragment as LaunchFragment)
+                .replace(R.id.containerMainActivity, rootFragment as OnPlayingMoviesFragment)
                 .commit()
             //deeplink handler
             intent?.let(::handleIntent)
@@ -54,20 +56,20 @@ class MainActivity : AppCompatActivity(), Router {
     private fun handleIntent(intent: Intent) {
         if (intent.data != null) {
             val id = intent.data!!.lastPathSegment?.toIntOrNull() ?: -1
-            playingListViewModel.loadDetails(id)
+            mainViewModel.loadDetails(id)
         }
     }
 
     override fun onNewIntent(intent: Intent?) {
         if (intent != null) {
-            val list = playingListViewModel.movieList.value
+            val list = mainViewModel.movieList.value
             val movie: Movie?
             list?.let {
                 movie = list.find {
                     it.id == intent.data?.lastPathSegment?.toInt()
                 }
                 movie?.let {
-                    playingListViewModel.loadDetails(movie.id)
+                    mainViewModel.loadDetails(movie.id)
                 }
             }
         }
@@ -76,15 +78,14 @@ class MainActivity : AppCompatActivity(), Router {
 
 
     private fun createViewModel() {
-
-        playingListViewModel = ViewModelProvider(
-            viewModelStore,
-            viewModelFactory
-        ).get(PlayingListViewModelMovie::class.java)
-
-
-        /** Details observer*/
-        playingListViewModel.details.observe(this, ::moveToDetails)
+//
+//        mainViewModel = ViewModelProvider(
+//            viewModelStore,
+//            viewModelFactory
+//        ).get(MainViewModelMovie::class.java)
+//
+//
+//
     }
 
     override fun moveToDetails(movie: MovieDetails) {
@@ -98,6 +99,7 @@ class MainActivity : AppCompatActivity(), Router {
              * usually given from holder.itemView by recycler adapter
              */
             transitView?.let {
+                setReorderingAllowed(true)
                 addSharedElement(
                     transitView!!,
                     getString(R.string.DetailsTransitionName)
@@ -137,6 +139,10 @@ class MainActivity : AppCompatActivity(), Router {
     override fun onDestroy() {
         super.onDestroy()
         rootFragment = null
+//        packageManager.queryIntentActivities()
+//        PackageManager.MATCH_ALL
+//        mainLooper
+//
     }
 //endregion
 

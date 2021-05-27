@@ -10,6 +10,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.TransitionManager
 import com.example.academyhomework.MovieApp
 import com.example.academyhomework.R
 import com.example.academyhomework.Router
@@ -60,8 +61,6 @@ class FragmentMoviesDetails : BaseFragment() {
             startContainerColor = Color.TRANSPARENT
 
         }
-
-
     }
 
     override fun onCreateView(

@@ -7,7 +7,6 @@ import androidx.work.WorkManager
 import com.example.academyhomework.di.scopes.AppScope
 import com.example.academyhomework.domain.data.MovieDatabase
 import com.example.academyhomework.domain.data.MovieNetwork
-import com.example.academyhomework.presentation.playing_list.PlayingListViewModelMovie
 import com.example.academyhomework.presentation.search.SearchViewModel
 import javax.inject.Inject
 
@@ -20,7 +19,7 @@ class ViewModelFactory @Inject constructor(
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T = when (modelClass) {
 
-        PlayingListViewModelMovie::class.java -> PlayingListViewModelMovie(
+        MainViewModelMovie::class.java -> MainViewModelMovie(
             movieDatabase = movieDatabase,
             movieNetwork = movieNetwork,
             workManager = WorkManager.getInstance(applicationContext)

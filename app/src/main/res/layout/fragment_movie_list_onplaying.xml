@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.playing_list.FragmentMovieList"
+    tools:context=".presentation.playing_list.OnPlayingMoviesFragment"
     >
 
 
@@ -18,8 +18,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:listitem="@layout/view_holder_movie"
-        android:transitionGroup="true"
-        />
+        android:transitionGroup="true"/>
 
     <ProgressBar
         android:id="@+id/progressBar"
