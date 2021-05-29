@@ -9,8 +9,10 @@ import com.example.academyhomework.presentation.details.MovieDetailsComponent
 import com.example.academyhomework.presentation.search.SearchFragment
 import com.example.academyhomework.services.db_update_work_manager.UpdateDBWorker
 import com.example.academyhomework.services.schedule_movie_work_manager.ScheduleNotificationWorker
+import dagger.Binds
 import dagger.BindsInstance
 import dagger.Component
+import dagger.Provides
 
 @AppScope
 @Component(modules = [RetrofitModule::class, AppModule::class, AppSubcomponents::class, RoomModule::class])
@@ -21,14 +23,13 @@ interface ApplicationComponent {
     interface Factory {
         fun create(@BindsInstance context: Context): ApplicationComponent
     }
-
     //inject views
-    fun inject(onPlaying: OnPlayingMovieFragment)
+    fun inject(fragment: OnPlayingMovieFragment)
     fun inject(fragment: SearchFragment)
     fun inject(act: MainActivity)
     //inject background
-    fun inject(work: UpdateDBWorker)
-    fun inject(work: ScheduleNotificationWorker)
+    fun inject(worker: UpdateDBWorker)
+    fun inject(worker: ScheduleNotificationWorker)
 
     //subcomponents
     fun plusDetailsComponent(): MovieDetailsComponent.Factory

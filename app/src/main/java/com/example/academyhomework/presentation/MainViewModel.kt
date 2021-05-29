@@ -20,26 +20,21 @@ class MainViewModel(
     private val movieNetwork: MovieNetwork,
     workManager: WorkManager
 ) : ViewModel() {
-    companion object {
-        const val TAG = "Academy"
 
-        /**
-         * default loading first page range
-         */
-        private val mPreloadedDefaultRange: IntRange = 1..2
-    }
-
-    //current loaded page
+    //current loaded and showed page
     private var mCurrentPage = 0
     val currentPage get() = mCurrentPage
 
     //loading movie list job
     private var job: Job? = null
 
-    private val updateDBWorkRepository: UpdateDBWorkRepository = UpdateDBWorkRepository()
+
 
     //---val repositoryObservable get() = dataBaseRepository.getObserver()
-    /** WorkManager state observer*/
+    /** WorkManager init and
+     *   [WorkInfo] state observer
+     */
+    private val updateDBWorkRepository = UpdateDBWorkRepository()
     val wmObservable: LiveData<WorkInfo> =
         updateDBWorkRepository.initWorkManagerWithPeriodWork(workManager)
 
@@ -56,6 +51,7 @@ class MainViewModel(
         _errorEvent.value = throwable
     }
 
+    //region LiveData definition
     /** Movie list*/
     private var _movieList = MutableLiveData<List<Movie>>(emptyList())
     val movieList: LiveData<List<Movie>> get() = _movieList
@@ -71,10 +67,13 @@ class MainViewModel(
     /** Exception event*/
     private var _errorEvent = SingleLiveEvent<Throwable>()
     val errorEvent: LiveData<Throwable> get() = _errorEvent
+    //endregion
 
 
-
-
+    /**
+     * @param id for load details view for
+     * specific movie
+     */
     fun loadDetails(id: Int) {
 
         if (id == -1) return
@@ -96,6 +95,10 @@ class MainViewModel(
         }
     }
 
+    /** Loading on playing movies
+     *
+     * @param pagesRangeValue 1..2 by default
+     */
     fun loadMovieList(pagesRangeValue: IntRange = mPreloadedDefaultRange) {
 
         viewModelScope.launch(exceptionHandler) {
@@ -204,6 +207,18 @@ class MainViewModel(
         }
     }
 
+    companion object {
+        const val TAG = "Academy"
+
+        /**
+         * default loading first page range
+         */
+        private val mPreloadedDefaultRange: IntRange = 1..2
+    }
+
+    /**
+     * Initialization viewmodel with preload movies
+     */
     init {
         loadMovieCache()
         loadMovieList()

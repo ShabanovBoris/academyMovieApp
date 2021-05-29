@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.academyhomework.MainActivity
 import com.example.academyhomework.MovieApp
 import com.example.academyhomework.Router
 import com.example.academyhomework.databinding.FragmentSearchBinding

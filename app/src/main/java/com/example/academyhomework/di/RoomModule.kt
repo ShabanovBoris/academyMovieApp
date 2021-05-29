@@ -14,6 +14,8 @@ import dagger.Provides
 @Module
 interface RoomModule {
 
+
+
     @AppScope
     @Binds
     fun provideRepository(rep: MovieDatabaseRepository): MovieDatabase

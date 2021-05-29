@@ -7,6 +7,7 @@ import androidx.work.WorkManager
 import com.example.academyhomework.di.scopes.AppScope
 import com.example.academyhomework.domain.data.MovieDatabase
 import com.example.academyhomework.domain.data.MovieNetwork
+import com.example.academyhomework.presentation.playing_list.OnPlayingMoviesViewModel
 import com.example.academyhomework.presentation.search.SearchViewModel
 import javax.inject.Inject
 
@@ -27,6 +28,11 @@ class ViewModelFactory @Inject constructor(
 
         SearchViewModel::class.java -> SearchViewModel(
             movieNetwork = movieNetwork
+        )
+
+        OnPlayingMoviesViewModel::class.java -> OnPlayingMoviesViewModel(
+           movieDatabase = movieDatabase,
+           movieNetwork = movieNetwork
         )
 
         else -> throw IllegalArgumentException("$modelClass is not registered ViewModel")

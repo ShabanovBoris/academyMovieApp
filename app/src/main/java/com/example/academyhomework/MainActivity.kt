@@ -20,12 +20,6 @@ import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), Router {
 
-
-
-
-
-
-
     override var transitView: View? = null
 
 

@@ -36,6 +36,7 @@ class RetrofitModule {
     fun provideTheMovieApi(retrofit: Retrofit): NetworkMovieApi.TheMovieApi =
         retrofit.create(NetworkMovieApi.TheMovieApi::class.java)
 
+    @AppScope
     @Provides
     fun provideRetrofit(baseUrl: String, okHttpClient: OkHttpClient, json: Json): Retrofit =
         Retrofit.Builder().apply {
