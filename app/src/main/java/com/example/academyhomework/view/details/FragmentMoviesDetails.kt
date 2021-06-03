@@ -1,4 +1,4 @@
-package com.example.academyhomework.presentation.details
+package com.example.academyhomework.view.details
 
 import android.content.Context
 import android.graphics.Color
@@ -8,15 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
-import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.example.academyhomework.MovieApp
 import com.example.academyhomework.R
 import com.example.academyhomework.Router
-import com.example.academyhomework.presentation.adapters.ActorRecyclerAdapter
+import com.example.academyhomework.view.adapters.ActorRecyclerAdapter
 import com.example.academyhomework.entities.MovieDetails
-import com.example.academyhomework.presentation.BaseFragment
+import com.example.academyhomework.view.BaseFragment
 import com.example.academyhomework.services.db_update_work_manager.NotificationsNewMovie
 import com.example.academyhomework.utils.setUpViewFragment
 import com.example.academyhomework.utils.startFadeAnimation

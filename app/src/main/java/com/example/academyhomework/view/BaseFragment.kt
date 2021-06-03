@@ -1,8 +1,6 @@
-package com.example.academyhomework.presentation
+package com.example.academyhomework.view
 
-import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
-import com.example.academyhomework.Router
 
 /**
  *      Just marker yet

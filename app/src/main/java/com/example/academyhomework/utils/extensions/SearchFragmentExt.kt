@@ -3,13 +3,10 @@ package com.example.academyhomework.utils.extensions
 import android.content.Context
 import android.content.res.Resources
 import android.view.View
-import android.view.animation.AccelerateInterpolator
 import android.view.animation.AnticipateOvershootInterpolator
 import android.view.inputmethod.InputMethodManager
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import com.example.academyhomework.databinding.FragmentSearchBinding
-import com.example.academyhomework.presentation.search.SearchFragment
+import com.example.academyhomework.view.search.SearchFragment
 
 
 val Int.toDp: Int

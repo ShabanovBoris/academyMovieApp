@@ -1,4 +1,4 @@
-package com.example.academyhomework.presentation.search
+package com.example.academyhomework.view.search
 
 import android.text.Editable
 import android.util.Log

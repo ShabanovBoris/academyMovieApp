@@ -1,4 +1,4 @@
-package com.example.academyhomework.presentation.details
+package com.example.academyhomework.view.details
 
 
 import com.example.academyhomework.di.scopes.DetailsScope

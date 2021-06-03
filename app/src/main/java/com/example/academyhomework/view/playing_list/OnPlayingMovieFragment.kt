@@ -1,4 +1,4 @@
-package com.example.academyhomework.presentation.playing_list
+package com.example.academyhomework.view.playing_list
 
 import android.content.Context
 import android.os.Bundle
@@ -7,22 +7,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.Toast
-import androidx.core.view.doOnPreDraw
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.academyhomework.MovieApp
 import com.example.academyhomework.R
 import com.example.academyhomework.Router
-import com.example.academyhomework.presentation.adapters.MovieListAdapter
+import com.example.academyhomework.view.adapters.MovieListAdapter
 import com.example.academyhomework.entities.Movie
-import com.example.academyhomework.presentation.BaseFragment
-import com.example.academyhomework.presentation.MainViewModel
-import com.example.academyhomework.presentation.ViewModelFactory
+import com.example.academyhomework.view.BaseFragment
+import com.example.academyhomework.view.MainViewModel
+import com.example.academyhomework.view.ViewModelFactory
 import com.example.academyhomework.utils.recycler.EndlessRecyclerViewScrollListener
 import com.example.academyhomework.utils.recycler.GridSpacingItemDecoration
 import com.google.android.material.transition.MaterialElevationScale
@@ -30,8 +27,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
-import java.io.Serializable
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
@@ -66,7 +61,6 @@ class OnPlayingMovieFragment : BaseFragment() {
 
         /** ApplicationComponent */
         (requireActivity().application as MovieApp).appComponent.inject(this)
-
     }
 
     override fun onDetach() {

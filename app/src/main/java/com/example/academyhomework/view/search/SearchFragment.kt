@@ -1,4 +1,4 @@
-package com.example.academyhomework.presentation.search
+package com.example.academyhomework.view.search
 
 import android.content.Context
 import android.os.Bundle
@@ -6,20 +6,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.academyhomework.MainActivity
 import com.example.academyhomework.MovieApp
 import com.example.academyhomework.Router
 import com.example.academyhomework.databinding.FragmentSearchBinding
 import com.example.academyhomework.entities.Movie
-import com.example.academyhomework.presentation.BaseFragment
-import com.example.academyhomework.presentation.ViewModelFactory
-import com.example.academyhomework.presentation.adapters.SearchListAdapter
+import com.example.academyhomework.view.BaseFragment
+import com.example.academyhomework.view.ViewModelFactory
+import com.example.academyhomework.view.adapters.SearchListAdapter
 import com.example.academyhomework.utils.extensions.*
 import com.example.academyhomework.utils.recycler.GridSpacingItemDecoration
 import com.google.android.material.transition.MaterialElevationScale

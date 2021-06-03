@@ -9,8 +9,8 @@ import android.widget.TextView
 import coil.load
 import com.example.academyhomework.R
 import com.example.academyhomework.entities.MovieDetails
-import com.example.academyhomework.presentation.BaseFragment
-import com.example.academyhomework.presentation.details.FragmentMoviesDetails
+import com.example.academyhomework.view.BaseFragment
+import com.example.academyhomework.view.details.FragmentMoviesDetails
 import com.example.academyhomework.services.schedule_movie_work_manager.ScheduleMovieTimePicker
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
@@ -54,11 +54,16 @@ fun FragmentMoviesDetails.setUpViewFragment(
         val moreInfoButton = view.findViewById<ImageView>(R.id.ib_web_info)
         /** Bacjdorp image*/
         image.load(movie.imageBackdrop) {
-            target { result ->
+            target (
+                onError = {
+                    startPostponedEnterTransition()
+                },
+                onSuccess = { result ->
                 image.setImageDrawable(result)
                 startPostponedEnterTransition()
-            }
+            })
             crossfade(true)
+            error(R.drawable.black_gradient)
             placeholder(R.drawable.ic_loading_image)
         }
         setFilter(image)

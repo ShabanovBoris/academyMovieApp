@@ -1,7 +1,6 @@
-package com.example.academyhomework.presentation.adapters
+package com.example.academyhomework.view.adapters
 
 import android.view.View
-import android.widget.ListAdapter
 
 class SearchListAdapter(private val onClick: (Int, View) -> Unit): MovieListAdapter(onClick) {
 

@@ -1,4 +1,4 @@
-package com.example.academyhomework.presentation
+package com.example.academyhomework.view
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
@@ -7,8 +7,8 @@ import androidx.work.WorkManager
 import com.example.academyhomework.di.scopes.AppScope
 import com.example.academyhomework.domain.data.MovieDatabase
 import com.example.academyhomework.domain.data.MovieNetwork
-import com.example.academyhomework.presentation.playing_list.OnPlayingMoviesViewModel
-import com.example.academyhomework.presentation.search.SearchViewModel
+import com.example.academyhomework.view.playing_list.OnPlayingMoviesViewModel
+import com.example.academyhomework.view.search.SearchViewModel
 import javax.inject.Inject
 
 @AppScope

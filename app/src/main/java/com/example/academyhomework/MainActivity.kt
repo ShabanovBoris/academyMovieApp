@@ -11,13 +11,13 @@ import androidx.core.net.toUri
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
 import com.example.academyhomework.entities.MovieDetails
-import com.example.academyhomework.presentation.BaseFragment
-import com.example.academyhomework.presentation.details.FragmentMoviesDetails
-import com.example.academyhomework.presentation.ViewModelFactory
-import com.example.academyhomework.presentation.MainViewModel
-import com.example.academyhomework.presentation.launcher.LaunchFragment
-import com.example.academyhomework.presentation.playing_list.OnPlayingMovieFragment
-import com.example.academyhomework.presentation.search.SearchFragment
+import com.example.academyhomework.view.BaseFragment
+import com.example.academyhomework.view.details.FragmentMoviesDetails
+import com.example.academyhomework.view.ViewModelFactory
+import com.example.academyhomework.view.MainViewModel
+import com.example.academyhomework.view.launcher.LaunchFragment
+import com.example.academyhomework.view.playing_list.OnPlayingMovieFragment
+import com.example.academyhomework.view.search.SearchFragment
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), Router {

@@ -1,8 +1,7 @@
 package com.example.academyhomework
 
 
-import com.example.academyhomework.presentation.launcher.LaunchFragment
-import dagger.Binds
+import com.example.academyhomework.view.launcher.LaunchFragment
 import dagger.BindsInstance
 import dagger.Subcomponent
 

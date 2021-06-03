@@ -1,7 +1,6 @@
 package com.example.academyhomework.services.schedule_movie_work_manager
 
-import android.annotation.SuppressLint
-import com.example.academyhomework.presentation.BaseFragment
+import com.example.academyhomework.view.BaseFragment
 import com.example.academyhomework.utils.DatePickerFragment
 import com.example.academyhomework.utils.TimePickerFragment
 

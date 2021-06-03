@@ -1,13 +1,15 @@
-package com.example.academyhomework.presentation.launcher
+package com.example.academyhomework.view.launcher
 
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.activityViewModels
 import com.example.academyhomework.Router
 import com.example.academyhomework.databinding.FragmentLaunchBinding
-import com.example.academyhomework.presentation.BaseFragment
-import com.example.academyhomework.presentation.MainViewModel
-import com.example.academyhomework.presentation.ViewModelFactory
+import com.example.academyhomework.entities.Movie
+import com.example.academyhomework.view.BaseFragment
+import com.example.academyhomework.view.MainViewModel
+import com.example.academyhomework.view.ViewModelFactory
+import com.example.academyhomework.view.adapters.MovieListAdapterMini
 import javax.inject.Inject
 
 class LaunchFragment : BaseFragment() {
@@ -45,8 +47,29 @@ class LaunchFragment : BaseFragment() {
         binding.tvOnPlayingMore.setOnClickListener {
             router.moveToOnPlayingMovies()
         }
+        initRecyclerView()
+        mainViewModel.movieList.observe(viewLifecycleOwner){setUpList(it)}
     }
 
+    private fun initRecyclerView() {
+        binding.rvOnPlaying.apply {
+            val adapterMini = MovieListAdapterMini()
+            adapterMini.setOnContentClick { mainViewModel.loadDetails(it)}
+            adapter = adapterMini
+            setHasFixedSize(true)
+        }
+    }
+
+    private fun setUpList(map: Map<String, List<Movie>>) {
+        (binding.rvOnPlaying.adapter as MovieListAdapterMini).apply {
+            bindMovies(
+                map[MainViewModel.ON_PlAYING].orEmpty()
+            )
+            notifyDataSetChanged()
+        }
+
+
+    }
 
     override fun onDetach() {
         super.onDetach()

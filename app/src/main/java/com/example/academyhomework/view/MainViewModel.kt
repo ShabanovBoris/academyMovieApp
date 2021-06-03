@@ -1,4 +1,4 @@
-package com.example.academyhomework.presentation
+package com.example.academyhomework.view
 
 
 import android.util.Log
@@ -10,9 +10,7 @@ import com.example.academyhomework.domain.data.MovieNetwork
 import com.example.academyhomework.entities.Movie
 import com.example.academyhomework.entities.MovieDetails
 import com.example.academyhomework.services.db_update_work_manager.UpdateDBWorkRepository
-import com.example.academyhomework.utils.MovieDiffHelper
 import com.example.academyhomework.utils.SingleLiveEvent
-import com.example.academyhomework.utils.WorkManagerHelper
 import kotlinx.coroutines.*
 
 class MainViewModel(
@@ -43,13 +41,18 @@ class MainViewModel(
     /** Movie Details*/
     private var _details = SingleLiveEvent<MovieDetails>()
     val details: LiveData<MovieDetails> get() = _details
+
     /** Exception event*/
     private var _errorEvent = SingleLiveEvent<Throwable>()
     val errorEvent: LiveData<Throwable> get() = _errorEvent
+
     /** Loading state*/
     private var _loadingState = MutableLiveData<Boolean>(false)
     val loadingState: LiveData<Boolean> get() = _loadingState
 
+    /** Movie list*/
+    private var _movieList = MutableLiveData<Map<String, List<Movie>>>(mapOf())
+    val movieList: LiveData<Map<String, List<Movie>>> get() = _movieList
 
 
     //loading movie details job
@@ -100,8 +103,29 @@ class MainViewModel(
         }
     }
 
-    companion object {
-        const val TAG = "Academy"
+    private fun preLoadLaunchLists() {
+        viewModelScope.launch(exceptionHandler) {
+            _movieList.value = mapOf(
+                ON_PlAYING to movieDatabase.getMovieList()
+            )
+            _movieList.value = mapOf(
+                ON_PlAYING to movieNetwork.loadMovies(1..1)
+            )
+
+        }
+        /**
+         * expand in future
+         */
     }
 
+    companion object {
+        const val TAG = "Academy"
+        const val ON_PlAYING = "on playing movie list"
+    }
+    init {
+        preLoadLaunchLists()
+        /**
+         * expand in future
+         */
+    }
 }

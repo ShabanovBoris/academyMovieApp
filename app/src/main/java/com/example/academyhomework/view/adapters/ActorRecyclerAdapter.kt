@@ -1,4 +1,4 @@
-package com.example.academyhomework.presentation.adapters
+package com.example.academyhomework.view.adapters
 
 import android.view.LayoutInflater
 import android.view.View

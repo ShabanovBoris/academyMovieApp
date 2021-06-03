@@ -2,7 +2,7 @@ package com.example.academyhomework.utils
 
 import android.util.Log
 import androidx.work.WorkInfo
-import com.example.academyhomework.presentation.MainViewModel
+import com.example.academyhomework.view.MainViewModel
 
 object WorkManagerHelper {
 

@@ -1,4 +1,4 @@
-package com.example.academyhomework.presentation.playing_list
+package com.example.academyhomework.view.playing_list
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -9,8 +9,7 @@ import androidx.work.WorkInfo
 import com.example.academyhomework.domain.data.MovieDatabase
 import com.example.academyhomework.domain.data.MovieNetwork
 import com.example.academyhomework.entities.Movie
-import com.example.academyhomework.entities.MovieDetails
-import com.example.academyhomework.presentation.MainViewModel
+import com.example.academyhomework.view.MainViewModel
 import com.example.academyhomework.utils.MovieDiffHelper
 import com.example.academyhomework.utils.SingleLiveEvent
 import com.example.academyhomework.utils.WorkManagerHelper
