@@ -10,28 +10,31 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
-import androidx.lifecycle.ViewModelProvider
-import com.example.academyhomework.entities.Movie
 import com.example.academyhomework.entities.MovieDetails
 import com.example.academyhomework.presentation.BaseFragment
 import com.example.academyhomework.presentation.details.FragmentMoviesDetails
 import com.example.academyhomework.presentation.ViewModelFactory
 import com.example.academyhomework.presentation.MainViewModel
+import com.example.academyhomework.presentation.launcher.LaunchFragment
+import com.example.academyhomework.presentation.playing_list.OnPlayingMovieFragment
+import com.example.academyhomework.presentation.search.SearchFragment
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), Router {
-
-    override var transitView: View? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
     private val mainViewModel: MainViewModel by viewModels{ viewModelFactory }
 
+    private lateinit var component: RouterComponent
 
     private var rootFragment: BaseFragment? = null
 
+    override var transitView: View? = null
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        val component = (application as MovieApp).appComponent
+        component = (application as MovieApp).appComponent
             .plusRouterComponent()
             .create(this)
 
@@ -44,7 +47,7 @@ class MainActivity : AppCompatActivity(), Router {
         mainViewModel.details.observe(this, ::moveToDetails)
 
         if (savedInstanceState == null) {
-            rootFragment = LaunchFragment.newInstance("","")
+            rootFragment = LaunchFragment()
             supportFragmentManager.beginTransaction()
                 .replace(R.id.containerMainActivity, rootFragment as LaunchFragment)
                 .commit()
@@ -77,6 +80,8 @@ class MainActivity : AppCompatActivity(), Router {
         super.onNewIntent(intent)
     }
 
+    override fun getComponent(): RouterComponent = component
+
 
     override fun moveToDetails(movie: MovieDetails) {
 
@@ -98,6 +103,20 @@ class MainActivity : AppCompatActivity(), Router {
             addToBackStack(DETAILS)
             replace(R.id.containerMainActivity, rootFragment as FragmentMoviesDetails)
             commit()
+        }
+    }
+
+    override fun moveToOnPlayingMovies() {
+        supportFragmentManager.commit {
+            replace(R.id.containerMainActivity, OnPlayingMovieFragment.newInstance())
+            addToBackStack(null)
+        }
+    }
+
+    override fun moveToSearchFragment() {
+        supportFragmentManager.commit {
+            replace(R.id.containerMainActivity, SearchFragment.newInstance())
+            addToBackStack(null)
         }
     }
 

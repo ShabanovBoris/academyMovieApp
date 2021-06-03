@@ -1,6 +1,8 @@
 package com.example.academyhomework
 
 
+import com.example.academyhomework.presentation.launcher.LaunchFragment
+import dagger.Binds
 import dagger.BindsInstance
 import dagger.Subcomponent
 
@@ -13,8 +15,9 @@ interface RouterComponent {
 
     @Subcomponent.Factory
     interface Factory {
-        fun create(@BindsInstance instance: Router): RouterComponent
+        fun create(@BindsInstance router: Router): RouterComponent
     }
 
     fun inject(act: MainActivity)
+    fun inject(frag: LaunchFragment)
 }
