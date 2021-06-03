@@ -54,6 +54,10 @@ fun FragmentMoviesDetails.setUpViewFragment(
         val moreInfoButton = view.findViewById<ImageView>(R.id.ib_web_info)
         /** Bacjdorp image*/
         image.load(movie.imageBackdrop) {
+            target { result ->
+                image.setImageDrawable(result)
+                startPostponedEnterTransition()
+            }
             crossfade(true)
             placeholder(R.drawable.ic_loading_image)
         }

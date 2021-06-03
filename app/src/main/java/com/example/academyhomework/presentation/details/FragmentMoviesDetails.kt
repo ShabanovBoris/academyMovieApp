@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.example.academyhomework.MovieApp
@@ -70,7 +71,11 @@ class FragmentMoviesDetails : BaseFragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_movies_details, container, false)
-
+        /**
+         * @startPostponedEnterTransition() calls after loading image
+         * in [setUpViewFragment]
+         */
+        postponeEnterTransition()
         setUpViewFragment(view, mMovie) { movieId ->
             viewModel.openWebPage(movieId, router!!)
         }

@@ -8,7 +8,9 @@ import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.core.view.doOnPreDraw
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -28,6 +30,8 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
+import java.io.Serializable
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
@@ -52,7 +56,7 @@ class OnPlayingMovieFragment : BaseFragment() {
     lateinit var viewModelFactory: ViewModelFactory
 
     private val mainViewModel: MainViewModel by activityViewModels{ viewModelFactory  }
-
+    private val onPlayingViewModel: OnPlayingMoviesViewModel by viewModels { viewModelFactory }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -75,19 +79,6 @@ class OnPlayingMovieFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_movie_list_onplaying, container, false)
-
-        /**
-         * waiting for a recycler view will draw items
-         * that [can] transition animate by [MaterialMotion]
-         */
-        postponeEnterTransition()
-        view.doOnPreDraw {
-            startPostponedEnterTransition()
-        }
-        return view
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         /**
          *  [exit] and [reenter] transitions animate with elevation effect
          */
@@ -99,13 +90,29 @@ class OnPlayingMovieFragment : BaseFragment() {
             duration = 1000
 
         }
+
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
         progressBar = view.findViewById(R.id.progressBar)
         setRecycler(view)
         /**
+         * waiting for a recycler view will draw items
+         * that [can] transition animate by [MaterialMotion]
+         */
+//        postponeEnterTransition() FIXME =(
+//        view.doOnPreDraw {
+//            startPostponedEnterTransition()
+//        }
+        /**
          * set [observers] for recycler list, progressbar, errorCoroutine toast
          */
-        mainViewModel.movieList.observe(this.viewLifecycleOwner, this::setList)
+        onPlayingViewModel.movieList.observe(this.viewLifecycleOwner, this::setList)
+        onPlayingViewModel.loadingState.observe(this.viewLifecycleOwner, this::showProgressBar)
         mainViewModel.loadingState.observe(this.viewLifecycleOwner, this::showProgressBar)
+        onPlayingViewModel.errorEvent.observe(this.viewLifecycleOwner, this::showErrorToast)
         mainViewModel.errorEvent.observe(this.viewLifecycleOwner, this::showErrorToast)
 //        viewModel.repositoryObservable.observe(viewLifecycleOwner) {
 //            viewModel.loadMovieCacheFromBack(it)
@@ -114,10 +121,9 @@ class OnPlayingMovieFragment : BaseFragment() {
          *   observe WorkManager state for update after 10 sec delay to UI
          * */
         mainViewModel.wmObservable.observe(viewLifecycleOwner) {
-            mainViewModel.workManagerStatesHandler(it)
+            onPlayingViewModel.workManagerStatesHandler(it)
         }
     }
-
 
     private fun showProgressBar(loadingProgressBar: Boolean) {
         when (loadingProgressBar) {
@@ -151,14 +157,9 @@ class OnPlayingMovieFragment : BaseFragment() {
             awaitClose{ recyclerView.clearOnScrollListeners() }
         }
             .buffer(Channel.RENDEZVOUS)
-            .onEach { totalItemsCount ->
+            .onEach { _ ->
                 //load from VM
-                mainViewModel.loadMore()
-                Toast.makeText(
-                    requireContext(),
-                    "need page ${mainViewModel.currentPage} totalItemsCount $totalItemsCount",
-                    Toast.LENGTH_SHORT
-                ).show()
+                onPlayingViewModel.loadMore()
             }
             .launchIn(lifecycleScope)
     }

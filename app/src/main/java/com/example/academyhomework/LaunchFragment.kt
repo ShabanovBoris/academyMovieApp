@@ -3,6 +3,7 @@ package com.example.academyhomework
 import android.os.Bundle
 import android.view.*
 import android.widget.Button
+import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
@@ -56,7 +57,7 @@ class LaunchFragment : BaseFragment() {
         }
 
 
-        view.findViewById<Button>(R.id.test_button).setOnClickListener {
+        view.findViewById<TextView>(R.id.tv_on_playing_more).setOnClickListener {
             requireActivity().supportFragmentManager.commit {
                 replace(R.id.containerMainActivity, OnPlayingMovieFragment.newInstance())
                 addToBackStack("123")

@@ -7,7 +7,7 @@ interface Router {
     fun moveToDetails(movie: MovieDetails)
     fun backFromDetails()
     /**
-     * [transitView] for animate transition
+     * @transitView for animate transition to DetailsFragment screen
      */
     var transitView: View?
     fun openWebPage(movieId: Int):Boolean

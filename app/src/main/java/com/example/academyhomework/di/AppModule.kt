@@ -8,8 +8,5 @@ import dagger.Provides
 
 @Module
 class AppModule(val application: Application? = null) {
-
-
-
-
+    //Nothing
 }

@@ -68,10 +68,11 @@ class SearchFragment : BaseFragment() {
          * waiting for a recycler view will draw items
          * that [can] transition animate by [MaterialMotion]
          */
-        postponeEnterTransition()
-        binding.root.doOnPreDraw {
-            startPostponedEnterTransition()
-        }
+        // TODO: - fix
+//        postponeEnterTransition()
+//        binding.root.doOnPreDraw {
+//            startPostponedEnterTransition()
+//        }
 
         return binding.root
     }

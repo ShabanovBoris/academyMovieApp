@@ -20,25 +20,6 @@ class MainViewModel(
     private val movieNetwork: MovieNetwork,
     workManager: WorkManager
 ) : ViewModel() {
-
-    //current loaded and showed page
-    private var mCurrentPage = 0
-    val currentPage get() = mCurrentPage
-
-    //loading movie list job
-    private var job: Job? = null
-
-
-
-    //---val repositoryObservable get() = dataBaseRepository.getObserver()
-    /** WorkManager init and
-     *   [WorkInfo] state observer
-     */
-    private val updateDBWorkRepository = UpdateDBWorkRepository()
-    val wmObservable: LiveData<WorkInfo> =
-        updateDBWorkRepository.initWorkManagerWithPeriodWork(workManager)
-
-
     private val exceptionHandler = CoroutineExceptionHandler { context, throwable ->
         Log.e(
             TAG,
@@ -50,25 +31,29 @@ class MainViewModel(
         throwable.printStackTrace()
         _errorEvent.value = throwable
     }
+    //---val repositoryObservable get() = dataBaseRepository.getObserver()
+    /** WorkManager init and
+     *   [WorkInfo] state observer
+     */
+    private val updateDBWorkRepository = UpdateDBWorkRepository()
+    val wmObservable: LiveData<WorkInfo> =
+        updateDBWorkRepository.initWorkManagerWithPeriodWork(workManager)
 
-    //region LiveData definition
-    /** Movie list*/
-    private var _movieList = MutableLiveData<List<Movie>>(emptyList())
-    val movieList: LiveData<List<Movie>> get() = _movieList
-
-    /** Loading state*/
-    private var _loadingState = MutableLiveData<Boolean>(false)
-    val loadingState: LiveData<Boolean> get() = _loadingState
 
     /** Movie Details*/
     private var _details = SingleLiveEvent<MovieDetails>()
     val details: LiveData<MovieDetails> get() = _details
-
     /** Exception event*/
     private var _errorEvent = SingleLiveEvent<Throwable>()
     val errorEvent: LiveData<Throwable> get() = _errorEvent
-    //endregion
+    /** Loading state*/
+    private var _loadingState = MutableLiveData<Boolean>(false)
+    val loadingState: LiveData<Boolean> get() = _loadingState
 
+
+
+    //loading movie details job
+    private var job: Job? = null
 
     /**
      * @param id for load details view for
@@ -95,72 +80,6 @@ class MainViewModel(
         }
     }
 
-    /** Loading on playing movies
-     *
-     * @param pagesRangeValue 1..2 by default
-     */
-    fun loadMovieList(pagesRangeValue: IntRange = mPreloadedDefaultRange) {
-
-        viewModelScope.launch(exceptionHandler) {
-            _loadingState.value = true
-            val list = movieNetwork.loadMovies(pagesRangeValue)
-
-            val oldList = movieDatabase.getMovieList()
-            val diff = MovieDiffHelper.getDiff(list, oldList)
-
-            when (diff) {
-                // database out of date
-                is MovieDiffHelper.Relevance.StaleData -> {
-                    Log.d(
-                        TAG,
-                        "VIEWMODEL pages $mPreloadedDefaultRange MovieDiff.Relevance.OutOfDate ${diff.newListIndies.size} diff.size ${diff.newListIndies.size} "
-                    )
-
-                    uploadMoviesCache(list)
-                    _movieList.postValue(list)
-                    _loadingState.value = false
-                }
-                // database has not out of date
-                MovieDiffHelper.Relevance.FreshData ->
-                    Log.d(
-                        TAG,
-                        " VIEWMODEL pages $mPreloadedDefaultRange MovieDiff.Relevance.FreshData ${list.size} and ${oldList.size}"
-                    )
-            }
-        }
-    }
-
-    fun loadMore() {
-        mCurrentPage += mPreloadedDefaultRange.last
-        val newRange =
-            (mPreloadedDefaultRange.first + mCurrentPage)..(mPreloadedDefaultRange.last + mCurrentPage)
-        additionalLoadPaging(newRange)
-    }
-
-    private fun additionalLoadPaging(pagesRangeValue: IntRange) {
-        viewModelScope.launch(exceptionHandler) {
-            val list = movieNetwork.loadMovies(pagesRangeValue)
-            Log.d(
-                TAG,
-                "VIEWMODEL pages $pagesRangeValue LoadMore() "
-            )
-            val oldList = _movieList.value
-            _movieList.postValue(oldList?.plus(list))
-        }
-    }
-
-
-    fun loadMovieCache() {
-        //if ((movieList.value ?: emptyList()).isEmpty()) {
-        viewModelScope.launch(exceptionHandler) {
-            _loadingState.value = true
-            Log.d(TAG, "loadMovieCache() load Movies from Cache")
-            _movieList.postValue(movieDatabase.getMovieList())
-            if (_movieList.value != null) _loadingState.value = false
-        }
-    }
-
-
     private suspend fun loadMovieDetailCache(id: Int): Boolean {
 
         val data = movieDatabase.getMovieDetails(id)
@@ -181,46 +100,8 @@ class MainViewModel(
         }
     }
 
-
-    private fun uploadMoviesCache(list: List<Movie>) {
-        viewModelScope.launch {
-            movieDatabase.clearMovies()
-            movieDatabase.insertMovies(list)
-        }
-    }
-
-    fun workManagerStatesHandler(workInfo: WorkInfo) {
-        if (WorkManagerHelper.statesHandler(workInfo)) {
-            viewModelScope.launch {
-                /**
-                 *   10 seconds would be enough to load movie list from background =)
-                 */
-                delay(10000)
-                loadMovieCacheFromWorkManager(movieDatabase.getMovieList())
-            }
-        }
-    }
-    private fun loadMovieCacheFromWorkManager(movies: List<Movie>) {
-        viewModelScope.launch {
-            _movieList.postValue(movies)
-            Log.d(TAG + "Homework", "loadMovieCacheFromWorkManager()")
-        }
-    }
-
     companion object {
         const val TAG = "Academy"
-
-        /**
-         * default loading first page range
-         */
-        private val mPreloadedDefaultRange: IntRange = 1..2
     }
 
-    /**
-     * Initialization viewmodel with preload movies
-     */
-    init {
-        loadMovieCache()
-        loadMovieList()
-    }
 }

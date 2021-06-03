@@ -14,4 +14,5 @@
 
     <color name="accent">#FF3466</color>
     <color name="white_alpha_0.5">#80FFFFFF</color>
+    <color name="link_color">#3ea6ff</color>
 </resources>

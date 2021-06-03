@@ -9,6 +9,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProvider
 import com.example.academyhomework.entities.Movie
 import com.example.academyhomework.entities.MovieDetails
@@ -22,10 +23,8 @@ class MainActivity : AppCompatActivity(), Router {
 
     override var transitView: View? = null
 
-
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
-
     private val mainViewModel: MainViewModel by viewModels{ viewModelFactory }
 
 
@@ -33,6 +32,9 @@ class MainActivity : AppCompatActivity(), Router {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val component = (application as MovieApp).appComponent
+            .plusRouterComponent()
+            .create(this)
+
         component.inject(this)
 
         super.onCreate(savedInstanceState)
@@ -60,16 +62,17 @@ class MainActivity : AppCompatActivity(), Router {
 
     override fun onNewIntent(intent: Intent?) {
         if (intent != null) {
-            val list = mainViewModel.movieList.value
-            val movie: Movie?
-            list?.let {
-                movie = list.find {
-                    it.id == intent.data?.lastPathSegment?.toInt()
-                }
-                movie?.let {
-                    mainViewModel.loadDetails(movie.id)
-                }
-            }
+//            val list = mainViewModel.movieList.value
+//            val movie: Movie?
+//            list?.let {
+//                movie = list.find {
+//                    it.id == intent.data?.lastPathSegment?.toInt()
+//                }
+//                movie?.let {
+//                    mainViewModel.loadDetails(movie.id)
+//                }
+//            }
+            mainViewModel.loadDetails(intent.data?.lastPathSegment?.toIntOrNull() ?: -1)
         }
         super.onNewIntent(intent)
     }
@@ -81,6 +84,7 @@ class MainActivity : AppCompatActivity(), Router {
         supportFragmentManager.popBackStack(DETAILS, FragmentManager.POP_BACK_STACK_INCLUSIVE)
 
         supportFragmentManager.beginTransaction().apply {
+            setReorderingAllowed(true)
             /**
              * SharedElement for animate [trasitView],
              * usually given from holder.itemView by recycler adapter
@@ -91,7 +95,6 @@ class MainActivity : AppCompatActivity(), Router {
                     getString(R.string.DetailsTransitionName)
                 )
             }
-
             addToBackStack(DETAILS)
             replace(R.id.containerMainActivity, rootFragment as FragmentMoviesDetails)
             commit()

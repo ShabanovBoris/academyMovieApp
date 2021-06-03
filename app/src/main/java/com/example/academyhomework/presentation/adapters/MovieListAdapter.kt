@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
+import androidx.core.os.bundleOf
+import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -59,7 +61,7 @@ open class MovieListAdapter(private val onClick: (Int, View) -> Unit) :
                 placeholder(R.drawable.ic_loading_image)
             }
 
-            card.transitionName = movie.id.toString()
+            ViewCompat.setTransitionName(card, movie.id.toString())
 
 
             title.text = movie.title
@@ -75,7 +77,7 @@ open class MovieListAdapter(private val onClick: (Int, View) -> Unit) :
         }
 
         private fun setClickListener(movie: Movie, onClick: (Int, View) -> Unit) {
-            itemView.setOnClickListener { onClick(movie.id, itemView.findViewById(R.id.movieCard)) }
+            itemView.setOnClickListener { onClick(movie.id, card) }
         }
     }
 
