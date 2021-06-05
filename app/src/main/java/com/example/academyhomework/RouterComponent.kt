@@ -7,7 +7,7 @@ import dagger.Subcomponent
 
 /**
  * subcomponent only for new injections, at least onPlayingViewModel
- * in earlie versions use old interface
+ * in earlier versions use old interface
  */
 @Subcomponent(modules = [])
 interface RouterComponent {

@@ -24,7 +24,7 @@ fun View.hideKeyboard() {
 
 fun View.showKeyboard() {
     val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-    imm.toggleSoftInputFromWindow(windowToken, 0, 0)
+    imm.toggleSoftInputFromWindow(windowToken, InputMethodManager.SHOW_FORCED, 0)
 }
 
 fun SearchFragment.hideEditText(binding: FragmentSearchBinding){

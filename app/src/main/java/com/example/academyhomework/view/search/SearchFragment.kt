@@ -131,6 +131,7 @@ class SearchFragment : BaseFragment() {
                         setPadding(0, 0, 0, 0)
                         recyclerView.hideKeyboard()
                         hideEditText(binding)
+                        binding.etSearching.clearFocus()
                     }
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                         showEditText(binding)

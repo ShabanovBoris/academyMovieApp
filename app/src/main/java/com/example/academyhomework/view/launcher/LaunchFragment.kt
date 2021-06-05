@@ -39,7 +39,6 @@ class LaunchFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         binding.tbSearch.setOnMenuItemClickListener {
             router.moveToSearchFragment()
             return@setOnMenuItemClickListener true
@@ -60,11 +59,23 @@ class LaunchFragment : BaseFragment() {
         }
     }
 
+    /**
+     * load list from map
+     */
     private fun setUpList(map: Map<String, List<Movie>>) {
         (binding.rvOnPlaying.adapter as MovieListAdapterMini).apply {
             bindMovies(
                 map[MainViewModel.ON_PlAYING].orEmpty()
             )
+
+            /**
+             * add new lists
+             * @sample
+             *  bindMovies(
+             *  map[MainViewModel.[NEW_LIST_TAG]].orEmpty()
+             *  )
+             */
+
             notifyDataSetChanged()
         }
 

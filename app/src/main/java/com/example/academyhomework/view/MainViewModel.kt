@@ -51,8 +51,8 @@ class MainViewModel(
     val loadingState: LiveData<Boolean> get() = _loadingState
 
     /** Movie list*/
-    private var _movieList = MutableLiveData<Map<String, List<Movie>>>(mapOf())
-    val movieList: LiveData<Map<String, List<Movie>>> get() = _movieList
+    private var _movieList = MutableLiveData<MutableMap<String, List<Movie>>>(mutableMapOf())
+    val movieList: LiveData<MutableMap<String, List<Movie>>> get() = _movieList
 
 
     //loading movie details job
@@ -105,27 +105,29 @@ class MainViewModel(
 
     private fun preLoadLaunchLists() {
         viewModelScope.launch(exceptionHandler) {
-            _movieList.value = mapOf(
+            //on playing list
+            _movieList.value = mutableMapOf(
                 ON_PlAYING to movieDatabase.getMovieList()
             )
-            _movieList.value = mapOf(
-                ON_PlAYING to movieNetwork.loadMovies(1..1)
-            )
-
+            _movieList.value!![ON_PlAYING] = movieNetwork.loadMovies(1..1)
+            //new lists
+            /**    @sample
+             *    _movieList.value = mutableMapOf(
+             *   [NEW_LIST] to movieDatabase.newLoad()
+             *   )
+             *   _movieList.value!![NEW_LIST] = movieNetwork.newLoad()
+             *
+             *    calls in [init] block
+             */
         }
-        /**
-         * expand in future
-         */
     }
 
     companion object {
         const val TAG = "Academy"
         const val ON_PlAYING = "on playing movie list"
     }
+
     init {
         preLoadLaunchLists()
-        /**
-         * expand in future
-         */
     }
 }
